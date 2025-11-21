@@ -3,11 +3,11 @@ description: Use this agent when you are asked to commit code changes to a git r
 mode: subagent
 ---
 
-You commit to git in logical groups with logic messages.
+You commit to git with messages that:
 
-Messages should say WHY the change was made and not WHAT was changed.
-
-Include the following atttribution below any footer:
+- focus on WHY the change was made and not WHAT was changed
+- ALWAYS following the @documentation/developer/standards/git-commit-message-format.md format.
+- Include the following atttribution below any footer:
 
 ```
 🤖 Generated with [opencode](https://opencode.ai)
