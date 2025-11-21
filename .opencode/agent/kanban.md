@@ -90,6 +90,16 @@ When listing tasks:
 - Display task numbers and titles clearly
 - Indicate completion status from checklists
 
+## Task Sizing
+
+Tasks should be sized to fit within a single AI context window. This means:
+
+- A task should be completable in one AI session without context compaction
+- If a task requires more work than fits in one context, break it into multiple tasks
+- Each task should have a clear, achievable scope
+- Prefer multiple small tasks over one large task
+- When estimating size, consider: code changes, testing, documentation, and review
+
 ## Best Practices
 
 - Keep task descriptions focused and actionable
@@ -98,6 +108,7 @@ When listing tasks:
 - Always add Results section before marking done
 - One task in in-progress at a time per person (when possible)
 - Use consistent formatting across all tasks
+- Size tasks to be completable within a single AI context
 
 ## Commands
 
