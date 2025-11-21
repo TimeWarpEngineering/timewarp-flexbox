@@ -18,41 +18,52 @@ Create unit tests for FlexNode class covering tree operations, property defaults
 - [ ] Test Children list is read-only (cannot modify externally)
 
 ## Notes
-Test file: test/TimeWarp.Flexbox.Tests/Nodes/FlexNodeTests.cs
+Test file: test/TimeWarp.Flexbox.Tests/Nodes/FlexNode_/Constructor_Should_.cs
+
+Uses TimeWarp.Fixie conventions:
+- Public methods are tests (no attributes needed)
+- Use Shouldly assertions
 
 Example tests:
 ```csharp
-public class FlexNodeTests
+namespace TimeWarp.Flexbox.Tests.Nodes.FlexNode_;
+
+using Shouldly;
+using TimeWarp.Fixie;
+
+[TestTag(TestTags.Fast)]
+public class Constructor_Should_
 {
-  [Fact]
-  public void Constructor_ShouldCreateNodeWithDefaults()
+  public static void CreateNodeWithDefaults()
   {
     FlexNode node = new();
     
-    node.Parent.Should().BeNull();
-    node.Children.Should().BeEmpty();
-    node.FlexDirection.Should().Be(FlexDirection.Row);
-    node.FlexWrap.Should().Be(FlexWrap.NoWrap);
-    node.JustifyContent.Should().Be(JustifyContent.FlexStart);
-    node.AlignItems.Should().Be(AlignItems.Stretch);
-    node.FlexGrow.Should().Be(0f);
-    node.FlexShrink.Should().Be(1f);
+    node.Parent.ShouldBeNull();
+    node.Children.ShouldBeEmpty();
+    node.FlexDirection.ShouldBe(FlexDirection.Row);
+    node.FlexWrap.ShouldBe(FlexWrap.NoWrap);
+    node.JustifyContent.ShouldBe(JustifyContent.FlexStart);
+    node.AlignItems.ShouldBe(AlignItems.Stretch);
+    node.FlexGrow.ShouldBe(0f);
+    node.FlexShrink.ShouldBe(1f);
   }
-  
-  [Fact]
-  public void AddChild_ShouldSetParentReference()
+}
+
+[TestTag(TestTags.Fast)]
+public class AddChild_Should_
+{
+  public static void SetParentReference()
   {
     FlexNode parent = new();
     FlexNode child = new();
     
     parent.AddChild(child);
     
-    child.Parent.Should().Be(parent);
-    parent.Children.Should().Contain(child);
+    child.Parent.ShouldBe(parent);
+    parent.Children.ShouldContain(child);
   }
   
-  [Fact]
-  public void AddChild_ShouldRemoveFromPreviousParent()
+  public static void RemoveChildFromPreviousParent()
   {
     FlexNode oldParent = new();
     FlexNode newParent = new();
@@ -61,9 +72,25 @@ public class FlexNodeTests
     oldParent.AddChild(child);
     newParent.AddChild(child);
     
-    oldParent.Children.Should().NotContain(child);
-    newParent.Children.Should().Contain(child);
-    child.Parent.Should().Be(newParent);
+    oldParent.Children.ShouldNotContain(child);
+    newParent.Children.ShouldContain(child);
+    child.Parent.ShouldBe(newParent);
+  }
+}
+
+[TestTag(TestTags.Fast)]
+public class RemoveChild_Should_
+{
+  public static void ClearParentReference()
+  {
+    FlexNode parent = new();
+    FlexNode child = new();
+    
+    parent.AddChild(child);
+    parent.RemoveChild(child);
+    
+    child.Parent.ShouldBeNull();
+    parent.Children.ShouldNotContain(child);
   }
 }
 ```

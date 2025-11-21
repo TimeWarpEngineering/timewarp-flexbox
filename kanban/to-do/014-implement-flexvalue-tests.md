@@ -16,44 +16,72 @@ Create comprehensive unit tests for FlexValue struct and Unit enum covering all 
 - [ ] Test edge cases: negative values, zero, NaN, infinity
 
 ## Notes
-Test file: test/TimeWarp.Flexbox.Tests/Values/FlexValueTests.cs
+Test file: test/TimeWarp.Flexbox.Tests/Values/FlexValue_/Constructor_Should_.cs
+
+Uses TimeWarp.Fixie conventions:
+- Public methods are tests (no attributes needed)
+- Use [Input(...)] for parameterized tests
+- Use Shouldly assertions
 
 Example tests:
 ```csharp
-public class FlexValueTests
+namespace TimeWarp.Flexbox.Tests.Values.FlexValue_;
+
+using Shouldly;
+using TimeWarp.Fixie;
+
+[TestTag(TestTags.Fast)]
+public class Constructor_Should_
 {
-  [Fact]
-  public void Point_ShouldCreateValueWithPointUnit()
+  public static void CreatePointValueWithCorrectUnit()
   {
     FlexValue value = FlexValue.Point(100);
     
-    value.Value.Should().Be(100f);
-    value.Unit.Should().Be(Unit.Point);
+    value.Value.ShouldBe(100f);
+    value.Unit.ShouldBe(Unit.Point);
   }
   
-  [Fact]
-  public void Percent_ShouldCreateValueWithPercentUnit()
+  public static void CreatePercentValueWithCorrectUnit()
   {
     FlexValue value = FlexValue.Percent(50);
     
-    value.Value.Should().Be(50f);
-    value.Unit.Should().Be(Unit.Percent);
+    value.Value.ShouldBe(50f);
+    value.Unit.ShouldBe(Unit.Percent);
   }
   
-  [Fact]
-  public void Auto_ShouldHaveAutoUnit()
+  public static void CreateAutoWithAutoUnit()
   {
-    FlexValue.Auto.Unit.Should().Be(Unit.Auto);
+    FlexValue.Auto.Unit.ShouldBe(Unit.Auto);
   }
   
-  [Theory]
-  [InlineData(0)]
-  [InlineData(-10)]
-  [InlineData(float.MaxValue)]
-  public void Point_ShouldHandleEdgeCases(float input)
+  [Input(0f)]
+  [Input(-10f)]
+  [Input(float.MaxValue)]
+  public static void HandleEdgeCasesForPointValues(float input)
   {
     FlexValue value = FlexValue.Point(input);
-    value.Value.Should().Be(input);
+    value.Value.ShouldBe(input);
+  }
+}
+
+[TestTag(TestTags.Fast)]
+public class Equality_Should_
+{
+  public static void ReturnTrueForEqualValues()
+  {
+    FlexValue value1 = FlexValue.Point(10);
+    FlexValue value2 = FlexValue.Point(10);
+    
+    (value1 == value2).ShouldBeTrue();
+    value1.Equals(value2).ShouldBeTrue();
+  }
+  
+  public static void ReturnFalseForDifferentValues()
+  {
+    FlexValue value1 = FlexValue.Point(10);
+    FlexValue value2 = FlexValue.Point(20);
+    
+    (value1 != value2).ShouldBeTrue();
   }
 }
 ```

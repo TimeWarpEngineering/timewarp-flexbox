@@ -23,13 +23,24 @@ Create comprehensive layout algorithm tests covering all flexbox scenarios, matc
 - [ ] Compare results with Yoga reference implementation
 
 ## Notes
-Port key test cases from Yoga's test suite to ensure algorithmic compatibility:
+Test file: test/TimeWarp.Flexbox.Tests/Layout/LayoutAlgorithm_/
 
+Uses TimeWarp.Fixie conventions:
+- Public methods are tests (no attributes needed)
+- Use Shouldly assertions
+- Port key test cases from Yoga's test suite for algorithmic compatibility
+
+Example tests:
 ```csharp
-public class LayoutAlgorithmTests
+namespace TimeWarp.Flexbox.Tests.Layout.LayoutAlgorithm_;
+
+using Shouldly;
+using TimeWarp.Fixie;
+
+[TestTag(TestTags.Fast)]
+public class RowLayout_Should_
 {
-  [Fact]
-  public void BasicRowLayout_ChildrenArrangedHorizontally()
+  public static void ArrangeChildrenHorizontally()
   {
     FlexNode root = new()
     {
@@ -48,13 +59,16 @@ public class LayoutAlgorithmTests
     
     root.CalculateLayout(300, 100);
     
-    child1.Layout.Left.Should().Be(0);
-    child2.Layout.Left.Should().Be(100);
-    child3.Layout.Left.Should().Be(200);
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(100);
+    child3.Layout.Left.ShouldBe(200);
   }
-  
-  [Fact]
-  public void FlexGrow_DistributesRemainingSpace()
+}
+
+[TestTag(TestTags.Fast)]
+public class FlexGrow_Should_
+{
+  public static void DistributeRemainingSpaceProportionally()
   {
     FlexNode root = new()
     {
@@ -70,8 +84,56 @@ public class LayoutAlgorithmTests
     
     root.CalculateLayout(300, float.NaN);
     
-    child1.Layout.Width.Should().Be(100);  // 1/3 of 300
-    child2.Layout.Width.Should().Be(200);  // 2/3 of 300
+    child1.Layout.Width.ShouldBe(100);  // 1/3 of 300
+    child2.Layout.Width.ShouldBe(200);  // 2/3 of 300
+  }
+}
+
+[TestTag(TestTags.Fast)]
+public class FlexShrink_Should_
+{
+  public static void ShrinkChildrenWhenOverflowing()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      FlexDirection = FlexDirection.Row
+    };
+    
+    FlexNode child1 = new() { Width = FlexValue.Point(150), FlexShrink = 1 };
+    FlexNode child2 = new() { Width = FlexValue.Point(150), FlexShrink = 1 };
+    
+    root.AddChild(child1);
+    root.AddChild(child2);
+    
+    root.CalculateLayout(200, float.NaN);
+    
+    child1.Layout.Width.ShouldBe(100);  // Shrunk equally
+    child2.Layout.Width.ShouldBe(100);
+  }
+}
+
+[TestTag(TestTags.Fast)]
+public class JustifyContent_Should_
+{
+  [Input(JustifyContent.FlexStart, 0f)]
+  [Input(JustifyContent.FlexEnd, 100f)]
+  [Input(JustifyContent.Center, 50f)]
+  public static void PositionChildCorrectly(JustifyContent justify, float expectedLeft)
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      FlexDirection = FlexDirection.Row,
+      JustifyContent = justify
+    };
+    
+    FlexNode child = new() { Width = FlexValue.Point(100) };
+    root.AddChild(child);
+    
+    root.CalculateLayout(200, float.NaN);
+    
+    child.Layout.Left.ShouldBe(expectedLeft);
   }
 }
 ```
