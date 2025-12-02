@@ -86,6 +86,12 @@ public sealed class FlexLayoutEngine
     float availableInnerMainSize = isMainAxisRow ? availableInnerWidth : availableInnerHeight;
     float availableInnerCrossSize = isMainAxisRow ? availableInnerHeight : availableInnerWidth;
 
+    // Calculate gap values based on flex direction
+    // For row: column-gap is main axis gap, row-gap is cross axis gap
+    // For column: row-gap is main axis gap, column-gap is cross axis gap
+    float mainAxisGap = isMainAxisRow ? node.ColumnGap : node.RowGap;
+    float crossAxisGap = isMainAxisRow ? node.RowGap : node.ColumnGap;
+
     // Handle leaf nodes with measure function
     if (node.IsLeaf && node.HasMeasureFunc)
     {
@@ -112,7 +118,7 @@ public sealed class FlexLayoutEngine
       CalculateMainAxisSizes(line, availableInnerMainSize, resolvedDirection);
 
       // Resolve flexible lengths (grow/shrink)
-      ResolveFlexibleLengths(line, availableInnerMainSize, resolvedDirection);
+      ResolveFlexibleLengths(line, availableInnerMainSize, resolvedDirection, mainAxisGap);
 
       // Calculate cross axis sizes
       float lineCrossSize = CalculateCrossAxisSizes(
@@ -123,6 +129,13 @@ public sealed class FlexLayoutEngine
 
       line.CrossSize = lineCrossSize;
       totalLineCrossSize += lineCrossSize;
+    }
+
+    // Add cross axis gaps between lines
+    int lineCount = FlexLinesCache.LineCount;
+    if (lineCount > 1)
+    {
+      totalLineCrossSize += crossAxisGap * (lineCount - 1);
     }
 
     // Calculate the node's own size
@@ -141,7 +154,11 @@ public sealed class FlexLayoutEngine
       FlexLinesCache,
       resolvedDirection,
       paddingBorderMainStart,
-      paddingBorderCrossStart);
+      paddingBorderCrossStart,
+      availableInnerCrossSize,
+      totalLineCrossSize,
+      mainAxisGap,
+      crossAxisGap);
 
     // Recursively layout children
     foreach (FlexNode child in node.Children)
@@ -272,7 +289,8 @@ public sealed class FlexLayoutEngine
   private static void ResolveFlexibleLengths(
     FlexLine line,
     float availableMainSize,
-    FlexDirection direction)
+    FlexDirection direction,
+    float mainAxisGap)
   {
     if (float.IsNaN(availableMainSize) || line.ItemCount == 0)
       return;
@@ -293,7 +311,10 @@ public sealed class FlexLayoutEngine
       flexBases[i] = currentSize;
     }
 
-    // Calculate initial free space
+    // Calculate total gap space
+    float totalGapSpace = line.ItemCount > 1 ? mainAxisGap * (line.ItemCount - 1) : 0;
+
+    // Calculate initial free space (accounting for gaps)
     float usedMainSize = 0;
 
     for (int i = 0; i < line.ItemCount; i++)
@@ -301,7 +322,7 @@ public sealed class FlexLayoutEngine
       usedMainSize += targetMainSizes[i];
     }
 
-    float freeSpace = availableMainSize - usedMainSize;
+    float freeSpace = availableMainSize - usedMainSize - totalGapSpace;
     line.RemainingFreeSpace = freeSpace;
 
     // Determine if we're growing or shrinking
@@ -585,12 +606,45 @@ public sealed class FlexLayoutEngine
     FlexLines flexLines,
     FlexDirection direction,
     float paddingBorderMainStart,
-    float paddingBorderCrossStart)
+    float paddingBorderCrossStart,
+    float availableCrossSize,
+    float totalLineCrossSize,
+    float mainAxisGap,
+    float crossAxisGap)
   {
     bool isRow = LayoutHelpers.IsRow(direction);
     bool isReverse = LayoutHelpers.IsReverse(direction);
+    int lineCount = flexLines.LineCount;
 
-    float crossPosition = paddingBorderCrossStart;
+    // Calculate align-content distribution
+    float crossFreeSpace = availableCrossSize - totalLineCrossSize;
+
+    // Handle align-content: stretch by expanding line cross sizes
+    if (node.AlignContent == AlignContent.Stretch && crossFreeSpace > 0 && lineCount > 0)
+    {
+      float extraPerLine = crossFreeSpace / lineCount;
+
+      foreach (FlexLine line in flexLines.Lines)
+      {
+        line.CrossSize += extraPerLine;
+      }
+
+      // Recalculate total after stretch
+      crossFreeSpace = 0;
+    }
+
+    float crossOffset = CalculateAlignContentOffset(
+      node.AlignContent,
+      paddingBorderCrossStart,
+      crossFreeSpace,
+      lineCount);
+
+    float crossSpacing = CalculateAlignContentSpacing(
+      node.AlignContent,
+      crossFreeSpace,
+      lineCount);
+
+    float crossPosition = crossOffset;
 
     foreach (FlexLine line in flexLines.Lines)
     {
@@ -608,11 +662,20 @@ public sealed class FlexLayoutEngine
 
       // Position items in the line
       IEnumerable<FlexNode> items = isReverse ? line.Items.Reverse() : line.Items;
+      bool isFirstItem = true;
 
       foreach (FlexNode child in items)
       {
         if (child.PositionType == PositionType.Absolute)
           continue;
+
+        // Add gap before item (except first item)
+        if (!isFirstItem)
+        {
+          mainPosition += mainAxisGap;
+        }
+
+        isFirstItem = false;
 
         // Set main axis position
         if (isRow)
@@ -641,12 +704,55 @@ public sealed class FlexLayoutEngine
           child.Layout.Left = childCrossPosition;
         }
 
-        // Move to next position
+        // Move to next position (spacing from justify-content)
         mainPosition += (isRow ? child.Layout.Width : child.Layout.Height) + spaceBetween;
       }
 
-      crossPosition += line.CrossSize;
+      crossPosition += line.CrossSize + crossSpacing + crossAxisGap;
     }
+  }
+
+  /// <summary>
+  /// Calculates the starting offset for align-content.
+  /// </summary>
+  private static float CalculateAlignContentOffset(
+    AlignContent alignContent,
+    float paddingStart,
+    float freeSpace,
+    int lineCount)
+  {
+    if (freeSpace <= 0 || lineCount == 0)
+      return paddingStart;
+
+    return alignContent switch
+    {
+      AlignContent.FlexStart => paddingStart,
+      AlignContent.FlexEnd => paddingStart + freeSpace,
+      AlignContent.Center => paddingStart + freeSpace / 2,
+      AlignContent.SpaceBetween => paddingStart,
+      AlignContent.SpaceAround => paddingStart + freeSpace / lineCount / 2,
+      AlignContent.Stretch => paddingStart, // Stretch is handled before this
+      _ => paddingStart
+    };
+  }
+
+  /// <summary>
+  /// Calculates the spacing between lines for align-content.
+  /// </summary>
+  private static float CalculateAlignContentSpacing(
+    AlignContent alignContent,
+    float freeSpace,
+    int lineCount)
+  {
+    if (freeSpace <= 0 || lineCount <= 1)
+      return 0;
+
+    return alignContent switch
+    {
+      AlignContent.SpaceBetween => freeSpace / (lineCount - 1),
+      AlignContent.SpaceAround => freeSpace / lineCount,
+      _ => 0
+    };
   }
 
   /// <summary>
