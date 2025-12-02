@@ -4,15 +4,15 @@
 Add LayoutResult property, measurement callbacks, and configuration reference to FlexNode.
 
 ## Todo List
-- [ ] Add Layout property (LayoutResult, created in constructor)
-- [ ] Add MeasureFunc property (MeasureFunc?, default: null)
-- [ ] Add BaselineFunc property (BaselineFunc?, default: null)
-- [ ] Add Config property (FlexConfig?, default: null uses global default)
-- [ ] Add HasMeasureFunc computed property
-- [ ] Add IsLeaf computed property (no children or has measure func)
-- [ ] Add Context property (object?) for user data
-- [ ] Implement CalculateLayout(float availableWidth, float availableHeight) method stub
-- [ ] Verify code follows csharp-coding.md standards
+- [x] Add Layout property (LayoutResult, created in constructor)
+- [x] Add MeasureFunc property (MeasureFunc?, default: null)
+- [x] Add BaselineFunc property (BaselineFunc?, default: null)
+- [x] Add Config property (FlexConfig?, default: null uses global default)
+- [x] Add HasMeasureFunc computed property
+- [x] Add IsLeaf computed property (no children or has measure func)
+- [x] Add Context property (object?) for user data
+- [x] Implement CalculateLayout(float availableWidth, float availableHeight) method stub
+- [x] Verify code follows csharp-coding.md standards
 
 ## Notes
 This completes the FlexNode class structure:
@@ -49,7 +49,10 @@ Notes:
 - Context allows users to associate arbitrary data with nodes
 
 ## Results
-(Add after completion)
-- Document outcomes
-- Include metrics, observations, decisions
-- Note any deviations from plan
+- Added constructor that creates LayoutResult instance
+- Properties: Layout, MeasureFunc, BaselineFunc, Config, Context
+- Computed properties: HasMeasureFunc (uses `is not null`), IsLeaf, EffectiveConfig
+- CalculateLayout stub resets layout and clears dirty flags recursively
+- Added private ClearDirtyRecursive helper method
+- Used pattern matching per RCS1248 analyzer requirement
+- Build verified: 0 warnings, 0 errors

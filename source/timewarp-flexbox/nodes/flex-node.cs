@@ -9,6 +9,92 @@ public partial class FlexNode
   private readonly List<FlexNode> ChildrenInternal = [];
 
   /// <summary>
+  /// Creates a new FlexNode instance.
+  /// </summary>
+  public FlexNode()
+  {
+    Layout = new LayoutResult();
+  }
+
+  #region Layout and Callbacks
+
+  /// <summary>
+  /// Gets the computed layout result for this node.
+  /// Populated by the layout algorithm.
+  /// </summary>
+  public LayoutResult Layout { get; }
+
+  /// <summary>
+  /// Gets or sets the measurement function for leaf nodes with intrinsic size.
+  /// Required for nodes that need to measure their content (e.g., text).
+  /// </summary>
+  public MeasureFunc? MeasureFunc { get; set; }
+
+  /// <summary>
+  /// Gets or sets the baseline function for text baseline alignment.
+  /// Optional - used when aligning items by baseline.
+  /// </summary>
+  public BaselineFunc? BaselineFunc { get; set; }
+
+  /// <summary>
+  /// Gets or sets the configuration for this node.
+  /// If null, uses FlexConfig.Default.
+  /// </summary>
+  public FlexConfig? Config { get; set; }
+
+  /// <summary>
+  /// Gets or sets arbitrary user data associated with this node.
+  /// </summary>
+  public object? Context { get; set; }
+
+  /// <summary>
+  /// Gets whether this node has a measure function.
+  /// </summary>
+  public bool HasMeasureFunc => MeasureFunc is not null;
+
+  /// <summary>
+  /// Gets whether this node is a leaf node.
+  /// A node is a leaf if it has no children or has a measure function.
+  /// </summary>
+  public bool IsLeaf => ChildrenInternal.Count == 0 || HasMeasureFunc;
+
+  /// <summary>
+  /// Gets the effective configuration for this node.
+  /// Returns Config if set, otherwise FlexConfig.Default.
+  /// </summary>
+  public FlexConfig EffectiveConfig => Config ?? FlexConfig.Default;
+
+  /// <summary>
+  /// Calculates the layout for this node and all descendants.
+  /// </summary>
+  /// <param name="availableWidth">The available width for layout.</param>
+  /// <param name="availableHeight">The available height for layout.</param>
+  /// <remarks>
+  /// This is the entry point for layout calculation.
+  /// Full implementation in a later task.
+  /// </remarks>
+  public void CalculateLayout(float availableWidth, float availableHeight)
+  {
+    // TODO: Implement layout algorithm in task 019
+    // For now, just reset the layout and clear dirty flags
+    Layout.Reset();
+    Layout.Width = availableWidth;
+    Layout.Height = availableHeight;
+    ClearDirtyRecursive();
+  }
+
+  private void ClearDirtyRecursive()
+  {
+    ClearDirty();
+    foreach (FlexNode child in ChildrenInternal)
+    {
+      child.ClearDirtyRecursive();
+    }
+  }
+
+  #endregion
+
+  /// <summary>
   /// Gets the parent node, or null if this is a root node.
   /// </summary>
   public FlexNode? Parent { get; private set; }
