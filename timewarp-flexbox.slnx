@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/source/">
+    <Project Path="source/timewarp-flexbox/timewarp-flexbox.csproj" />
+  </Folder>
+</Solution>
