@@ -1,34 +1,33 @@
 <Project>
-
+  <!-- Import parent Directory.Build.props -->
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <!-- Default package metadata (can be overridden in individual projects) -->
   <PropertyGroup Label="Package Metadata">
     <Version>0.1.0-beta.1</Version>
     <Authors>Steven T. Cramer</Authors>
-    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-Flexbox</RepositoryUrl>
+    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-flexbox</RepositoryUrl>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageIcon>logo.png</PackageIcon>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Label="MsBuild Packaging Defaults">
     <IsPackable>true</IsPackable>
-    <PackageOutputPath>$(PackagesDirectory)</PackageOutputPath>
+    <PackageOutputPath>$(ArtifactsDirectory)packages/</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <PropertyGroup Label="Source Link Configuration">
+  <PropertyGroup Label="Source Link Settings">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>false</IncludeSymbols>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="$(RepositoryRoot)assets/logo.png" Pack="true" PackagePath="/" />
-    <None Include="$(RepositoryRoot)readme.md" Pack="true" PackagePath="/" />
+  <ItemGroup Label="Shared Package Assets">
+    <None Include="$(RepositoryRoot)assets/logo.png" Pack="true" PackagePath="" />
+    <None Include="$(RepositoryRoot)README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

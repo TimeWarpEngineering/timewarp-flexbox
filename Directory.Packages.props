@@ -1,0 +1,23 @@
+<Project>
+  <!-- MSBuild and NuGet behavior configuration -->
+  <PropertyGroup Label="MSBuild/NuGet Configuration">
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup Label="Testing">
+    <PackageVersion Include="TimeWarp.Fixie" Version="1.0.0-beta.5" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Code Analyzers">
+    <PackageVersion Include="GlobalUsingsAnalyzer" Version="1.4.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageVersion>
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
+    <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.14.1" />
+    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.14.1" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.100" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="5.0.0" />
+  </ItemGroup>
+</Project>
