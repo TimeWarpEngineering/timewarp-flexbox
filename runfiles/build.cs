@@ -13,18 +13,8 @@ string configuration = args.Length > 0 ? args[0] : "Debug";
 
 Console.WriteLine($"Building TimeWarp.Flexbox ({configuration})...");
 
-CommandOutput result = await Shell.Builder("dotnet")
-  .WithArguments("build", "--configuration", configuration)
-  .CaptureAsync();
+await DotNet.Build()
+  .WithConfiguration(configuration)
+  .RunAsync();
 
-if (result.Success)
-{
-  Console.WriteLine($"Build completed successfully ({configuration})");
-  Environment.Exit(0);
-}
-else
-{
-  Console.WriteLine("Build failed!");
-  Console.WriteLine(result.Stderr);
-  Environment.Exit(1);
-}
+Console.WriteLine($"Build completed successfully ({configuration})");
