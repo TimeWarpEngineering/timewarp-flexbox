@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-flexbox</RepositoryUrl>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageIcon>logo.png</PackageIcon>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Label="MsBuild Packaging Defaults">
@@ -27,7 +27,7 @@
 
   <ItemGroup Label="Shared Package Assets">
     <None Include="$(RepositoryRoot)assets/logo.png" Pack="true" PackagePath="" />
-    <None Include="$(RepositoryRoot)README.md" Pack="true" PackagePath="" />
+    <None Include="$(RepositoryRoot)readme.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
