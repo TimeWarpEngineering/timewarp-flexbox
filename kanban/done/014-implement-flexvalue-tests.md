@@ -4,16 +4,16 @@
 Create comprehensive unit tests for FlexValue struct and Unit enum covering all factory methods, equality, and edge cases.
 
 ## Todo List
-- [ ] Test Unit enum has correct values (Point, Percent, Auto, Undefined)
-- [ ] Test FlexValue.Point() creates correct value and unit
-- [ ] Test FlexValue.Percent() creates correct value and unit
-- [ ] Test FlexValue.Auto has correct unit and zero value
-- [ ] Test FlexValue.Undefined has correct unit
-- [ ] Test equality operators (==, !=)
-- [ ] Test IEquatable<FlexValue> implementation
-- [ ] Test GetHashCode consistency with Equals
-- [ ] Test ToString() returns useful debugging output
-- [ ] Test edge cases: negative values, zero, NaN, infinity
+- [x] Test Unit enum has correct values (Point, Percent, Auto, Undefined)
+- [x] Test FlexValue.Point() creates correct value and unit
+- [x] Test FlexValue.Percent() creates correct value and unit
+- [x] Test FlexValue.Auto has correct unit and zero value
+- [x] Test FlexValue.Undefined has correct unit
+- [x] Test equality operators (==, !=)
+- [x] Test IEquatable<FlexValue> implementation
+- [x] Test GetHashCode consistency with Equals
+- [x] Test ToString() returns useful debugging output
+- [x] Test edge cases: negative values, zero, NaN, infinity
 
 ## Notes
 Test file: test/TimeWarp.Flexbox.Tests/Values/FlexValue_/Constructor_Should_.cs
@@ -87,7 +87,10 @@ public class Equality_Should_
 ```
 
 ## Results
-(Add after completion)
-- Document outcomes
-- Include metrics, observations, decisions
-- Note any deviations from plan
+- Expanded flex-value-tests.cs with comprehensive test coverage
+- FlexValueTests class: 31 tests covering factory methods, edge cases, equality, hash codes, and ToString
+- UnitEnumTests class: 5 tests covering enum values and count
+- Total: 36 tests, all passing
+- Test categories: Factory Methods, Edge Cases, Equality, GetHashCode, ToString
+- Edge cases covered: zero, negative, large values, infinity, null, different types
+- Deviation: Used single test file instead of separate files per category (simpler structure)

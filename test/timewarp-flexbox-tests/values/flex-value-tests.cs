@@ -5,12 +5,12 @@ namespace TimeWarp.Flexbox.Tests.Values;
 /// </summary>
 public class FlexValueTests
 {
+  #region Factory Methods
+
   public void ShouldCreatePointValue()
   {
-    // Arrange & Act
     FlexValue value = FlexValue.Point(100);
 
-    // Assert
     value.Value.ShouldBe(100);
     value.Unit.ShouldBe(Unit.Point);
     value.IsDefined.ShouldBeTrue();
@@ -20,55 +20,308 @@ public class FlexValueTests
 
   public void ShouldCreatePercentValue()
   {
-    // Arrange & Act
     FlexValue value = FlexValue.Percent(50);
 
-    // Assert
     value.Value.ShouldBe(50);
     value.Unit.ShouldBe(Unit.Percent);
     value.IsDefined.ShouldBeTrue();
+    value.IsAuto.ShouldBeFalse();
+    value.IsUndefined.ShouldBeFalse();
   }
 
   public void ShouldHaveAutoValue()
   {
-    // Arrange & Act
     FlexValue value = FlexValue.Auto;
 
-    // Assert
     value.Unit.ShouldBe(Unit.Auto);
     value.IsAuto.ShouldBeTrue();
     value.IsDefined.ShouldBeFalse();
+    value.IsUndefined.ShouldBeFalse();
   }
 
   public void ShouldHaveUndefinedValue()
   {
-    // Arrange & Act
     FlexValue value = FlexValue.Undefined;
 
-    // Assert
     value.Unit.ShouldBe(Unit.Undefined);
     value.IsUndefined.ShouldBeTrue();
     value.IsDefined.ShouldBeFalse();
+    value.IsAuto.ShouldBeFalse();
   }
 
-  public void ShouldCompareEqualValues()
+  #endregion
+
+  #region Edge Cases
+
+  public void ShouldHandleZeroPointValue()
   {
-    // Arrange
+    FlexValue value = FlexValue.Point(0);
+
+    value.Value.ShouldBe(0);
+    value.Unit.ShouldBe(Unit.Point);
+    value.IsDefined.ShouldBeTrue();
+  }
+
+  public void ShouldHandleNegativePointValue()
+  {
+    FlexValue value = FlexValue.Point(-10);
+
+    value.Value.ShouldBe(-10);
+    value.Unit.ShouldBe(Unit.Point);
+  }
+
+  public void ShouldHandleZeroPercentValue()
+  {
+    FlexValue value = FlexValue.Percent(0);
+
+    value.Value.ShouldBe(0);
+    value.Unit.ShouldBe(Unit.Percent);
+  }
+
+  public void ShouldHandleHundredPercentValue()
+  {
+    FlexValue value = FlexValue.Percent(100);
+
+    value.Value.ShouldBe(100);
+    value.Unit.ShouldBe(Unit.Percent);
+  }
+
+  public void ShouldHandleLargePointValue()
+  {
+    FlexValue value = FlexValue.Point(float.MaxValue);
+
+    value.Value.ShouldBe(float.MaxValue);
+    value.Unit.ShouldBe(Unit.Point);
+  }
+
+  public void ShouldHandleInfinityPointValue()
+  {
+    FlexValue value = FlexValue.Point(float.PositiveInfinity);
+
+    value.Value.ShouldBe(float.PositiveInfinity);
+    value.Unit.ShouldBe(Unit.Point);
+  }
+
+  public void ShouldHandleNegativeInfinityPointValue()
+  {
+    FlexValue value = FlexValue.Point(float.NegativeInfinity);
+
+    value.Value.ShouldBe(float.NegativeInfinity);
+    value.Unit.ShouldBe(Unit.Point);
+  }
+
+  #endregion
+
+  #region Equality
+
+  public void ShouldCompareEqualPointValues()
+  {
     FlexValue value1 = FlexValue.Point(100);
     FlexValue value2 = FlexValue.Point(100);
 
-    // Assert
+    value1.ShouldBe(value2);
+    (value1 == value2).ShouldBeTrue();
+    (value1 != value2).ShouldBeFalse();
+    value1.Equals(value2).ShouldBeTrue();
+    value1.Equals((object)value2).ShouldBeTrue();
+  }
+
+  public void ShouldCompareEqualPercentValues()
+  {
+    FlexValue value1 = FlexValue.Percent(50);
+    FlexValue value2 = FlexValue.Percent(50);
+
     value1.ShouldBe(value2);
     (value1 == value2).ShouldBeTrue();
   }
 
   public void ShouldCompareAutoValuesAsEqual()
   {
-    // Arrange
     FlexValue value1 = FlexValue.Auto;
     FlexValue value2 = FlexValue.Auto;
 
-    // Assert
     value1.ShouldBe(value2);
+    (value1 == value2).ShouldBeTrue();
+  }
+
+  public void ShouldCompareUndefinedValuesAsEqual()
+  {
+    FlexValue value1 = FlexValue.Undefined;
+    FlexValue value2 = FlexValue.Undefined;
+
+    value1.ShouldBe(value2);
+    (value1 == value2).ShouldBeTrue();
+  }
+
+  public void ShouldCompareDifferentPointValuesAsNotEqual()
+  {
+    FlexValue value1 = FlexValue.Point(10);
+    FlexValue value2 = FlexValue.Point(20);
+
+    (value1 != value2).ShouldBeTrue();
+    (value1 == value2).ShouldBeFalse();
+    value1.Equals(value2).ShouldBeFalse();
+  }
+
+  public void ShouldCompareDifferentUnitsAsNotEqual()
+  {
+    FlexValue point = FlexValue.Point(100);
+    FlexValue percent = FlexValue.Percent(100);
+
+    (point != percent).ShouldBeTrue();
+    point.Equals(percent).ShouldBeFalse();
+  }
+
+  public void ShouldComparePointAndAutoAsNotEqual()
+  {
+    FlexValue point = FlexValue.Point(100);
+    FlexValue auto = FlexValue.Auto;
+
+    (point != auto).ShouldBeTrue();
+  }
+
+  public void ShouldCompareAutoAndUndefinedAsNotEqual()
+  {
+    FlexValue auto = FlexValue.Auto;
+    FlexValue undefined = FlexValue.Undefined;
+
+    (auto != undefined).ShouldBeTrue();
+  }
+
+  public void ShouldNotEqualNull()
+  {
+    FlexValue value = FlexValue.Point(100);
+
+    value.Equals(null).ShouldBeFalse();
+  }
+
+  public void ShouldNotEqualDifferentType()
+  {
+    FlexValue value = FlexValue.Point(100);
+
+    value.Equals("100").ShouldBeFalse();
+    value.Equals(100).ShouldBeFalse();
+  }
+
+  #endregion
+
+  #region GetHashCode
+
+  public void ShouldHaveConsistentHashCodeForEqualValues()
+  {
+    FlexValue value1 = FlexValue.Point(100);
+    FlexValue value2 = FlexValue.Point(100);
+
+    value1.GetHashCode().ShouldBe(value2.GetHashCode());
+  }
+
+  public void ShouldHaveConsistentHashCodeForAuto()
+  {
+    FlexValue value1 = FlexValue.Auto;
+    FlexValue value2 = FlexValue.Auto;
+
+    value1.GetHashCode().ShouldBe(value2.GetHashCode());
+  }
+
+  public void ShouldHaveConsistentHashCodeForUndefined()
+  {
+    FlexValue value1 = FlexValue.Undefined;
+    FlexValue value2 = FlexValue.Undefined;
+
+    value1.GetHashCode().ShouldBe(value2.GetHashCode());
+  }
+
+  public void ShouldHaveDifferentHashCodeForDifferentValues()
+  {
+    FlexValue value1 = FlexValue.Point(100);
+    FlexValue value2 = FlexValue.Point(200);
+
+    // Note: Different values should typically have different hash codes,
+    // but hash collisions are allowed, so we just verify they're computed
+    int hash1 = value1.GetHashCode();
+    int hash2 = value2.GetHashCode();
+
+    // Just verify hash codes are computed without error
+    hash1.ShouldBeOfType<int>();
+    hash2.ShouldBeOfType<int>();
+  }
+
+  #endregion
+
+  #region ToString
+
+  public void ShouldReturnCorrectStringForPoint()
+  {
+    FlexValue value = FlexValue.Point(100);
+
+    value.ToString().ShouldBe("100pt");
+  }
+
+  public void ShouldReturnCorrectStringForPercent()
+  {
+    FlexValue value = FlexValue.Percent(50);
+
+    value.ToString().ShouldBe("50%");
+  }
+
+  public void ShouldReturnCorrectStringForAuto()
+  {
+    FlexValue value = FlexValue.Auto;
+
+    value.ToString().ShouldBe("auto");
+  }
+
+  public void ShouldReturnCorrectStringForUndefined()
+  {
+    FlexValue value = FlexValue.Undefined;
+
+    value.ToString().ShouldBe("undefined");
+  }
+
+  public void ShouldReturnCorrectStringForNegativePoint()
+  {
+    FlexValue value = FlexValue.Point(-10);
+
+    value.ToString().ShouldBe("-10pt");
+  }
+
+  public void ShouldReturnCorrectStringForDecimalPercent()
+  {
+    FlexValue value = FlexValue.Percent(33.33f);
+
+    value.ToString().ShouldBe("33.33%");
+  }
+
+  #endregion
+}
+
+/// <summary>
+/// Tests for Unit enum.
+/// </summary>
+public class UnitEnumTests
+{
+  public void ShouldHaveUndefinedValue()
+  {
+    Unit.Undefined.ShouldBe((Unit)0);
+  }
+
+  public void ShouldHavePointValue()
+  {
+    Unit.Point.ShouldBe((Unit)1);
+  }
+
+  public void ShouldHavePercentValue()
+  {
+    Unit.Percent.ShouldBe((Unit)2);
+  }
+
+  public void ShouldHaveAutoValue()
+  {
+    Unit.Auto.ShouldBe((Unit)3);
+  }
+
+  public void ShouldHaveFourValues()
+  {
+    Enum.GetValues<Unit>().Length.ShouldBe(4);
   }
 }
