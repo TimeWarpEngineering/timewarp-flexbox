@@ -168,7 +168,7 @@ public sealed class FlexLayoutEngine
 
       if (child.PositionType == PositionType.Absolute)
       {
-        LayoutAbsoluteChild(node, child);
+        LayoutAbsoluteChild(node, child, direction);
         continue;
       }
 
@@ -827,25 +827,106 @@ public sealed class FlexLayoutEngine
   /// <summary>
   /// Layouts an absolutely positioned child.
   /// </summary>
-  private static void LayoutAbsoluteChild(FlexNode parent, FlexNode child)
+  private static void LayoutAbsoluteChild(FlexNode parent, FlexNode child, Direction direction)
   {
-    // Absolute children are positioned relative to their containing block
-    float width = ValueResolver.ResolveWidth(child, parent.Layout.Width);
-    float height = ValueResolver.ResolveHeight(child, parent.Layout.Height);
+    bool isRtl = direction == Direction.Rtl;
+    float containerWidth = parent.Layout.Width;
+    float containerHeight = parent.Layout.Height;
+
+    // Get position insets
+    FlexValue leftInset = child.Position.ComputedLeft(FlexValue.Undefined, isRtl);
+    FlexValue topInset = child.Position.ComputedTop(FlexValue.Undefined);
+    FlexValue rightInset = child.Position.ComputedRight(FlexValue.Undefined, isRtl);
+    FlexValue bottomInset = child.Position.ComputedBottom(FlexValue.Undefined);
+
+    float left = ValueResolver.ResolveValue(leftInset, containerWidth);
+    float top = ValueResolver.ResolveValue(topInset, containerHeight);
+    float right = ValueResolver.ResolveValue(rightInset, containerWidth);
+    float bottom = ValueResolver.ResolveValue(bottomInset, containerHeight);
+
+    bool hasLeft = ValueResolver.IsDefined(left);
+    bool hasTop = ValueResolver.IsDefined(top);
+    bool hasRight = ValueResolver.IsDefined(right);
+    bool hasBottom = ValueResolver.IsDefined(bottom);
+
+    // Calculate width
+    float width = ValueResolver.ResolveWidth(child, containerWidth);
 
     if (float.IsNaN(width))
-      width = 0;
+    {
+      // If both left and right are set, stretch to fill
+      if (hasLeft && hasRight)
+      {
+        width = containerWidth - left - right;
+        width = Math.Max(0, width);
+
+        // Apply min/max constraints
+        float minWidth = ValueResolver.ResolveValueOrDefault(child.MinWidth, containerWidth, 0);
+        float maxWidth = ValueResolver.ResolveValueOrDefault(child.MaxWidth, containerWidth, float.PositiveInfinity);
+        width = Math.Clamp(width, minWidth, maxWidth);
+      }
+      else
+      {
+        // Default to 0 (or could measure if has measure function)
+        width = 0;
+      }
+    }
+
+    // Calculate height
+    float height = ValueResolver.ResolveHeight(child, containerHeight);
 
     if (float.IsNaN(height))
-      height = 0;
+    {
+      // If both top and bottom are set, stretch to fill
+      if (hasTop && hasBottom)
+      {
+        height = containerHeight - top - bottom;
+        height = Math.Max(0, height);
+
+        // Apply min/max constraints
+        float minHeight = ValueResolver.ResolveValueOrDefault(child.MinHeight, containerHeight, 0);
+        float maxHeight = ValueResolver.ResolveValueOrDefault(child.MaxHeight, containerHeight, float.PositiveInfinity);
+        height = Math.Clamp(height, minHeight, maxHeight);
+      }
+      else
+      {
+        // Default to 0 (or could measure if has measure function)
+        height = 0;
+      }
+    }
 
     child.Layout.Width = width;
     child.Layout.Height = height;
 
-    // Position based on inset properties (left, top, right, bottom)
-    // TODO: Implement full absolute positioning with insets
-    child.Layout.Left = 0;
-    child.Layout.Top = 0;
+    // Calculate left position
+    if (hasLeft)
+    {
+      child.Layout.Left = left;
+    }
+    else if (hasRight)
+    {
+      child.Layout.Left = containerWidth - right - width;
+    }
+    else
+    {
+      // Default to 0 if neither left nor right is set
+      child.Layout.Left = 0;
+    }
+
+    // Calculate top position
+    if (hasTop)
+    {
+      child.Layout.Top = top;
+    }
+    else if (hasBottom)
+    {
+      child.Layout.Top = containerHeight - bottom - height;
+    }
+    else
+    {
+      // Default to 0 if neither top nor bottom is set
+      child.Layout.Top = 0;
+    }
   }
 
   /// <summary>
