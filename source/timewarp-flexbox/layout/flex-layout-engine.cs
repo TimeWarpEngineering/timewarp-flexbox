@@ -112,7 +112,7 @@ public sealed class FlexLayoutEngine
       CalculateMainAxisSizes(line, availableInnerMainSize, resolvedDirection);
 
       // Resolve flexible lengths (grow/shrink)
-      ResolveFlexibleLengths(line, availableInnerMainSize);
+      ResolveFlexibleLengths(line, availableInnerMainSize, resolvedDirection);
 
       // Calculate cross axis sizes
       float lineCrossSize = CalculateCrossAxisSizes(
@@ -269,63 +269,182 @@ public sealed class FlexLayoutEngine
   /// <summary>
   /// Resolves flexible lengths by distributing remaining space.
   /// </summary>
-  private static void ResolveFlexibleLengths(FlexLine line, float availableMainSize)
+  private static void ResolveFlexibleLengths(
+    FlexLine line,
+    float availableMainSize,
+    FlexDirection direction)
   {
-    if (float.IsNaN(availableMainSize))
+    if (float.IsNaN(availableMainSize) || line.ItemCount == 0)
       return;
 
-    // Calculate used main size
+    bool isRow = LayoutHelpers.IsRow(direction);
+
+    // Track frozen state for each item (items that hit min/max constraints)
+    bool[] frozen = new bool[line.ItemCount];
+    float[] targetMainSizes = new float[line.ItemCount];
+    float[] flexBases = new float[line.ItemCount];
+
+    // Initialize target sizes and flex bases
+    for (int i = 0; i < line.ItemCount; i++)
+    {
+      FlexNode child = line.Items[i];
+      float currentSize = isRow ? child.Layout.Width : child.Layout.Height;
+      targetMainSizes[i] = currentSize;
+      flexBases[i] = currentSize;
+    }
+
+    // Calculate initial free space
     float usedMainSize = 0;
 
-    foreach (FlexNode child in line.Items)
+    for (int i = 0; i < line.ItemCount; i++)
     {
-      usedMainSize += child.Layout.Width; // Simplified - should use main axis size
+      usedMainSize += targetMainSizes[i];
     }
 
-    float remainingSpace = availableMainSize - usedMainSize;
-    line.RemainingFreeSpace = remainingSpace;
+    float freeSpace = availableMainSize - usedMainSize;
+    line.RemainingFreeSpace = freeSpace;
 
-    if (remainingSpace > 0 && line.TotalFlexGrow > 0)
+    // Determine if we're growing or shrinking
+    bool isGrowing = freeSpace > 0;
+    bool isShrinking = freeSpace < 0;
+
+    // If no flex factors apply, we're done
+    if (isGrowing && line.TotalFlexGrow <= 0)
+      return;
+
+    if (isShrinking && line.TotalFlexShrink <= 0)
+      return;
+
+    // Iterative resolution loop
+    const int MaxIterations = 10;
+
+    for (int iteration = 0; iteration < MaxIterations; iteration++)
     {
-      // Distribute extra space according to flex-grow
-      DistributeFlexGrow(line, remainingSpace);
+      // Calculate unfrozen flex factor totals
+      float unfrozenFlexGrow = 0;
+      float unfrozenFlexShrink = 0;
+      float unfrozenWeightedShrink = 0;
+      float unfrozenUsedSpace = 0;
+      int unfrozenCount = 0;
+
+      for (int i = 0; i < line.ItemCount; i++)
+      {
+        if (frozen[i])
+          continue;
+
+        FlexNode child = line.Items[i];
+        unfrozenFlexGrow += child.FlexGrow;
+        unfrozenFlexShrink += child.FlexShrink;
+        unfrozenWeightedShrink += child.FlexShrink * flexBases[i];
+        unfrozenUsedSpace += targetMainSizes[i];
+        unfrozenCount++;
+      }
+
+      // If all items are frozen, we're done
+      if (unfrozenCount == 0)
+        break;
+
+      // Calculate remaining free space for unfrozen items
+      float frozenSpace = 0;
+
+      for (int i = 0; i < line.ItemCount; i++)
+      {
+        if (frozen[i])
+        {
+          frozenSpace += targetMainSizes[i];
+        }
+      }
+
+      float remainingSpace = availableMainSize - frozenSpace - unfrozenUsedSpace;
+
+      // Distribute space
+      bool anyViolation = false;
+
+      for (int i = 0; i < line.ItemCount; i++)
+      {
+        if (frozen[i])
+          continue;
+
+        FlexNode child = line.Items[i];
+        float adjustment = 0;
+
+        if (isGrowing && unfrozenFlexGrow > 0 && child.FlexGrow > 0)
+        {
+          float ratio = child.FlexGrow / unfrozenFlexGrow;
+          adjustment = remainingSpace * ratio;
+        }
+        else if (isShrinking && unfrozenWeightedShrink > 0 && child.FlexShrink > 0)
+        {
+          // Use scaled shrink factor (flex-shrink * flex-basis)
+          float scaledShrink = child.FlexShrink * flexBases[i];
+          float ratio = scaledShrink / unfrozenWeightedShrink;
+          adjustment = remainingSpace * ratio; // remainingSpace is negative when shrinking
+        }
+
+        float newSize = targetMainSizes[i] + adjustment;
+
+        // Get min/max constraints
+        float minSize = isRow
+          ? ValueResolver.ResolveValueOrDefault(child.MinWidth, availableMainSize, 0)
+          : ValueResolver.ResolveValueOrDefault(child.MinHeight, availableMainSize, 0);
+
+        float maxSize = isRow
+          ? ValueResolver.ResolveValueOrDefault(child.MaxWidth, availableMainSize, float.PositiveInfinity)
+          : ValueResolver.ResolveValueOrDefault(child.MaxHeight, availableMainSize, float.PositiveInfinity);
+
+        // Check for constraint violations
+        if (newSize < minSize)
+        {
+          newSize = minSize;
+          frozen[i] = true;
+          anyViolation = true;
+        }
+        else if (newSize > maxSize)
+        {
+          newSize = maxSize;
+          frozen[i] = true;
+          anyViolation = true;
+        }
+
+        targetMainSizes[i] = newSize;
+      }
+
+      // If no violations occurred, freeze all remaining items and exit
+      if (!anyViolation)
+      {
+        for (int i = 0; i < line.ItemCount; i++)
+        {
+          frozen[i] = true;
+        }
+
+        break;
+      }
     }
-    else if (remainingSpace < 0 && line.TotalFlexShrink > 0)
+
+    // Apply final sizes
+    for (int i = 0; i < line.ItemCount; i++)
     {
-      // Shrink items according to flex-shrink
-      DistributeFlexShrink(line, -remainingSpace);
-    }
-  }
+      FlexNode child = line.Items[i];
 
-  /// <summary>
-  /// Distributes extra space according to flex-grow factors.
-  /// </summary>
-  private static void DistributeFlexGrow(FlexLine line, float extraSpace)
-  {
-    foreach (FlexNode child in line.Items)
+      if (isRow)
+      {
+        child.Layout.Width = targetMainSizes[i];
+      }
+      else
+      {
+        child.Layout.Height = targetMainSizes[i];
+      }
+    }
+
+    // Update remaining free space
+    float finalUsedSpace = 0;
+
+    for (int i = 0; i < line.ItemCount; i++)
     {
-      if (child.FlexGrow <= 0)
-        continue;
-
-      float growAmount = extraSpace * (child.FlexGrow / line.TotalFlexGrow);
-      child.Layout.Width += growAmount;
+      finalUsedSpace += targetMainSizes[i];
     }
-  }
 
-  /// <summary>
-  /// Shrinks items according to flex-shrink factors.
-  /// </summary>
-  private static void DistributeFlexShrink(FlexLine line, float shrinkAmount)
-  {
-    foreach (FlexNode child in line.Items)
-    {
-      if (child.FlexShrink <= 0)
-        continue;
-
-      float shrinkRatio = child.FlexShrink / line.TotalFlexShrink;
-      float itemShrink = shrinkAmount * shrinkRatio;
-      child.Layout.Width = Math.Max(0, child.Layout.Width - itemShrink);
-    }
+    line.RemainingFreeSpace = availableMainSize - finalUsedSpace;
   }
 
   /// <summary>
