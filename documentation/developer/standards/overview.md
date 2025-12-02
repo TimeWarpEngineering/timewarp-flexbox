@@ -150,15 +150,13 @@ public class Button : ComponentBase
 ```
 
 #### File Naming
-- Use kebab-case for filenames: `component-base.cs` for `ComponentBase` class
+See [file-naming.md](file-naming.md) for complete details.
+
+- Use kebab-case for all files and folders
 - Each class, interface, or enum in its own file
 - Nested types are acceptable within parent type's file
 
-**Note**: If Razor engine integration requires PascalCase filenames for component files, we may need to use:
-- kebab-case for `.cs` files: `component-base.cs`
-- PascalCase for `.Flexbox` files: `MyComponent.Flexbox`
-
-This constraint will be documented if it becomes necessary.
+Examples: `flex-node.cs`, `global-usings.cs`, `timewarp-flexbox.csproj`
 
 ### Coding Practices
 
@@ -380,9 +378,11 @@ NEVER use temporal language in code or documentation:
 - ✅ Use versions for historical context: "As of v0.2.0..."
 
 ### File Naming
-- Use kebab-case for all files and folders: `readme.md`, `license`, `ubiquitous-language.md`
-- Use kebab-case for folders: `documentation/developer/`
-- Exception: Files with required naming conventions like `Directory.Build.props`, `GlobalUsings.cs`, etc.
+See [file-naming.md](file-naming.md) for complete details.
+
+- Use kebab-case for all files and folders
+- Examples: `readme.md`, `global-usings.cs`, `timewarp-flexbox.csproj`
+- Exception: MSBuild files require specific casing (`Directory.Build.props`, `Directory.Packages.props`)
 
 ### Markdown Structure
 ```markdown
