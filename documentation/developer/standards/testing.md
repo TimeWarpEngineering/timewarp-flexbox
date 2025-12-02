@@ -14,6 +14,13 @@ Add packages to your test project:
 <PackageReference Include="Shouldly" />
 ```
 
+Install Fixie.Console as a local tool:
+
+```bash
+dotnet new tool-manifest
+dotnet tool install Fixie.Console
+```
+
 ---
 
 ## Create convention
@@ -175,16 +182,17 @@ public class ServiceTests
 
 ## Run tests
 
-Execute tests with dotnet test:
+Execute tests with `dotnet fixie` from the test project directory:
 
 ```bash
-dotnet test
+cd test/timewarp-flexbox-tests
+dotnet fixie
 ```
 
-Or with Fixie directly:
+Restore tools first if needed:
 
 ```bash
-dotnet fixie
+dotnet tool restore
 ```
 
 ---
