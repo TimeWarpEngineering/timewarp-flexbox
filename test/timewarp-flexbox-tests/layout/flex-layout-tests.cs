@@ -1808,3 +1808,384 @@ public class AlignContentCombinedTests
     child3.Layout.Left.ShouldBe(80);
   }
 }
+
+/// <summary>
+/// Tests for uniform border on all edges.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BorderUniformTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldOffsetChildContent()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.All, 10);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Left.ShouldBe(10);
+    child.Layout.Top.ShouldBe(10);
+  }
+
+  public void ShouldReduceAvailableSpaceForChildren()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.All, 10);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Percent(100),
+      Height = FlexValue.Percent(100)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Available space is 100 - 10 - 10 = 80
+    child.Layout.Width.ShouldBe(80);
+    child.Layout.Height.ShouldBe(80);
+  }
+}
+
+/// <summary>
+/// Tests for individual edge borders.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BorderIndividualTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldApplyOnlyToLeftEdge()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.Left, 20);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Left.ShouldBe(20);
+    child.Layout.Top.ShouldBe(0);
+  }
+
+  public void ShouldApplyOnlyToTopEdge()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.Top, 15);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Left.ShouldBe(0);
+    child.Layout.Top.ShouldBe(15);
+  }
+
+  public void ShouldApplyDifferentBordersToEachEdge()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.Top, 5);
+    root.SetBorder(Edge.Right, 10);
+    root.SetBorder(Edge.Bottom, 15);
+    root.SetBorder(Edge.Left, 20);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Percent(100),
+      Height = FlexValue.Percent(100)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Left.ShouldBe(20);
+    child.Layout.Top.ShouldBe(5);
+    child.Layout.Width.ShouldBe(70); // 100 - 20 - 10
+    child.Layout.Height.ShouldBe(80); // 100 - 5 - 15
+  }
+}
+
+/// <summary>
+/// Tests for border combined with padding.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BorderWithPaddingTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldStackCorrectly()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.Top, 10);
+    root.SetBorder(Edge.Left, 10);
+    root.SetPadding(Edge.Top, FlexValue.Point(5));
+    root.SetPadding(Edge.Left, FlexValue.Point(5));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Child offset by border + padding
+    child.Layout.Left.ShouldBe(15); // 10 + 5
+    child.Layout.Top.ShouldBe(15); // 10 + 5
+  }
+
+  public void ShouldBothReduceAvailableSpace()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.All, 5);
+    root.SetPadding(Edge.All, FlexValue.Point(10));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Percent(100),
+      Height = FlexValue.Percent(100)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Available: 100 - 5 - 5 - 10 - 10 = 70
+    child.Layout.Width.ShouldBe(70);
+    child.Layout.Height.ShouldBe(70);
+  }
+}
+
+/// <summary>
+/// Tests for border with flex-grow children.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BorderWithFlexGrowTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldAccountForBorderInFlexCalculation()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+    root.SetBorder(Edge.Left, 10);
+    root.SetBorder(Edge.Right, 10);
+
+    FlexNode child = new() { FlexGrow = 1 };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Child grows to fill available space minus borders
+    child.Layout.Width.ShouldBe(80); // 100 - 10 - 10
+  }
+
+  public void ShouldDistributeFlexGrowCorrectlyWithBorder()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+    root.SetBorder(Edge.Left, 10);
+    root.SetBorder(Edge.Right, 10);
+
+    FlexNode child1 = new() { FlexGrow = 1 };
+    FlexNode child2 = new() { FlexGrow = 1 };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Available: 80, split evenly
+    child1.Layout.Width.ShouldBe(40);
+    child2.Layout.Width.ShouldBe(40);
+  }
+}
+
+/// <summary>
+/// Tests for border with RTL direction.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BorderWithRtlTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldResolveStartBorderInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+    root.SetBorder(Edge.Start, 20);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Rtl);
+
+    // In RTL, Start is on the right side
+    // Child positioned from right edge minus border
+    child.Layout.Left.ShouldBe(30); // 100 - 20 - 50 = 30
+  }
+
+  public void ShouldResolveEndBorderInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+    root.SetBorder(Edge.End, 20);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Rtl);
+
+    // In RTL, End is on the left side
+    // Child positioned from right edge, border on left
+    child.Layout.Left.ShouldBe(50); // 100 - 50 = 50
+  }
+}
+
+/// <summary>
+/// Tests for border with absolute positioned children.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BorderWithAbsoluteTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldOffsetAbsoluteChildByBorder()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.All, 10);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30),
+      PositionType = PositionType.Absolute
+    };
+    child.SetPosition(Edge.Left, FlexValue.Point(0));
+    child.SetPosition(Edge.Top, FlexValue.Point(0));
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Absolute child at 0,0 is relative to border box
+    child.Layout.Left.ShouldBe(10);
+    child.Layout.Top.ShouldBe(10);
+  }
+}
+
+/// <summary>
+/// Tests for zero border values.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BorderZeroTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldHaveNoEffectWithZeroBorder()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.All, 0);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Left.ShouldBe(0);
+    child.Layout.Top.ShouldBe(0);
+  }
+}

@@ -924,16 +924,26 @@ public sealed class FlexLayoutEngine
     float containerWidth = parent.Layout.Width;
     float containerHeight = parent.Layout.Height;
 
+    // Get parent border values - absolute children are positioned relative to padding box
+    float borderLeft = GetFloatEdge(parent.Border, Edge.Left, isRtl);
+    float borderTop = GetFloatEdge(parent.Border, Edge.Top, isRtl);
+    float borderRight = GetFloatEdge(parent.Border, Edge.Right, isRtl);
+    float borderBottom = GetFloatEdge(parent.Border, Edge.Bottom, isRtl);
+
+    // Calculate container dimensions inside the border (padding box)
+    float paddingBoxWidth = containerWidth - borderLeft - borderRight;
+    float paddingBoxHeight = containerHeight - borderTop - borderBottom;
+
     // Get position insets
     FlexValue leftInset = child.Position.ComputedLeft(FlexValue.Undefined, isRtl);
     FlexValue topInset = child.Position.ComputedTop(FlexValue.Undefined);
     FlexValue rightInset = child.Position.ComputedRight(FlexValue.Undefined, isRtl);
     FlexValue bottomInset = child.Position.ComputedBottom(FlexValue.Undefined);
 
-    float left = ValueResolver.ResolveValue(leftInset, containerWidth);
-    float top = ValueResolver.ResolveValue(topInset, containerHeight);
-    float right = ValueResolver.ResolveValue(rightInset, containerWidth);
-    float bottom = ValueResolver.ResolveValue(bottomInset, containerHeight);
+    float left = ValueResolver.ResolveValue(leftInset, paddingBoxWidth);
+    float top = ValueResolver.ResolveValue(topInset, paddingBoxHeight);
+    float right = ValueResolver.ResolveValue(rightInset, paddingBoxWidth);
+    float bottom = ValueResolver.ResolveValue(bottomInset, paddingBoxHeight);
 
     bool hasLeft = ValueResolver.IsDefined(left);
     bool hasTop = ValueResolver.IsDefined(top);
@@ -941,19 +951,19 @@ public sealed class FlexLayoutEngine
     bool hasBottom = ValueResolver.IsDefined(bottom);
 
     // Calculate width
-    float width = ValueResolver.ResolveWidth(child, containerWidth);
+    float width = ValueResolver.ResolveWidth(child, paddingBoxWidth);
 
     if (float.IsNaN(width))
     {
       // If both left and right are set, stretch to fill
       if (hasLeft && hasRight)
       {
-        width = containerWidth - left - right;
+        width = paddingBoxWidth - left - right;
         width = Math.Max(0, width);
 
         // Apply min/max constraints
-        float minWidth = ValueResolver.ResolveValueOrDefault(child.MinWidth, containerWidth, 0);
-        float maxWidth = ValueResolver.ResolveValueOrDefault(child.MaxWidth, containerWidth, float.PositiveInfinity);
+        float minWidth = ValueResolver.ResolveValueOrDefault(child.MinWidth, paddingBoxWidth, 0);
+        float maxWidth = ValueResolver.ResolveValueOrDefault(child.MaxWidth, paddingBoxWidth, float.PositiveInfinity);
         width = Math.Clamp(width, minWidth, maxWidth);
       }
       else
@@ -964,19 +974,19 @@ public sealed class FlexLayoutEngine
     }
 
     // Calculate height
-    float height = ValueResolver.ResolveHeight(child, containerHeight);
+    float height = ValueResolver.ResolveHeight(child, paddingBoxHeight);
 
     if (float.IsNaN(height))
     {
       // If both top and bottom are set, stretch to fill
       if (hasTop && hasBottom)
       {
-        height = containerHeight - top - bottom;
+        height = paddingBoxHeight - top - bottom;
         height = Math.Max(0, height);
 
         // Apply min/max constraints
-        float minHeight = ValueResolver.ResolveValueOrDefault(child.MinHeight, containerHeight, 0);
-        float maxHeight = ValueResolver.ResolveValueOrDefault(child.MaxHeight, containerHeight, float.PositiveInfinity);
+        float minHeight = ValueResolver.ResolveValueOrDefault(child.MinHeight, paddingBoxHeight, 0);
+        float maxHeight = ValueResolver.ResolveValueOrDefault(child.MaxHeight, paddingBoxHeight, float.PositiveInfinity);
         height = Math.Clamp(height, minHeight, maxHeight);
       }
       else
@@ -989,34 +999,34 @@ public sealed class FlexLayoutEngine
     child.Layout.Width = width;
     child.Layout.Height = height;
 
-    // Calculate left position
+    // Calculate left position (offset by border since absolute is relative to padding box)
     if (hasLeft)
     {
-      child.Layout.Left = left;
+      child.Layout.Left = borderLeft + left;
     }
     else if (hasRight)
     {
-      child.Layout.Left = containerWidth - right - width;
+      child.Layout.Left = borderLeft + paddingBoxWidth - right - width;
     }
     else
     {
-      // Default to 0 if neither left nor right is set
-      child.Layout.Left = 0;
+      // Default to border offset if neither left nor right is set
+      child.Layout.Left = borderLeft;
     }
 
-    // Calculate top position
+    // Calculate top position (offset by border since absolute is relative to padding box)
     if (hasTop)
     {
-      child.Layout.Top = top;
+      child.Layout.Top = borderTop + top;
     }
     else if (hasBottom)
     {
-      child.Layout.Top = containerHeight - bottom - height;
+      child.Layout.Top = borderTop + paddingBoxHeight - bottom - height;
     }
     else
     {
-      // Default to 0 if neither top nor bottom is set
-      child.Layout.Top = 0;
+      // Default to border offset if neither top nor bottom is set
+      child.Layout.Top = borderTop;
     }
   }
 
