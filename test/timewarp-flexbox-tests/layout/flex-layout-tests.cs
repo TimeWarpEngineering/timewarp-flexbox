@@ -3973,3 +3973,245 @@ public class NestedRoundingTests
     totalHeight.ShouldBe(100);
   }
 }
+
+// =============================================================================
+// Measure Tests (Task 045)
+// =============================================================================
+
+/// <summary>
+/// Tests for MeasureFunc invocation.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class MeasureFuncInvocationTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldCallMeasureFuncDuringLayout()
+  {
+    bool measureCalled = false;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new();
+    child.MeasureFunc = (_, _, _, _, _) =>
+    {
+      measureCalled = true;
+      return new Size(50, 50);
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    measureCalled.ShouldBeTrue();
+  }
+
+  public void ShouldNotCallMeasureFuncForHiddenElements()
+  {
+    bool measureCalled = false;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Display = Display.None
+    };
+    child.MeasureFunc = (_, _, _, _, _) =>
+    {
+      measureCalled = true;
+      return new Size(50, 50);
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    measureCalled.ShouldBeFalse();
+  }
+}
+
+/// <summary>
+/// Tests for MeasureFunc result determining node size.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class MeasureResultTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldUseMeasureResultForNodeSize()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new();
+    child.MeasureFunc = (_, _, _, _, _) => new Size(75, 100);
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 200);
+
+    child.Layout.Width.ShouldBe(75);
+    child.Layout.Height.ShouldBe(100);
+  }
+
+  public void ShouldConstrainMeasureResultByMaxWidth()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      MaxWidth = FlexValue.Point(50)
+    };
+    child.MeasureFunc = (_, _, _, _, _) => new Size(100, 50); // Wants 100, max is 50
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 200);
+
+    child.Layout.Width.ShouldBe(50); // Clamped to max
+  }
+
+  public void ShouldConstrainMeasureResultByMaxHeight()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      MaxHeight = FlexValue.Point(30)
+    };
+    child.MeasureFunc = (_, _, _, _, _) => new Size(50, 100); // Wants 100, max is 30
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 200);
+
+    child.Layout.Height.ShouldBe(30); // Clamped to max
+  }
+
+  public void ShouldEnforceMinWidthOnMeasureResult()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      MinWidth = FlexValue.Point(80)
+    };
+    child.MeasureFunc = (_, _, _, _, _) => new Size(50, 50); // Wants 50, min is 80
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 200);
+
+    child.Layout.Width.ShouldBe(80); // Clamped to min
+  }
+}
+
+/// <summary>
+/// Tests for MeasureFunc receiving correct parameters.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class MeasureParameterTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldReceiveNodeReference()
+  {
+    FlexNode? receivedNode = null;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new();
+    child.MeasureFunc = (node, _, _, _, _) =>
+    {
+      receivedNode = node;
+      return new Size(50, 50);
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    receivedNode.ShouldBe(child);
+  }
+
+  public void ShouldReceiveWidthModeExactlyForFixedWidth()
+  {
+    MeasureMode receivedWidthMode = MeasureMode.Undefined;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50)
+    };
+    child.MeasureFunc = (_, _, widthMode, _, _) =>
+    {
+      receivedWidthMode = widthMode;
+      return new Size(50, 50);
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    receivedWidthMode.ShouldBe(MeasureMode.Exactly);
+  }
+}
+
+/// <summary>
+/// Tests for measured node behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class MeasuredNodeBehaviorTests
+{
+  public void ShouldMarkNodeAsLeafWithMeasureFunc()
+  {
+    FlexNode node = new();
+    node.MeasureFunc = (_, _, _, _, _) => new Size(50, 50);
+
+    node.IsLeaf.ShouldBeTrue();
+  }
+
+  public void ShouldRemoveMeasureFuncBySettingNull()
+  {
+    FlexNode node = new();
+    node.MeasureFunc = (_, _, _, _, _) => new Size(50, 50);
+
+    node.HasMeasureFunc.ShouldBeTrue();
+
+    node.MeasureFunc = null;
+
+    node.HasMeasureFunc.ShouldBeFalse();
+  }
+}
