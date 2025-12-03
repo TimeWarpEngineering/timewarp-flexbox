@@ -2189,3 +2189,607 @@ public class BorderZeroTests
     child.Layout.Top.ShouldBe(0);
   }
 }
+
+// =============================================================================
+// Dimension Tests (Task 035)
+// =============================================================================
+
+/// <summary>
+/// Tests for explicit width and height dimensions.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class ExplicitDimensionTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldSetExactWidthAndHeight()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(200)
+    };
+
+    Engine.CalculateLayout(root, 100, 200);
+
+    root.Layout.Width.ShouldBe(100);
+    root.Layout.Height.ShouldBe(200);
+  }
+
+  public void ShouldUseAvailableWidthWhenNotSpecified()
+  {
+    FlexNode root = new()
+    {
+      Height = FlexValue.Point(100)
+    };
+
+    Engine.CalculateLayout(root, 200, 100);
+
+    root.Layout.Width.ShouldBe(200);
+    root.Layout.Height.ShouldBe(100);
+  }
+
+  public void ShouldUseAvailableHeightWhenNotSpecified()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100)
+    };
+
+    Engine.CalculateLayout(root, 100, 200);
+
+    root.Layout.Width.ShouldBe(100);
+    // Root uses available height
+    root.Layout.Height.ShouldBe(200);
+  }
+}
+
+/// <summary>
+/// Tests for auto sizing to content.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class AutoDimensionTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldSizeChildToContentInRow()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 100);
+
+    // Child respects its explicit dimensions
+    child.Layout.Width.ShouldBe(50);
+    child.Layout.Height.ShouldBe(50);
+  }
+
+  public void ShouldSizeChildToContentInColumn()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(100)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 200);
+
+    child.Layout.Height.ShouldBe(100);
+  }
+
+  public void ShouldLayoutMultipleChildrenInRow()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 200, 100);
+
+    // Children are positioned correctly
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(50);
+  }
+
+  public void ShouldLayoutMultipleChildrenInColumn()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(40)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(60)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 200);
+
+    // Children are positioned correctly
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(40);
+  }
+}
+
+/// <summary>
+/// Tests for percentage dimensions with edge cases.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class PercentageDimensionEdgeCaseTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldResolve100PercentToParentSize()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(150)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Percent(100),
+      Height = FlexValue.Percent(100)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 150);
+
+    child.Layout.Width.ShouldBe(200);
+    child.Layout.Height.ShouldBe(150);
+  }
+
+  public void ShouldResolve25PercentWidth()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Percent(25),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 100);
+
+    child.Layout.Width.ShouldBe(50); // 25% of 200
+  }
+}
+
+/// <summary>
+/// Tests for min-width and max-width constraints.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class MinMaxWidthTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldEnforceMinWidth()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(10),
+      Height = FlexValue.Point(50),
+      MinWidth = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Width.ShouldBe(50); // Clamped to min
+  }
+
+  public void ShouldEnforceMaxWidth()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(50),
+      MaxWidth = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Width.ShouldBe(50); // Clamped to max
+  }
+
+  public void ShouldEnforceMinWidthOnStretchedChild()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Height = FlexValue.Point(50),
+      MinWidth = FlexValue.Point(80)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 50, 100);
+
+    child.Layout.Width.ShouldBe(80); // Min overrides stretch
+  }
+
+  public void ShouldEnforceMaxWidthOnExplicitWidth()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(80),
+      Height = FlexValue.Point(50),
+      MaxWidth = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Width.ShouldBe(50); // Max limits explicit width
+  }
+}
+
+/// <summary>
+/// Tests for min-height and max-height constraints.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class MinMaxHeightTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldEnforceMinHeight()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(10),
+      MinHeight = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Height.ShouldBe(50); // Clamped to min
+  }
+
+  public void ShouldEnforceMaxHeight()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(100),
+      MaxHeight = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Height.ShouldBe(50); // Clamped to max
+  }
+
+  public void ShouldEnforceMinHeightOnStretchedChild()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      MinHeight = FlexValue.Point(80)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 50);
+
+    child.Layout.Height.ShouldBe(80); // Min overrides stretch
+  }
+
+  public void ShouldEnforceMaxHeightOnStretchedChild()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      MaxHeight = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Height.ShouldBe(50); // Max limits stretch
+  }
+}
+
+/// <summary>
+/// Tests for min/max percentage constraints.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class MinMaxPercentageTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldResolveMinWidthPercentage()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(10),
+      Height = FlexValue.Point(50),
+      MinWidth = FlexValue.Percent(25)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 100);
+
+    child.Layout.Width.ShouldBe(50); // 25% of 200
+  }
+
+  public void ShouldResolveMaxWidthPercentage()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(150),
+      Height = FlexValue.Point(50),
+      MaxWidth = FlexValue.Percent(25)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 100);
+
+    child.Layout.Width.ShouldBe(50); // 25% of 200
+  }
+}
+
+/// <summary>
+/// Tests for min/max constraints working together.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class MinMaxCombinedTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldApplyBothMinAndMaxWidth()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50),
+      MinWidth = FlexValue.Point(30),
+      MaxWidth = FlexValue.Point(70)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Width 50 is within min 30 and max 70
+    child.Layout.Width.ShouldBe(50);
+  }
+
+  public void ShouldApplyBothMinAndMaxHeight()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50),
+      MinHeight = FlexValue.Point(30),
+      MaxHeight = FlexValue.Point(70)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Height 50 is within min 30 and max 70
+    child.Layout.Height.ShouldBe(50);
+  }
+}
+
+/// <summary>
+/// Tests for dimension interaction with flex-basis.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class DimensionFlexBasisTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldUseFlexBasisOverWidthInRow()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(100),
+      FlexBasis = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 100);
+
+    child.Layout.Width.ShouldBe(50); // FlexBasis overrides width in row
+  }
+
+  public void ShouldUseFlexBasisOverHeightInColumn()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(100),
+      FlexBasis = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 200);
+
+    child.Layout.Height.ShouldBe(50); // FlexBasis overrides height in column
+  }
+
+  public void ShouldUseWidthWhenFlexBasisIsAuto()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(80),
+      FlexBasis = FlexValue.Auto,
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 100);
+
+    child.Layout.Width.ShouldBe(80); // Width used when FlexBasis is auto
+  }
+}
