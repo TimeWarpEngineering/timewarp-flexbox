@@ -67,8 +67,11 @@ public sealed class FlexLines
 
     foreach (FlexNode child in container.Children)
     {
-      // Skip nodes with Display.None
+      // Skip nodes with Display.None or absolute positioning
       if (child.Display == Display.None)
+        continue;
+
+      if (child.PositionType == PositionType.Absolute)
         continue;
 
       // Calculate the hypothetical main size of the child

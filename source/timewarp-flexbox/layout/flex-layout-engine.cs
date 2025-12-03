@@ -143,6 +143,15 @@ public sealed class FlexLayoutEngine
 
     // Add cross axis gaps between lines
     int lineCount = FlexLinesCache.LineCount;
+
+    // For single-line containers, the line cross size should be the container cross size
+    // This allows proper alignment of items within the container
+    if (lineCount == 1 && !float.IsNaN(availableInnerCrossSize))
+    {
+      FlexLinesCache.Lines[0].CrossSize = Math.Max(FlexLinesCache.Lines[0].CrossSize, availableInnerCrossSize);
+      totalLineCrossSize = FlexLinesCache.Lines[0].CrossSize;
+    }
+
     if (lineCount > 1)
     {
       totalLineCrossSize += crossAxisGap * (lineCount - 1);
@@ -236,17 +245,32 @@ public sealed class FlexLayoutEngine
     float availableHeight,
     MeasureMode heightMode)
   {
-    float width = ValueResolver.ResolveWidth(node, availableWidth);
-    float height = ValueResolver.ResolveHeight(node, availableHeight);
+    float width;
+    float height;
 
-    if (float.IsNaN(width))
+    // When mode is Exactly, use the provided size (parent already calculated it)
+    if (widthMode == MeasureMode.Exactly)
     {
-      width = widthMode == MeasureMode.Exactly ? availableWidth : 0;
+      width = availableWidth;
+    }
+    else
+    {
+      width = ValueResolver.ResolveWidth(node, availableWidth);
+
+      if (float.IsNaN(width))
+        width = 0;
     }
 
-    if (float.IsNaN(height))
+    if (heightMode == MeasureMode.Exactly)
     {
-      height = heightMode == MeasureMode.Exactly ? availableHeight : 0;
+      height = availableHeight;
+    }
+    else
+    {
+      height = ValueResolver.ResolveHeight(node, availableHeight);
+
+      if (float.IsNaN(height))
+        height = 0;
     }
 
     node.Layout.Width = width;
@@ -400,7 +424,7 @@ public sealed class FlexLayoutEngine
         }
       }
 
-      float remainingSpace = availableMainSize - frozenSpace - unfrozenUsedSpace;
+      float remainingSpace = availableMainSize - frozenSpace - unfrozenUsedSpace - totalGapSpace;
 
       // Distribute space
       bool anyViolation = false;
@@ -515,7 +539,7 @@ public sealed class FlexLayoutEngine
       if (float.IsNaN(childCrossSize))
       {
         AlignSelf alignSelf = child.AlignSelf == AlignSelf.Auto
-          ? (AlignSelf)(int)alignItems
+          ? ConvertAlignItemsToAlignSelf(alignItems)
           : child.AlignSelf;
 
         if (alignSelf == AlignSelf.Stretch && !float.IsNaN(availableCrossSize))
@@ -834,7 +858,7 @@ public sealed class FlexLayoutEngine
     float itemSize)
   {
     AlignSelf effectiveAlign = alignSelf == AlignSelf.Auto
-      ? (AlignSelf)(int)alignItems
+      ? ConvertAlignItemsToAlignSelf(alignItems)
       : alignSelf;
 
     return effectiveAlign switch
@@ -1012,4 +1036,18 @@ public sealed class FlexLayoutEngine
 
     return Math.Clamp(size, min, max);
   }
+
+  /// <summary>
+  /// Converts AlignItems to the equivalent AlignSelf value.
+  /// AlignSelf has an extra Auto value at position 0, so values are offset by 1.
+  /// </summary>
+  private static AlignSelf ConvertAlignItemsToAlignSelf(AlignItems alignItems) => alignItems switch
+  {
+    AlignItems.FlexStart => AlignSelf.FlexStart,
+    AlignItems.FlexEnd => AlignSelf.FlexEnd,
+    AlignItems.Center => AlignSelf.Center,
+    AlignItems.Baseline => AlignSelf.Baseline,
+    AlignItems.Stretch => AlignSelf.Stretch,
+    _ => AlignSelf.Stretch
+  };
 }
