@@ -1412,3 +1412,399 @@ public class RtlLayoutTests
     child.Layout.Left.ShouldBe(130);
   }
 }
+
+/// <summary>
+/// Tests for align-content: flex-start behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class AlignContentFlexStartTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldPositionLinesAtContainerStart()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.FlexStart
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Line 1: child1, child2 (top = 0)
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(0);
+    // Line 2: child3 (top = 20)
+    child3.Layout.Top.ShouldBe(20);
+  }
+
+  public void ShouldNotAffectSingleLine()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.FlexStart
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 200, 100);
+
+    // Single line, all at top
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(0);
+  }
+}
+
+/// <summary>
+/// Tests for align-content: flex-end behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class AlignContentFlexEndTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldPositionLinesAtContainerEnd()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.FlexEnd
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Two lines of 20px each = 40px total, container = 100px
+    // Lines pushed to bottom: start at 100 - 40 = 60
+    child1.Layout.Top.ShouldBe(60);
+    child2.Layout.Top.ShouldBe(60);
+    child3.Layout.Top.ShouldBe(80);
+  }
+}
+
+/// <summary>
+/// Tests for align-content: center behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class AlignContentCenterTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldPositionLinesInCenter()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.Center
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Two lines of 20px each = 40px total, container = 100px
+    // Free space = 60px, centered = start at 30
+    child1.Layout.Top.ShouldBe(30);
+    child2.Layout.Top.ShouldBe(30);
+    child3.Layout.Top.ShouldBe(50);
+  }
+}
+
+/// <summary>
+/// Tests for align-content: space-between behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class AlignContentSpaceBetweenTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldDistributeLinesWithSpaceBetween()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.SpaceBetween
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Line 1 at top (0), Line 2 at bottom (100 - 20 = 80)
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(0);
+    child3.Layout.Top.ShouldBe(80);
+  }
+
+  public void ShouldHandleThreeLines()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.SpaceBetween
+    };
+
+    // 5 children of 50px width each, container 100px wide = 2 per line, 3 lines
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child4 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child5 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+    root.AddChild(child4);
+    root.AddChild(child5);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // 3 lines of 20px each = 60px, free space = 40px, gaps = 2, gap size = 20px
+    // Line 1: top = 0
+    // Line 2: top = 20 + 20 = 40
+    // Line 3: top = 40 + 20 + 20 = 80
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(0);
+    child3.Layout.Top.ShouldBe(40);
+    child4.Layout.Top.ShouldBe(40);
+    child5.Layout.Top.ShouldBe(80);
+  }
+}
+
+/// <summary>
+/// Tests for align-content: space-around behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class AlignContentSpaceAroundTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldDistributeLinesWithSpaceAround()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.SpaceAround
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // 2 lines of 20px each = 40px, free space = 60px
+    // Space-around: each line gets equal margin on both sides
+    // 60px / (2 lines * 2 sides) = 15px per side
+    // Line 1: top = 15
+    // Line 2: top = 15 + 20 + 30 = 65
+    child1.Layout.Top.ShouldBe(15);
+    child2.Layout.Top.ShouldBe(15);
+    child3.Layout.Top.ShouldBe(65);
+  }
+}
+
+/// <summary>
+/// Tests for align-content: stretch behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class AlignContentStretchTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldExpandLinesToFillContainer()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.Stretch
+    };
+
+    // Need explicit heights for children to establish line heights
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Children keep their explicit heights
+    child1.Layout.Height.ShouldBe(20);
+    child2.Layout.Height.ShouldBe(20);
+    child3.Layout.Height.ShouldBe(20);
+
+    // With stretch, lines are evenly distributed
+    // Two lines of 20px each, container 100px
+    // Line 1: top = 0, Line 2: top = 50
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(0);
+    child3.Layout.Top.ShouldBe(50);
+  }
+
+  public void ShouldStretchWithVaryingLineHeights()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.Stretch
+    };
+
+    // Line 1: one tall child (30px)
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50) };
+    // Line 2: shorter children
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Stretch distributes extra space proportionally
+    // Line heights: 30px and 10px = 40px total, extra = 60px
+    // Each line gets proportional stretch
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(0);
+  }
+}
+
+/// <summary>
+/// Tests for align-content combined with other properties.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class AlignContentCombinedTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldWorkWithAlignItems()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.Center,
+      AlignItems = AlignItems.Center
+    };
+
+    // Force wrapping with 3 children of 50px on 100px container
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Line 1: child1 (10px), child2 (20px) - line height = 20
+    // Line 2: child3 (10px) - line height = 10
+    // Total lines height = 30px, container = 100px
+    // With AlignContent.Center: start at (100-30)/2 = 35
+
+    // child1 should be centered within 20px line at top 35
+    // child1 center offset = (20-10)/2 = 5
+    child1.Layout.Top.ShouldBe(40); // 35 + 5
+    child2.Layout.Top.ShouldBe(35); // 35 + 0 (already 20px tall)
+    // child3 on second line at 35 + 20 = 55
+    child3.Layout.Top.ShouldBe(55);
+  }
+
+  public void ShouldWorkInColumnDirection()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Column,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.FlexEnd
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(20), Height = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(20), Height = FlexValue.Point(50) };
+    FlexNode child3 = new() { Width = FlexValue.Point(20), Height = FlexValue.Point(50) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Column wrap: 2 children per column (50+50=100), third wraps
+    // 2 columns of 20px each = 40px, container = 100px
+    // FlexEnd: columns pushed to right, start at 100 - 40 = 60
+    child1.Layout.Left.ShouldBe(60);
+    child2.Layout.Left.ShouldBe(60);
+    child3.Layout.Left.ShouldBe(80);
+  }
+}
