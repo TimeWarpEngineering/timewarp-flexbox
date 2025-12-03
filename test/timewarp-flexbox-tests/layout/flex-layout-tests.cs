@@ -906,3 +906,265 @@ public class NestedContainerTests
     child2.Layout.Width.ShouldBe(100);
   }
 }
+
+/// <summary>
+/// Tests for PixelGrid.RoundToPixelGrid static method.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class PixelGridRoundToPixelGridTests
+{
+  public void ShouldReturnValueUnchangedWhenScaleFactorIsZero()
+  {
+    float result = PixelGrid.RoundToPixelGrid(3.7f, 0);
+
+    result.ShouldBe(3.7f);
+  }
+
+  public void ShouldReturnValueUnchangedWhenScaleFactorIsNegative()
+  {
+    float result = PixelGrid.RoundToPixelGrid(3.7f, -1);
+
+    result.ShouldBe(3.7f);
+  }
+
+  public void ShouldRoundToNearestPixelAtScale1()
+  {
+    PixelGrid.RoundToPixelGrid(3.3f, 1).ShouldBe(3);
+    PixelGrid.RoundToPixelGrid(3.5f, 1).ShouldBe(4);
+    PixelGrid.RoundToPixelGrid(3.7f, 1).ShouldBe(4);
+  }
+
+  public void ShouldRoundToHalfPixelAtScale2()
+  {
+    // At scale 2, grid is 0.5 units
+    PixelGrid.RoundToPixelGrid(3.1f, 2).ShouldBe(3.0f);
+    PixelGrid.RoundToPixelGrid(3.3f, 2).ShouldBe(3.5f);
+    PixelGrid.RoundToPixelGrid(3.6f, 2).ShouldBe(3.5f);
+    PixelGrid.RoundToPixelGrid(3.8f, 2).ShouldBe(4.0f);
+  }
+
+  public void ShouldForceCeilWhenRequested()
+  {
+    PixelGrid.RoundToPixelGrid(3.1f, 1, forceCeil: true).ShouldBe(4);
+    PixelGrid.RoundToPixelGrid(3.9f, 1, forceCeil: true).ShouldBe(4);
+    PixelGrid.RoundToPixelGrid(3.0f, 1, forceCeil: true).ShouldBe(3);
+  }
+
+  public void ShouldForceFloorWhenRequested()
+  {
+    PixelGrid.RoundToPixelGrid(3.1f, 1, forceFloor: true).ShouldBe(3);
+    PixelGrid.RoundToPixelGrid(3.9f, 1, forceFloor: true).ShouldBe(3);
+    PixelGrid.RoundToPixelGrid(4.0f, 1, forceFloor: true).ShouldBe(4);
+  }
+
+  public void ShouldHandleNegativeValues()
+  {
+    PixelGrid.RoundToPixelGrid(-3.3f, 1).ShouldBe(-3);
+    PixelGrid.RoundToPixelGrid(-3.7f, 1).ShouldBe(-4);
+  }
+}
+
+/// <summary>
+/// Tests for PixelGrid.RoundLayoutToPixelGrid recursive rounding.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class PixelGridRoundLayoutTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldThrowWhenNodeIsNull()
+  {
+    Should.Throw<ArgumentNullException>(() => PixelGrid.RoundLayoutToPixelGrid(null!, 2));
+  }
+
+  public void ShouldNotModifyLayoutWhenScaleFactorIsOne()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100.3f),
+      Height = FlexValue.Point(100.7f)
+    };
+
+    Engine.CalculateLayout(root, 100.3f, 100.7f);
+
+    float originalWidth = root.Layout.Width;
+    float originalHeight = root.Layout.Height;
+
+    PixelGrid.RoundLayoutToPixelGrid(root, 1.0f);
+
+    root.Layout.Width.ShouldBe(originalWidth);
+    root.Layout.Height.ShouldBe(originalHeight);
+  }
+
+  public void ShouldNotModifyLayoutWhenScaleFactorIsZero()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100.3f),
+      Height = FlexValue.Point(100.7f)
+    };
+
+    Engine.CalculateLayout(root, 100.3f, 100.7f);
+
+    float originalWidth = root.Layout.Width;
+    float originalHeight = root.Layout.Height;
+
+    PixelGrid.RoundLayoutToPixelGrid(root, 0);
+
+    root.Layout.Width.ShouldBe(originalWidth);
+    root.Layout.Height.ShouldBe(originalHeight);
+  }
+
+  public void ShouldRoundRootLayoutToPixelGrid()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(33.3f),
+      Height = FlexValue.Point(33.3f)
+    };
+
+    root.AddChild(child);
+    Engine.CalculateLayout(root, 100, 100);
+
+    PixelGrid.RoundLayoutToPixelGrid(root, 2);
+
+    // At scale 2, 33.3 * 2 = 66.6 -> rounds to 67 -> 67 / 2 = 33.5
+    child.Layout.Width.ShouldBe(33.5f);
+    child.Layout.Height.ShouldBe(33.5f);
+  }
+
+  public void ShouldRoundChildPositionsToPixelGrid()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(33.3f) };
+    FlexNode child2 = new() { Width = FlexValue.Point(33.3f) };
+    FlexNode child3 = new() { Width = FlexValue.Point(33.3f) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    PixelGrid.RoundLayoutToPixelGrid(root, 2);
+
+    // At scale 2, grid is 0.5 units
+    // Positions should be on half-pixel boundaries
+    child1.Layout.Left.ShouldBe(0);
+    // child2's absolute left is 33.3, * 2 = 66.6, rounds to 67, / 2 = 33.5
+    child2.Layout.Left.ShouldBe(33.5f);
+    // child3's absolute left is 66.6, * 2 = 133.2, rounds to 133, / 2 = 66.5
+    // Relative to parent (0), so still 66.5
+    child3.Layout.Left.ShouldBe(66.5f);
+  }
+
+  public void ShouldRoundNestedChildrenCorrectly()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode container = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(25.3f),
+      Height = FlexValue.Point(25.3f)
+    };
+
+    container.AddChild(child);
+    root.AddChild(container);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    PixelGrid.RoundLayoutToPixelGrid(root, 2);
+
+    // 25.3 * 2 = 50.6 -> rounds to 51 -> 51 / 2 = 25.5
+    child.Layout.Width.ShouldBe(25.5f);
+    child.Layout.Height.ShouldBe(25.5f);
+  }
+}
+
+/// <summary>
+/// Tests for FlexLayoutEngine.CalculateLayout with pixel grid rounding.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class LayoutWithPixelGridRoundingTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldRoundLayoutWhenRoundToPixelGridIsTrue()
+  {
+    FlexConfig config = new() { PointScaleFactor = 2.0f };
+
+    FlexNode root = new()
+    {
+      Config = config,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new() { Width = FlexValue.Point(33.3f) };
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr, roundToPixelGrid: true);
+
+    // Width should be rounded to pixel grid
+    child.Layout.Width.ShouldBe(33.5f);
+  }
+
+  public void ShouldNotRoundLayoutWhenRoundToPixelGridIsFalse()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new() { Width = FlexValue.Point(33.3f) };
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr, roundToPixelGrid: false);
+
+    // Width should remain as calculated (33.3)
+    child.Layout.Width.ShouldBe(33.3f);
+  }
+
+  public void ShouldSkipRoundingWhenScaleFactorIsOne()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new() { Width = FlexValue.Point(33.3f) };
+    root.AddChild(child);
+
+    // Default scale factor is 1.0, which skips rounding (intentional optimization)
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr, roundToPixelGrid: true);
+
+    // At scale 1, rounding is skipped - values remain unchanged
+    child.Layout.Width.ShouldBe(33.3f);
+  }
+}

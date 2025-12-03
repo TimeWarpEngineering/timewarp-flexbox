@@ -22,6 +22,25 @@ public sealed class FlexLayoutEngine
     float availableHeight,
     Direction direction = Direction.Ltr)
   {
+    CalculateLayout(root, availableWidth, availableHeight, direction, roundToPixelGrid: false);
+  }
+
+  /// <summary>
+  /// Calculates the layout for a node tree with optional pixel grid rounding.
+  /// </summary>
+  /// <param name="root">The root node of the layout tree.</param>
+  /// <param name="availableWidth">The available width for layout.</param>
+  /// <param name="availableHeight">The available height for layout.</param>
+  /// <param name="direction">The layout direction (LTR/RTL).</param>
+  /// <param name="roundToPixelGrid">Whether to round layout values to the pixel grid.</param>
+  /// <exception cref="ArgumentNullException">Thrown when root is null.</exception>
+  public void CalculateLayout(
+    FlexNode root,
+    float availableWidth,
+    float availableHeight,
+    Direction direction,
+    bool roundToPixelGrid)
+  {
     ArgumentNullException.ThrowIfNull(root);
 
     // Reset layout results for the entire tree
@@ -35,6 +54,13 @@ public sealed class FlexLayoutEngine
       availableHeight,
       MeasureMode.Exactly,
       direction);
+
+    // Apply pixel grid rounding if requested
+    if (roundToPixelGrid)
+    {
+      float scaleFactor = root.EffectiveConfig.PointScaleFactor;
+      PixelGrid.RoundLayoutToPixelGrid(root, scaleFactor);
+    }
   }
 
   /// <summary>
