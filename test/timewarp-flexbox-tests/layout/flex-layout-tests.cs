@@ -2793,3 +2793,317 @@ public class DimensionFlexBasisTests
     child.Layout.Width.ShouldBe(80); // Width used when FlexBasis is auto
   }
 }
+
+// =============================================================================
+// Display Tests (Task 036)
+// =============================================================================
+
+/// <summary>
+/// Tests for Display.None behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class DisplayNoneTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldExcludeElementFromLayout()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(50),
+      Display = Display.None
+    };
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child1.Layout.Left.ShouldBe(0);
+    // child2 is skipped, child3 comes right after child1
+    child3.Layout.Left.ShouldBe(30);
+  }
+
+  public void ShouldHaveZeroDimensions()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50),
+      Display = Display.None
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Width.ShouldBe(0);
+    child.Layout.Height.ShouldBe(0);
+  }
+
+  public void ShouldNotAffectSiblingPositions()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(40)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(40),
+      Display = Display.None
+    };
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(40)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 200);
+
+    child1.Layout.Top.ShouldBe(0);
+    // child2 is skipped
+    child3.Layout.Top.ShouldBe(40);
+  }
+}
+
+/// <summary>
+/// Tests for Display.Flex behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class DisplayFlexTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldIncludeElementInLayout()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(50),
+      Display = Display.Flex
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(50),
+      Display = Display.Flex
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(30);
+  }
+
+  public void ShouldBeDefaultDisplayValue()
+  {
+    FlexNode node = new();
+    node.Display.ShouldBe(Display.Flex);
+  }
+}
+
+/// <summary>
+/// Tests for Display.None with flex-grow siblings.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class DisplayNoneWithFlexGrowTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldRedistributeSpaceToVisibleSiblings()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      FlexGrow = 1,
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child2 = new()
+    {
+      FlexGrow = 1,
+      Height = FlexValue.Point(50),
+      Display = Display.None
+    };
+
+    FlexNode child3 = new()
+    {
+      FlexGrow = 1,
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Space split between two visible children
+    child1.Layout.Width.ShouldBe(50);
+    child2.Layout.Width.ShouldBe(0);
+    child3.Layout.Width.ShouldBe(50);
+  }
+}
+
+/// <summary>
+/// Tests for nested Display.None behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class DisplayNoneNestedTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldHideEntireSubtree()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode parent = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50),
+      Display = Display.None
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    parent.AddChild(child);
+    root.AddChild(parent);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    parent.Layout.Width.ShouldBe(0);
+    parent.Layout.Height.ShouldBe(0);
+    child.Layout.Width.ShouldBe(0);
+    child.Layout.Height.ShouldBe(0);
+  }
+
+  public void ShouldNotMeasureHiddenChildren()
+  {
+    bool measureCalled = false;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Display = Display.None
+    };
+
+    child.MeasureFunc = (_, _, _, _, _) =>
+    {
+      measureCalled = true;
+      return new Size(50, 50);
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    measureCalled.ShouldBeFalse();
+  }
+}
+
+/// <summary>
+/// Tests for Display.None with absolute positioning.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class DisplayNoneAbsoluteTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldHideAbsolutePositionedElements()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50),
+      PositionType = PositionType.Absolute,
+      Display = Display.None
+    };
+    child.SetPosition(Edge.Left, FlexValue.Point(10));
+    child.SetPosition(Edge.Top, FlexValue.Point(10));
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Width.ShouldBe(0);
+    child.Layout.Height.ShouldBe(0);
+  }
+}
