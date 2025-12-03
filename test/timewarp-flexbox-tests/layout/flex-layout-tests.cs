@@ -3511,3 +3511,275 @@ public class FlexWrapColumnTests
     child3.Layout.Left.ShouldBe(30);
   }
 }
+
+// =============================================================================
+// Padding Tests (Task 040)
+// =============================================================================
+
+/// <summary>
+/// Tests for basic padding behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class PaddingBasicTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldOffsetChildByPaddingTop()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.Top, FlexValue.Point(10));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Top.ShouldBe(10);
+  }
+
+  public void ShouldOffsetChildByPaddingLeft()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.Left, FlexValue.Point(15));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Left.ShouldBe(15);
+  }
+
+  public void ShouldOffsetChildByPaddingAll()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.All, FlexValue.Point(10));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    child.Layout.Top.ShouldBe(10);
+    child.Layout.Left.ShouldBe(10);
+  }
+}
+
+/// <summary>
+/// Tests for padding reducing available content space.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class PaddingContentSpaceTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldReduceContentWidthByHorizontalPadding()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.Left, FlexValue.Point(10));
+    root.SetPadding(Edge.Right, FlexValue.Point(10));
+
+    FlexNode child = new()
+    {
+      FlexGrow = 1,
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Child fills remaining 80px (100 - 10 - 10)
+    child.Layout.Width.ShouldBe(80);
+  }
+
+  public void ShouldReduceContentHeightByVerticalPadding()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.Top, FlexValue.Point(15));
+    root.SetPadding(Edge.Bottom, FlexValue.Point(15));
+
+    FlexNode child = new()
+    {
+      FlexGrow = 1,
+      Width = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Child fills remaining 70px (100 - 15 - 15)
+    child.Layout.Height.ShouldBe(70);
+  }
+}
+
+/// <summary>
+/// Tests for multiple children with padding.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class PaddingMultipleChildrenTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldPositionMultipleChildrenWithPadding()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.Left, FlexValue.Point(10));
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Both children offset by padding
+    child1.Layout.Left.ShouldBe(10);
+    child2.Layout.Left.ShouldBe(40); // 10 + 30
+  }
+}
+
+/// <summary>
+/// Tests for padding with logical edges (Start/End).
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class PaddingLogicalEdgeTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldApplyStartPaddingInLtr()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.Start, FlexValue.Point(15));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // Start = Left in LTR
+    child.Layout.Left.ShouldBe(15);
+  }
+
+  public void ShouldApplyStartPaddingInRtl()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.Start, FlexValue.Point(15));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Rtl);
+
+    // Start = Right in RTL, so child is at left edge with right padding
+    // Child positioned at: 100 - 50 - 15 = 35
+    child.Layout.Left.ShouldBe(35);
+  }
+}
+
+/// <summary>
+/// Tests for padding combined with border.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class PaddingWithBorderTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldCombinePaddingAndBorderForChildOffset()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.All, FlexValue.Point(10));
+    root.SetBorder(Edge.All, 5);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Child offset by padding + border
+    child.Layout.Left.ShouldBe(15); // 10 + 5
+    child.Layout.Top.ShouldBe(15);  // 10 + 5
+  }
+}
