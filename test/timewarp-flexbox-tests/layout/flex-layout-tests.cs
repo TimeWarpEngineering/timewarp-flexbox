@@ -3783,3 +3783,193 @@ public class PaddingWithBorderTests
     child.Layout.Top.ShouldBe(15);  // 10 + 5
   }
 }
+
+// =============================================================================
+// Rounding Tests (Task 041)
+// =============================================================================
+
+/// <summary>
+/// Tests for basic pixel rounding behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class PixelRoundingBasicTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldRoundFractionalValuesToPixels()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    // 100 / 3 = 33.333... each
+    FlexNode child1 = new() { FlexGrow = 1, Height = FlexValue.Point(50) };
+    FlexNode child2 = new() { FlexGrow = 1, Height = FlexValue.Point(50) };
+    FlexNode child3 = new() { FlexGrow = 1, Height = FlexValue.Point(50) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr, roundToPixelGrid: true);
+
+    // Rounding should preserve total: 33 + 33 + 34 = 100 or similar
+    float totalWidth = child1.Layout.Width + child2.Layout.Width + child3.Layout.Width;
+    totalWidth.ShouldBe(100, tolerance: 0.001f);
+  }
+
+  public void ShouldRoundExplicitDimensionsToWholePixels()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100.5f),
+      Height = FlexValue.Point(50.7f)
+    };
+
+    Engine.CalculateLayout(root, 200, 200, Direction.Ltr, roundToPixelGrid: true);
+
+    // Explicit dimensions should be rounded to whole pixels
+    (root.Layout.Width % 1).ShouldBe(0);
+    (root.Layout.Height % 1).ShouldBe(0);
+  }
+}
+
+/// <summary>
+/// Tests for cumulative rounding across multiple children.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class CumulativeRoundingTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldDistributeRoundingErrorAcrossSevenChildren()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    for (int i = 0; i < 7; i++)
+    {
+      root.AddChild(new FlexNode { FlexGrow = 1, Height = FlexValue.Point(50) });
+    }
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr, roundToPixelGrid: true);
+
+    // Total should still be exactly 100
+    float totalWidth = 0;
+    for (int i = 0; i < 7; i++)
+    {
+      totalWidth += root.Children[i].Layout.Width;
+    }
+
+    totalWidth.ShouldBe(100);
+  }
+
+  public void ShouldAccumulatePositionsCorrectly()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    for (int i = 0; i < 7; i++)
+    {
+      root.AddChild(new FlexNode { FlexGrow = 1, Height = FlexValue.Point(50) });
+    }
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr, roundToPixelGrid: true);
+
+    // Last child should end exactly at 100
+    FlexNode lastChild = root.Children[6];
+    float rightEdge = lastChild.Layout.Left + lastChild.Layout.Width;
+    rightEdge.ShouldBe(100);
+  }
+}
+
+/// <summary>
+/// Tests for rounding without pixel grid enabled.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class NoRoundingTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldProduceFractionalValuesWithoutRounding()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new() { FlexGrow = 1, Height = FlexValue.Point(50) };
+    FlexNode child2 = new() { FlexGrow = 1, Height = FlexValue.Point(50) };
+    FlexNode child3 = new() { FlexGrow = 1, Height = FlexValue.Point(50) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    // roundToPixelGrid defaults to false
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Without rounding, we expect fractional values (33.333...)
+    // Check that at least one is fractional
+    bool hasFractional = (child1.Layout.Width % 1) != 0 ||
+                         (child2.Layout.Width % 1) != 0 ||
+                         (child3.Layout.Width % 1) != 0;
+    hasFractional.ShouldBeTrue();
+  }
+}
+
+/// <summary>
+/// Tests for rounding with nested layouts.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class NestedRoundingTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldRoundNestedLayoutsCorrectly()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode parent = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      FlexGrow = 1,
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new() { FlexGrow = 1, Width = FlexValue.Point(30) };
+    FlexNode child2 = new() { FlexGrow = 1, Width = FlexValue.Point(30) };
+
+    parent.AddChild(child1);
+    parent.AddChild(child2);
+    root.AddChild(parent);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr, roundToPixelGrid: true);
+
+    // Nested children should also be rounded
+    (child1.Layout.Height % 1).ShouldBe(0);
+    (child2.Layout.Height % 1).ShouldBe(0);
+
+    // Their heights should sum to parent height
+    float totalHeight = child1.Layout.Height + child2.Layout.Height;
+    totalHeight.ShouldBe(100);
+  }
+}
