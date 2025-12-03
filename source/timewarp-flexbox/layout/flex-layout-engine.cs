@@ -65,6 +65,16 @@ public sealed class FlexLayoutEngine
     if (node.Display == Display.None)
       return;
 
+    // Check cache for existing layout result
+    if (node.TryGetCachedLayout(availableWidth, availableHeight, widthMode, heightMode, out LayoutCacheEntry cached))
+    {
+      node.Layout.Width = cached.ComputedWidth;
+      node.Layout.Height = cached.ComputedHeight;
+      node.Layout.Left = cached.ComputedLeft;
+      node.Layout.Top = cached.ComputedTop;
+      return;
+    }
+
     // Resolve the effective flex direction based on RTL
     FlexDirection resolvedDirection = LayoutHelpers.ResolveFlexDirection(node.FlexDirection, direction);
     bool isMainAxisRow = LayoutHelpers.IsRow(resolvedDirection);
@@ -181,6 +191,20 @@ public sealed class FlexLayoutEngine
         MeasureMode.Exactly,
         direction);
     }
+
+    // Store layout result in cache
+    node.SetCachedLayout(
+      availableWidth,
+      availableHeight,
+      widthMode,
+      heightMode,
+      new LayoutCacheEntry
+      {
+        ComputedWidth = node.Layout.Width,
+        ComputedHeight = node.Layout.Height,
+        ComputedLeft = node.Layout.Left,
+        ComputedTop = node.Layout.Top
+      });
   }
 
   /// <summary>

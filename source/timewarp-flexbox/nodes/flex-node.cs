@@ -204,7 +204,7 @@ public partial class FlexNode
 
   /// <summary>
   /// Marks this node's layout as needing recalculation.
-  /// Also marks all ancestor nodes as dirty.
+  /// Also marks all ancestor nodes as dirty and invalidates the cache.
   /// </summary>
   public void MarkDirty()
   {
@@ -212,6 +212,7 @@ public partial class FlexNode
       return;
 
     IsDirty = true;
+    InvalidateCache();
     Parent?.MarkDirty();
   }
 
