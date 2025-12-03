@@ -3107,3 +3107,407 @@ public class DisplayNoneAbsoluteTests
     child.Layout.Height.ShouldBe(0);
   }
 }
+
+// =============================================================================
+// Flex Wrap Tests (Task 037)
+// =============================================================================
+
+/// <summary>
+/// Tests for FlexWrap.NoWrap behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class FlexWrapNoWrapTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldKeepAllItemsOnSingleLine()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.NoWrap,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // All on same line (top = 0), items may shrink to fit
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(0);
+    child3.Layout.Top.ShouldBe(0);
+  }
+
+  public void ShouldShrinkItemsToFitOnSingleLine()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.NoWrap,
+      Width = FlexValue.Point(90),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 90, 100);
+
+    // Items shrink proportionally to fit 90px (each is 30)
+    child1.Layout.Width.ShouldBe(30);
+    child2.Layout.Width.ShouldBe(30);
+    child3.Layout.Width.ShouldBe(30);
+  }
+}
+
+/// <summary>
+/// Tests for FlexWrap.Wrap behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class FlexWrapWrapTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldCreateMultipleLinesWhenNeeded()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(20)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(20)
+    };
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(20)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Line 1: child1, child2
+    child1.Layout.Top.ShouldBe(0);
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(50);
+    // Line 2: child3
+    child3.Layout.Top.ShouldBe(20);
+    child3.Layout.Left.ShouldBe(0);
+  }
+
+  public void ShouldPreserveItemOrderWithinLines()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      Width = FlexValue.Point(60),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    FlexNode child4 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+    root.AddChild(child4);
+
+    Engine.CalculateLayout(root, 60, 100);
+
+    // Line 1: 1, 2 - Line 2: 3, 4
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(30);
+    child3.Layout.Left.ShouldBe(0);
+    child4.Layout.Left.ShouldBe(30);
+  }
+
+  public void ShouldWrapSingleOversizedItem()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(20)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(20)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 50, 100);
+
+    // Each child on its own line
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(20);
+  }
+}
+
+/// <summary>
+/// Tests for FlexWrap.WrapReverse behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class FlexWrapReverseTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldReverseCrossAxisLineOrder()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.WrapReverse,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(20)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(20)
+    };
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(20)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // With wrap-reverse, lines go from bottom to top
+    // Line 2 (child3) starts at a higher position than Line 1
+    child1.Layout.Top.ShouldBeGreaterThan(child3.Layout.Top);
+  }
+}
+
+/// <summary>
+/// Tests for FlexWrap with gap.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class FlexWrapWithGapTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldApplyRowGapBetweenLines()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      RowGap = 10
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(20)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(20)
+    };
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(20)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // Line 2 offset by line height + row gap
+    child3.Layout.Top.ShouldBe(30); // 20 + 10 gap
+  }
+
+  public void ShouldApplyColumnGapWithinLines()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      ColumnGap = 10
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(20)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(20)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100);
+
+    // child2 offset by child1 width + column gap
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(40); // 30 + 10 gap
+  }
+}
+
+/// <summary>
+/// Tests for FlexWrap in column direction.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class FlexWrapColumnTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldWrapInColumnDirection()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      FlexWrap = FlexWrap.Wrap,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(60)
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 60);
+
+    // Column 1: child1, child2 - Column 2: child3
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(0);
+    child3.Layout.Left.ShouldBe(30);
+  }
+}
