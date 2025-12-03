@@ -111,8 +111,27 @@ public sealed class FlexLayoutEngine
     float paddingBorderTop = GetPaddingAndBorder(node, Edge.Top, direction);
     float paddingBorderBottom = GetPaddingAndBorder(node, Edge.Bottom, direction);
 
-    float paddingBorderMainStart = isMainAxisRow ? paddingBorderLeft : paddingBorderTop;
-    float paddingBorderMainEnd = isMainAxisRow ? paddingBorderRight : paddingBorderBottom;
+    // Get the leading/trailing edges based on the resolved flex direction
+    Edge mainLeadingEdge = LayoutHelpers.GetLeadingEdge(resolvedDirection);
+    Edge mainTrailingEdge = LayoutHelpers.GetTrailingEdge(resolvedDirection);
+
+    // Map edges to padding values
+    float paddingBorderMainStart = mainLeadingEdge switch
+    {
+      Edge.Left => paddingBorderLeft,
+      Edge.Right => paddingBorderRight,
+      Edge.Top => paddingBorderTop,
+      Edge.Bottom => paddingBorderBottom,
+      _ => 0
+    };
+    float paddingBorderMainEnd = mainTrailingEdge switch
+    {
+      Edge.Left => paddingBorderLeft,
+      Edge.Right => paddingBorderRight,
+      Edge.Top => paddingBorderTop,
+      Edge.Bottom => paddingBorderBottom,
+      _ => 0
+    };
     float paddingBorderCrossStart = isMainAxisRow ? paddingBorderTop : paddingBorderLeft;
     float paddingBorderCrossEnd = isMainAxisRow ? paddingBorderBottom : paddingBorderRight;
 
@@ -735,10 +754,12 @@ public sealed class FlexLayoutEngine
         line.ItemCount);
 
       // Position items in the line
-      IEnumerable<FlexNode> items = isReverse ? line.Items.Reverse() : line.Items;
+      // Items are processed in logical order; positioning uses the leading edge
+      Edge mainLeadingEdge = LayoutHelpers.GetLeadingEdge(direction);
+      float containerMainSize = isRow ? node.Layout.Width : node.Layout.Height;
       bool isFirstItem = true;
 
-      foreach (FlexNode child in items)
+      foreach (FlexNode child in line.Items)
       {
         if (child.PositionType == PositionType.Absolute)
           continue;
@@ -751,15 +772,11 @@ public sealed class FlexLayoutEngine
 
         isFirstItem = false;
 
-        // Set main axis position
-        if (isRow)
-        {
-          child.Layout.Left = mainPosition;
-        }
-        else
-        {
-          child.Layout.Top = mainPosition;
-        }
+        float childMainSize = isRow ? child.Layout.Width : child.Layout.Height;
+
+        // Set main axis position using the leading edge
+        // SetPosition converts from edge position to Left/Top coordinates
+        child.Layout.SetPosition(mainLeadingEdge, mainPosition, containerMainSize, childMainSize);
 
         // Calculate cross axis position based on align-items/align-self
         float childCrossPosition = CalculateAlignItemsOffset(
@@ -779,7 +796,7 @@ public sealed class FlexLayoutEngine
         }
 
         // Move to next position (spacing from justify-content)
-        mainPosition += (isRow ? child.Layout.Width : child.Layout.Height) + spaceBetween;
+        mainPosition += childMainSize + spaceBetween;
       }
 
       crossPosition += line.CrossSize + crossSpacing + crossAxisGap;

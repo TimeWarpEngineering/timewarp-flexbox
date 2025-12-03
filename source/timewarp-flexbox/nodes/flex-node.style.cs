@@ -6,6 +6,7 @@ namespace TimeWarp.Flexbox;
 public partial class FlexNode
 {
   // Backing fields for properties that need dirty tracking
+  private Direction StyleDirection = Direction.Inherit;
   private FlexDirection StyleFlexDirection = FlexDirection.Row;
   private FlexWrap StyleFlexWrap = FlexWrap.NoWrap;
   private JustifyContent StyleJustifyContent = JustifyContent.FlexStart;
@@ -27,6 +28,34 @@ public partial class FlexNode
   private float? StyleAspectRatio;
 
   #region Direction & Wrapping
+
+  /// <summary>
+  /// Gets or sets the layout direction (LTR/RTL).
+  /// Default: Inherit (uses parent's direction or config default for root)
+  /// </summary>
+  public Direction Direction
+  {
+    get => StyleDirection;
+    set => SetStyleProperty(ref StyleDirection, value);
+  }
+
+  /// <summary>
+  /// Gets the resolved direction for this node (never Inherit).
+  /// Walks up the tree to find an explicit direction, or uses config default.
+  /// </summary>
+  public Direction ResolvedDirection
+  {
+    get
+    {
+      if (StyleDirection != Direction.Inherit)
+        return StyleDirection;
+
+      if (Parent is not null)
+        return Parent.ResolvedDirection;
+
+      return EffectiveConfig.Direction;
+    }
+  }
 
   /// <summary>
   /// Gets or sets the flex direction (main axis orientation).

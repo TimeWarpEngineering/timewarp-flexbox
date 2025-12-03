@@ -1,5 +1,30 @@
 # TimeWarp.Flexbox Agent Guidelines
 
+## Reference Implementation
+
+**Facebook Yoga Repository**: `/home/steventcramer/worktrees/github.com/facebook/yoga/main/`
+
+This project is a C# port of Facebook's Yoga layout library. When implementing features or fixing bugs, consult the Yoga source:
+
+- **Algorithm**: `yoga/algorithm/` - Core layout algorithms
+  - `CalculateLayout.cpp` - Main layout entry point
+  - `FlexDirection.h` - Direction resolution, edge helpers (`flexStartEdge`, `flexEndEdge`, `inlineStartEdge`)
+  - `FlexLine.cpp` - Flex line collection and sizing
+  - `AbsoluteLayout.cpp` - Absolute positioning logic
+  - `PixelGrid.cpp` - Pixel grid rounding
+- **Node**: `yoga/node/` - Node and layout result structures
+  - `LayoutResults.h` - Layout result storage (positions for all 4 edges)
+- **Tests**: `tests/generated/` - Generated test cases from HTML fixtures
+  - `YGFlexDirectionTest.cpp` - RTL/LTR direction tests
+  - `YGRoundingTest.cpp` - Pixel rounding tests
+- **Enums**: `yoga/enums/` - Direction, FlexDirection, Edge, PhysicalEdge
+
+Key patterns from Yoga:
+- Positions stored for all 4 physical edges (Left, Top, Right, Bottom)
+- `setLayoutPosition(value, flexStartEdge(axis))` - positions set on flex-start edge
+- `resolveDirection()` swaps Row/RowReverse for RTL
+- `flexStartEdge(RowReverse)` returns Right, not Left
+
 ## Build/Test Commands
 - Build: `dotnet build`
 - Test all: `dotnet test`

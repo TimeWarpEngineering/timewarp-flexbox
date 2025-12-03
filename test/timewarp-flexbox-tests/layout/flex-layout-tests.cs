@@ -1168,3 +1168,247 @@ public class LayoutWithPixelGridRoundingTests
     child.Layout.Width.ShouldBe(33.3f);
   }
 }
+
+/// <summary>
+/// Tests for RTL (right-to-left) layout direction support.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class RtlLayoutTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldReverseRowDirectionInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(300),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(100) };
+    FlexNode child2 = new() { Width = FlexValue.Point(100) };
+    FlexNode child3 = new() { Width = FlexValue.Point(100) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 300, 100, Direction.Rtl);
+
+    // In RTL, children should be positioned from right to left
+    child1.Layout.Left.ShouldBe(200);
+    child2.Layout.Left.ShouldBe(100);
+    child3.Layout.Left.ShouldBe(0);
+  }
+
+  public void ShouldNotAffectColumnDirectionInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(300),
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode child1 = new() { Height = FlexValue.Point(100) };
+    FlexNode child2 = new() { Height = FlexValue.Point(100) };
+    FlexNode child3 = new() { Height = FlexValue.Point(100) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 300, Direction.Rtl);
+
+    // Column direction is not affected by RTL
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(100);
+    child3.Layout.Top.ShouldBe(200);
+  }
+
+  public void ShouldReverseRowReverseToRowInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(300),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.RowReverse
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(100) };
+    FlexNode child2 = new() { Width = FlexValue.Point(100) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 300, 100, Direction.Rtl);
+
+    // RowReverse in RTL becomes Row (double reversal)
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(100);
+  }
+
+  public void ShouldPositionAbsoluteChildWithStartEdgeInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      PositionType = PositionType.Absolute,
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+    child.SetPosition(Edge.Start, FlexValue.Point(10));
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 200, Direction.Rtl);
+
+    // In RTL, Start edge maps to Right, so child is 10px from right edge
+    // Child is at right=10, so left = 200 - 50 - 10 = 140
+    child.Layout.Left.ShouldBe(140);
+  }
+
+  public void ShouldPositionAbsoluteChildWithEndEdgeInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      PositionType = PositionType.Absolute,
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+    child.SetPosition(Edge.End, FlexValue.Point(10));
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 200, Direction.Rtl);
+
+    // In RTL, End edge maps to Left, so child is 10px from left edge
+    child.Layout.Left.ShouldBe(10);
+  }
+
+  public void ShouldInheritDirectionFromParent()
+  {
+    FlexNode root = new()
+    {
+      Direction = Direction.Rtl,
+      Width = FlexValue.Point(300),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new() { Width = FlexValue.Point(100) };
+    root.AddChild(child);
+
+    // Child inherits RTL from parent
+    child.ResolvedDirection.ShouldBe(Direction.Rtl);
+  }
+
+  public void ShouldUseConfigDirectionForRootWithInherit()
+  {
+    FlexConfig config = new() { Direction = Direction.Rtl };
+
+    FlexNode root = new()
+    {
+      Config = config,
+      Direction = Direction.Inherit, // Explicit inherit (same as default)
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    root.ResolvedDirection.ShouldBe(Direction.Rtl);
+  }
+
+  public void ShouldOverrideParentDirection()
+  {
+    FlexNode root = new()
+    {
+      Direction = Direction.Rtl,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Direction = Direction.Ltr
+    };
+    root.AddChild(child);
+
+    root.ResolvedDirection.ShouldBe(Direction.Rtl);
+    child.ResolvedDirection.ShouldBe(Direction.Ltr);
+  }
+
+  public void ShouldApplyJustifyContentFlexEndInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(300),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      JustifyContent = JustifyContent.FlexEnd
+    };
+
+    FlexNode child = new() { Width = FlexValue.Point(100) };
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 300, 100, Direction.Rtl);
+
+    // In RTL, Row becomes RowReverse, so:
+    // - FlexStart is the right side (visual start in RTL)
+    // - FlexEnd is the left side (visual end in RTL)
+    // FlexEnd pushes items to the left side, so Left = 0
+    child.Layout.Left.ShouldBe(0);
+  }
+
+  public void ShouldApplyJustifyContentCenterInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(300),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      JustifyContent = JustifyContent.Center
+    };
+
+    FlexNode child = new() { Width = FlexValue.Point(100) };
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 300, 100, Direction.Rtl);
+
+    // Center should still center the child
+    child.Layout.Left.ShouldBe(100);
+  }
+
+  public void ShouldResolvePaddingStartInRtl()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+    root.SetPadding(Edge.Start, FlexValue.Point(20));
+
+    FlexNode child = new() { Width = FlexValue.Point(50) };
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 100, Direction.Rtl);
+
+    // In RTL, Start padding is on the right side
+    // Row becomes RowReverse, child starts from right after padding
+    // Child width 50, container 200, padding-right 20
+    // Position: 200 - 20 - 50 = 130
+    child.Layout.Left.ShouldBe(130);
+  }
+}

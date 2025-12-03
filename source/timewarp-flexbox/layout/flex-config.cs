@@ -6,6 +6,12 @@ namespace TimeWarp.Flexbox;
 public class FlexConfig
 {
   /// <summary>
+  /// Gets or sets the default layout direction for root nodes.
+  /// Default is LTR (left-to-right).
+  /// </summary>
+  public Direction Direction { get; set; } = Direction.Ltr;
+
+  /// <summary>
   /// Gets or sets the point scale factor for pixel grid rounding.
   /// Used for high DPI displays. Default is 1.0f.
   /// </summary>
@@ -37,6 +43,7 @@ public class FlexConfig
   {
     return new FlexConfig
     {
+      Direction = Direction,
       PointScaleFactor = PointScaleFactor,
       UseWebDefaults = UseWebDefaults,
       UseErrata = UseErrata

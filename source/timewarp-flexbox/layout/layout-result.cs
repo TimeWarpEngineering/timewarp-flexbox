@@ -87,6 +87,35 @@ public class LayoutResult
   public FlexDirection Direction { get; internal set; }
 
   /// <summary>
+  /// Sets the position for a specific physical edge.
+  /// For row layouts, use Left/Right. For column layouts, use Top/Bottom.
+  /// </summary>
+  /// <param name="edge">The physical edge to set.</param>
+  /// <param name="value">The position value.</param>
+  /// <param name="containerSize">The container size on the same axis (width for Left/Right, height for Top/Bottom).</param>
+  /// <param name="itemSize">The item size on the same axis (width for Left/Right, height for Top/Bottom).</param>
+  internal void SetPosition(Edge edge, float value, float containerSize, float itemSize)
+  {
+    switch (edge)
+    {
+      case Edge.Left:
+        Left = value;
+        break;
+      case Edge.Top:
+        Top = value;
+        break;
+      case Edge.Right:
+        // Convert Right position to Left: Left = containerSize - Right - itemWidth
+        Left = containerSize - value - itemSize;
+        break;
+      case Edge.Bottom:
+        // Convert Bottom position to Top: Top = containerSize - Bottom - itemHeight
+        Top = containerSize - value - itemSize;
+        break;
+    }
+  }
+
+  /// <summary>
   /// Resets all layout values to their default state.
   /// </summary>
   public void Reset()
