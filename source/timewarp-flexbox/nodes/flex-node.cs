@@ -37,6 +37,13 @@ public partial class FlexNode
   public BaselineFunc? BaselineFunc { get; set; }
 
   /// <summary>
+  /// Gets or sets the callback invoked when this node becomes dirty.
+  /// The callback is only invoked on the first transition from clean to dirty,
+  /// not on subsequent changes while already dirty.
+  /// </summary>
+  public Action<FlexNode>? DirtiedFunc { get; set; }
+
+  /// <summary>
   /// Gets or sets the configuration for this node.
   /// If null, uses FlexConfig.Default.
   /// </summary>
@@ -172,6 +179,36 @@ public partial class FlexNode
   }
 
   /// <summary>
+  /// Replaces an existing child node with a new child node at the same index position.
+  /// If the new child already has a parent, it is first removed from that parent.
+  /// </summary>
+  /// <param name="oldChild">The existing child node to replace.</param>
+  /// <param name="newChild">The new child node to insert in its place.</param>
+  /// <returns>True if the old child was found and replaced; otherwise, false.</returns>
+  /// <exception cref="ArgumentNullException">Thrown when oldChild or newChild is null.</exception>
+  public bool ReplaceChild(FlexNode oldChild, FlexNode newChild)
+  {
+    ArgumentNullException.ThrowIfNull(oldChild);
+    ArgumentNullException.ThrowIfNull(newChild);
+
+    int index = ChildrenInternal.IndexOf(oldChild);
+    if (index < 0)
+      return false;
+
+    // Remove new child from its existing parent if any
+    newChild.Parent?.RemoveChild(newChild);
+
+    // Update parent references
+    oldChild.Parent = null;
+    newChild.Parent = this;
+
+    // Replace in the list
+    ChildrenInternal[index] = newChild;
+    MarkDirty();
+    return true;
+  }
+
+  /// <summary>
   /// Removes all child nodes from this node.
   /// </summary>
   public void RemoveAllChildren()
@@ -204,7 +241,8 @@ public partial class FlexNode
 
   /// <summary>
   /// Marks this node's layout as needing recalculation.
-  /// Also marks all ancestor nodes as dirty and invalidates the cache.
+  /// Also marks all ancestor nodes as dirty, invalidates the cache,
+  /// and invokes the DirtiedFunc callback if set.
   /// </summary>
   public void MarkDirty()
   {
@@ -213,6 +251,7 @@ public partial class FlexNode
 
     IsDirty = true;
     InvalidateCache();
+    DirtiedFunc?.Invoke(this);
     Parent?.MarkDirty();
   }
 
@@ -222,5 +261,75 @@ public partial class FlexNode
   internal void ClearDirty()
   {
     IsDirty = false;
+  }
+
+  /// <summary>
+  /// Creates a deep clone of this node and all its descendants.
+  /// The cloned node is detached (has no parent).
+  /// </summary>
+  /// <returns>A new FlexNode that is a deep copy of this node.</returns>
+  /// <remarks>
+  /// The clone includes:
+  /// - All style properties (Direction, FlexDirection, dimensions, etc.)
+  /// - All spacing properties (Margin, Padding, Border, Position, Gap)
+  /// - All children (recursively cloned)
+  /// - References to MeasureFunc, BaselineFunc, DirtiedFunc, Config, and Context
+  /// 
+  /// The clone does NOT include:
+  /// - Parent reference (cloned node is detached)
+  /// - Layout results (the clone needs recalculation)
+  /// - Cache entries
+  /// </remarks>
+  public FlexNode Clone()
+  {
+    FlexNode clone = new();
+
+    // Copy style properties
+    clone.Direction = Direction;
+    clone.FlexDirection = FlexDirection;
+    clone.FlexWrap = FlexWrap;
+    clone.JustifyContent = JustifyContent;
+    clone.AlignItems = AlignItems;
+    clone.AlignContent = AlignContent;
+    clone.AlignSelf = AlignSelf;
+    clone.FlexGrow = FlexGrow;
+    clone.FlexShrink = FlexShrink;
+    clone.FlexBasis = FlexBasis;
+    clone.Width = Width;
+    clone.Height = Height;
+    clone.MinWidth = MinWidth;
+    clone.MinHeight = MinHeight;
+    clone.MaxWidth = MaxWidth;
+    clone.MaxHeight = MaxHeight;
+    clone.Display = Display;
+    clone.PositionType = PositionType;
+    clone.Overflow = Overflow;
+    clone.AspectRatio = AspectRatio;
+    clone.BoxSizing = BoxSizing;
+
+    // Copy spacing properties (structs are copied by value)
+    clone.Margin = Margin;
+    clone.Padding = Padding;
+    clone.Border = Border;
+    clone.Position = Position;
+    clone.Gap = Gap;
+    clone.RowGap = RowGap;
+    clone.ColumnGap = ColumnGap;
+
+    // Copy callbacks and config references
+    clone.MeasureFunc = MeasureFunc;
+    clone.BaselineFunc = BaselineFunc;
+    clone.DirtiedFunc = DirtiedFunc;
+    clone.Config = Config;
+    clone.Context = Context;
+
+    // Recursively clone children
+    foreach (FlexNode child in ChildrenInternal)
+    {
+      FlexNode childClone = child.Clone();
+      clone.AddChild(childClone);
+    }
+
+    return clone;
   }
 }

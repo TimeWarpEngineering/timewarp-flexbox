@@ -54,13 +54,14 @@ public static class ValueResolver
   public static bool IsDefined(float value) => !float.IsNaN(value);
 
   /// <summary>
-  /// Resolves the width of a node, considering min/max constraints.
+  /// Resolves the width of a node, considering min/max constraints and box sizing.
   /// </summary>
   /// <param name="node">The flex node.</param>
   /// <param name="containerWidth">The container width for percentage calculations.</param>
+  /// <param name="paddingBorderWidth">Optional padding and border width (for ContentBox calculations).</param>
   /// <returns>The resolved width, or float.NaN if undefined.</returns>
   /// <exception cref="ArgumentNullException">Thrown when node is null.</exception>
-  public static float ResolveWidth(FlexNode node, float containerWidth)
+  public static float ResolveWidth(FlexNode node, float containerWidth, float paddingBorderWidth = 0)
   {
     ArgumentNullException.ThrowIfNull(node);
 
@@ -69,20 +70,36 @@ public static class ValueResolver
     if (!IsDefined(width))
       return float.NaN;
 
+    // With ContentBox, add padding and border to the specified content width
+    if (node.BoxSizing == BoxSizing.ContentBox)
+    {
+      width += paddingBorderWidth;
+    }
+
     float minWidth = ResolveValueOrDefault(node.MinWidth, containerWidth, 0);
     float maxWidth = ResolveValueOrDefault(node.MaxWidth, containerWidth, float.PositiveInfinity);
+
+    // Min/max constraints also need box sizing adjustment for ContentBox
+    if (node.BoxSizing == BoxSizing.ContentBox)
+    {
+      if (IsDefined(node.MinWidth))
+        minWidth += paddingBorderWidth;
+      if (IsDefined(node.MaxWidth) && !float.IsPositiveInfinity(maxWidth))
+        maxWidth += paddingBorderWidth;
+    }
 
     return Math.Clamp(width, minWidth, maxWidth);
   }
 
   /// <summary>
-  /// Resolves the height of a node, considering min/max constraints.
+  /// Resolves the height of a node, considering min/max constraints and box sizing.
   /// </summary>
   /// <param name="node">The flex node.</param>
   /// <param name="containerHeight">The container height for percentage calculations.</param>
+  /// <param name="paddingBorderHeight">Optional padding and border height (for ContentBox calculations).</param>
   /// <returns>The resolved height, or float.NaN if undefined.</returns>
   /// <exception cref="ArgumentNullException">Thrown when node is null.</exception>
-  public static float ResolveHeight(FlexNode node, float containerHeight)
+  public static float ResolveHeight(FlexNode node, float containerHeight, float paddingBorderHeight = 0)
   {
     ArgumentNullException.ThrowIfNull(node);
 
@@ -91,8 +108,23 @@ public static class ValueResolver
     if (!IsDefined(height))
       return float.NaN;
 
+    // With ContentBox, add padding and border to the specified content height
+    if (node.BoxSizing == BoxSizing.ContentBox)
+    {
+      height += paddingBorderHeight;
+    }
+
     float minHeight = ResolveValueOrDefault(node.MinHeight, containerHeight, 0);
     float maxHeight = ResolveValueOrDefault(node.MaxHeight, containerHeight, float.PositiveInfinity);
+
+    // Min/max constraints also need box sizing adjustment for ContentBox
+    if (node.BoxSizing == BoxSizing.ContentBox)
+    {
+      if (IsDefined(node.MinHeight))
+        minHeight += paddingBorderHeight;
+      if (IsDefined(node.MaxHeight) && !float.IsPositiveInfinity(maxHeight))
+        maxHeight += paddingBorderHeight;
+    }
 
     return Math.Clamp(height, minHeight, maxHeight);
   }

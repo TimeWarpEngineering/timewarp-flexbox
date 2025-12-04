@@ -4,18 +4,18 @@
 Implement comprehensive tests for margin calculations including uniform margins, individual edge margins, auto margins for centering, percentage margins, and margin collapse behavior. Auto margins are particularly important for centering content in flexbox.
 
 ## Todo List
-- [ ] Test uniform margin on all edges
-- [ ] Test individual edge margins (top, right, bottom, left)
-- [ ] Test margin affects element positioning
-- [ ] Test margin: auto for centering on main axis
-- [ ] Test margin: auto for centering on cross axis
-- [ ] Test margin: auto with flex-grow (auto margins consume free space)
-- [ ] Test percentage margins relative to parent width
-- [ ] Test margin with RTL direction
-- [ ] Test margin start/end (logical properties)
-- [ ] Test negative margins
-- [ ] Test margin on absolute positioned elements
-- [ ] Test computed margin value resolution
+- [x] Test uniform margin on all edges
+- [x] Test individual edge margins (top, right, bottom, left)
+- [x] Test margin affects element positioning
+- [x] Test margin: auto for centering on main axis
+- [x] Test margin: auto for centering on cross axis
+- [x] Test margin: auto with flex-grow (auto margins consume free space)
+- [x] Test percentage margins relative to parent width
+- [ ] Test margin with RTL direction (future)
+- [ ] Test margin start/end (logical properties) (future)
+- [x] Test negative margins
+- [ ] Test margin on absolute positioned elements (future)
+- [ ] Test computed margin value resolution (future)
 
 ## Notes
 Test file: test/TimeWarp.Flexbox.Tests/Layout/Margin_/
@@ -245,7 +245,25 @@ public class ComputedMargin_Should_
 ```
 
 ## Results
-(Add after completion)
-- Document outcomes
-- Include metrics, observations, decisions
-- Note any deviations from plan
+- **Implementation required**: Margins were not implemented in the layout engine. Added full margin support:
+  - Updated `FlexLines.CollectLines` to account for margins in line size calculations
+  - Updated `FlexLayoutEngine.ResolveFlexibleLengths` to account for margins in free space distribution
+  - Updated `FlexLayoutEngine.PositionChildren` to apply margins when positioning items
+  - Added support for auto margins (consume free space for centering)
+  - Added support for percentage margins (resolved against container width)
+  - Added support for negative margins
+
+- **Tests added**: 9 margin tests in `MarginTests` class:
+  - `ShouldOffsetElementWithMarginLeft`
+  - `ShouldOffsetElementWithMarginTop`
+  - `ShouldSpaceChildrenWithMargins`
+  - `ShouldCenterWithAutoMargins`
+  - `ShouldPushToEndWithLeadingAutoMargin`
+  - `ShouldCenterOnCrossAxisWithAutoMargins`
+  - `ShouldResolvePercentageMargin`
+  - `ShouldHandleNegativeMargin`
+  - `ShouldAccountForMarginsInFlexGrow`
+
+- **Test count**: 368 → 377 tests (added 9 tests)
+
+- **Deviations**: RTL margin tests, logical properties (start/end), absolute positioning margins, and computed margin resolution deferred for future work.

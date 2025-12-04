@@ -31,6 +31,12 @@ public sealed class FlexLine
   public float RemainingFreeSpace { get; set; }
 
   /// <summary>
+  /// Gets or sets the initial free space before flex grow/shrink is applied.
+  /// Used for overflow detection. Negative value indicates overflow.
+  /// </summary>
+  public float InitialFreeSpace { get; set; }
+
+  /// <summary>
   /// Gets or sets the sum of flex-grow factors for all items in this line.
   /// </summary>
   public float TotalFlexGrow { get; set; }
@@ -71,6 +77,7 @@ public sealed class FlexLine
     MainSize = 0;
     CrossSize = 0;
     RemainingFreeSpace = 0;
+    InitialFreeSpace = 0;
     TotalFlexGrow = 0;
     TotalFlexShrink = 0;
     TotalWeightedFlexShrink = 0;

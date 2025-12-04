@@ -4,18 +4,18 @@
 Implement tests for dirty flag behavior including dirtied callback functionality and dirty flag propagation through the node tree. The dirty system is essential for incremental layout optimization, avoiding unnecessary recalculation of unchanged subtrees.
 
 ## Todo List
-- [ ] Test node starts clean after layout
-- [ ] Test modifying style property marks node dirty
-- [ ] Test dirty propagates to parent nodes
-- [ ] Test dirty does not propagate to siblings
-- [ ] Test dirty does not propagate to children
-- [ ] Test DirtiedFunc callback is invoked
-- [ ] Test DirtiedFunc receives correct node
-- [ ] Test multiple changes trigger single callback
-- [ ] Test clearing dirty flag
-- [ ] Test IsDirty property accuracy
-- [ ] Test adding/removing children marks dirty
-- [ ] Test layout clears dirty flag
+- [x] Test node starts clean after layout
+- [x] Test modifying style property marks node dirty
+- [x] Test dirty propagates to parent nodes
+- [x] Test dirty does not propagate to siblings
+- [x] Test dirty does not propagate to children
+- [x] Test DirtiedFunc callback is invoked
+- [x] Test DirtiedFunc receives correct node
+- [x] Test multiple changes trigger single callback
+- [x] Test clearing dirty flag
+- [x] Test IsDirty property accuracy
+- [x] Test adding/removing children marks dirty
+- [x] Test layout clears dirty flag
 
 ## Notes
 Test file: test/TimeWarp.Flexbox.Tests/Dirty/
@@ -207,7 +207,8 @@ public class RemovingChild_Should_
 ```
 
 ## Results
-(Add after completion)
-- Document outcomes
-- Include metrics, observations, decisions
-- Note any deviations from plan
+- **Implementation**: Added `DirtiedFunc` property (`Action<FlexNode>?`) to FlexNode and updated `MarkDirty()` to invoke callback
+- **Tests added**: 8 new tests in `FlexNodeDirtiedCallbackTests` class (test/timewarp-flexbox-tests/nodes/flex-node-tests.cs)
+- **Total tests**: 400 passing (up from 392)
+- **Deviation**: Tests added to existing `flex-node-tests.cs` file rather than creating separate Dirty/ directory, maintaining consistency with existing test organization
+- **Pre-existing tests**: Many dirty flag tests already existed in `FlexNodeDirtyTrackingTests` class covering style changes, propagation, and basic dirty flag behavior

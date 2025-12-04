@@ -4,18 +4,18 @@
 Implement tests for tree modification operations including adding, removing, inserting, and reordering children. Also covers node cloning functionality. These tests ensure the tree structure can be safely modified without corrupting layout state.
 
 ## Todo List
-- [ ] Test AddChild appends to end
-- [ ] Test InsertChild at specific index
-- [ ] Test RemoveChild removes and updates indices
-- [ ] Test RemoveAllChildren clears children
-- [ ] Test ReplaceChild swaps nodes
-- [ ] Test reordering children with InsertChild
-- [ ] Test Clone creates deep copy
-- [ ] Test Clone preserves styles
-- [ ] Test Clone does not share layout state
-- [ ] Test Clone with MeasureFunc handling
-- [ ] Test parent reference updated on add/remove
-- [ ] Test child count accuracy after mutations
+- [x] Test AddChild appends to end (already existed)
+- [x] Test InsertChild at specific index (already existed)
+- [x] Test RemoveChild removes and updates indices (already existed)
+- [x] Test RemoveAllChildren clears children (already existed)
+- [x] Test reordering children with InsertChild (added 4 new tests)
+- [x] Test parent reference updated on add/remove (already existed)
+- [x] Test child count accuracy after mutations (already existed)
+- [ ] Test ReplaceChild swaps nodes (BLOCKED - method doesn't exist, see Task 048)
+- [ ] Test Clone creates deep copy (BLOCKED - method doesn't exist, see Task 047)
+- [ ] Test Clone preserves styles (BLOCKED - method doesn't exist, see Task 047)
+- [ ] Test Clone does not share layout state (BLOCKED - method doesn't exist, see Task 047)
+- [ ] Test Clone with MeasureFunc handling (BLOCKED - method doesn't exist, see Task 047)
 
 ## Notes
 Test file: test/TimeWarp.Flexbox.Tests/TreeMutation/
@@ -254,7 +254,11 @@ public class Reordering_Should_
 ```
 
 ## Results
-(Add after completion)
-- Document outcomes
-- Include metrics, observations, decisions
-- Note any deviations from plan
+- **Tests added:** 4 new reordering tests in `flex-node-tests.cs`
+  - `ShouldReorderChildrenViaRemoveAndInsert` - verifies layout positions after moving child to front
+  - `ShouldMoveChildToEnd` - verifies layout positions after moving child to end
+  - `ShouldSwapTwoChildren` - verifies layout positions after swapping children
+  - `ShouldMarkDirtyAfterReordering` - verifies dirty flag is set after reordering
+- **Test count:** 364 → 368 tests
+- **Existing tests:** Most tree mutation tests already existed in `FlexNodeAddChildTests`, `FlexNodeInsertChildTests`, `FlexNodeRemoveChildTests`, `FlexNodeRemoveAllChildrenTests`, `FlexNodeGetChildTests`
+- **Deviations:** Clone and ReplaceChild tests skipped - methods don't exist. Created tasks 047 and 048 to track implementation.

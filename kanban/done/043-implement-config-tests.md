@@ -4,16 +4,16 @@
 Implement tests for FlexConfig class behavior including point scale factor, use web defaults option, experimental features, and default value verification. Config tests ensure global settings are correctly applied to all nodes using that configuration.
 
 ## Todo List
-- [ ] Test default FlexConfig values
-- [ ] Test PointScaleFactor affects rounding
-- [ ] Test UseWebDefaults changes default values
-- [ ] Test experimental features toggle
-- [ ] Test config shared across multiple nodes
-- [ ] Test config changes don't affect existing layouts
-- [ ] Test config cloning
-- [ ] Test default values match CSS/Yoga spec
-- [ ] Test errata mode options
-- [ ] Test logger callback configuration
+- [x] Test default FlexConfig values
+- [x] Test PointScaleFactor affects rounding
+- [ ] Test UseWebDefaults changes default values (not implemented - flag exists but doesn't affect behavior)
+- [ ] Test experimental features toggle (not implemented - no experimental features exist)
+- [x] Test config shared across multiple nodes
+- [x] Test config changes don't affect existing layouts (via clone tests)
+- [x] Test config cloning
+- [x] Test default values match CSS/Yoga spec
+- [x] Test errata mode options (UseErrata property tested in defaults)
+- [ ] Test logger callback configuration (not implemented - no logger exists)
 
 ## Notes
 Test file: test/TimeWarp.Flexbox.Tests/Config/FlexConfig_/
@@ -166,7 +166,17 @@ public class FlexNodeDefaults_Should_
 ```
 
 ## Results
-(Add after completion)
-- Document outcomes
-- Include metrics, observations, decisions
-- Note any deviations from plan
+- **Tests added**: 17 new tests across 6 test classes in `flex-node-tests.cs`
+  - `FlexConfigDefaultValuesTests` (3 tests)
+  - `FlexConfigCloneTests` (3 tests)
+  - `FlexConfigSharingTests` (3 tests)
+  - `FlexConfigPointScaleFactorTests` (3 tests)
+  - `FlexConfigDirectionTests` (2 tests)
+  - `FlexNodeDefaultValueTests` (3 tests)
+- **Total tests**: 437 passing (up from 420)
+- **Deviation**: Tests added to existing `flex-node-tests.cs` file rather than creating separate Config/ directory
+- **Not tested** (features not implemented):
+  - `UseWebDefaults` - flag exists but doesn't change node defaults
+  - Logger callback - no logger property exists in FlexConfig
+  - Experimental features - no experimental feature flags exist
+- **Note**: Used floating point tolerance (0.001f) for rounding tests due to precision

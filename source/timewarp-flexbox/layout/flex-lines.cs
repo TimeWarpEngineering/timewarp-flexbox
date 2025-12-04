@@ -43,12 +43,16 @@ public sealed class FlexLines
   /// <param name="availableMainSize">The available size on the main axis.</param>
   /// <param name="direction">The flex direction.</param>
   /// <param name="wrap">The flex wrap mode.</param>
+  /// <param name="containerWidth">The container width for resolving percentage margins.</param>
+  /// <param name="isRtl">Whether the layout direction is right-to-left.</param>
   /// <exception cref="ArgumentNullException">Thrown when container is null.</exception>
   public void CollectLines(
     FlexNode container,
     float availableMainSize,
     FlexDirection direction,
-    FlexWrap wrap)
+    FlexWrap wrap,
+    float containerWidth = float.NaN,
+    bool isRtl = false)
   {
     ArgumentNullException.ThrowIfNull(container);
 
@@ -59,6 +63,10 @@ public sealed class FlexLines
 
     bool isWrapping = wrap != FlexWrap.NoWrap;
     bool isMainAxisRow = LayoutHelpers.IsRow(direction);
+
+    // Determine main axis edges for margin calculation
+    Edge mainLeadingEdge = LayoutHelpers.GetLeadingEdge(direction);
+    Edge mainTrailingEdge = LayoutHelpers.GetTrailingEdge(direction);
 
     FlexLine currentLine = new();
     LinesInternal.Add(currentLine);
@@ -74,14 +82,16 @@ public sealed class FlexLines
       if (child.PositionType == PositionType.Absolute)
         continue;
 
-      // Calculate the hypothetical main size of the child
+      // Calculate the hypothetical main size of the child including margins
       float childMainSize = CalculateHypotheticalMainSize(child, availableMainSize, isMainAxisRow);
+      float marginMain = GetMarginForAxis(child, mainLeadingEdge, mainTrailingEdge, containerWidth, isRtl);
+      float childOuterSize = childMainSize + marginMain;
 
       // Check if we need to wrap to a new line
       if (isWrapping &&
           currentLine.ItemCount > 0 &&
           !float.IsNaN(availableMainSize) &&
-          lineMainSize + childMainSize > availableMainSize)
+          lineMainSize + childOuterSize > availableMainSize)
       {
         // Finalize current line
         currentLine.MainSize = lineMainSize;
@@ -94,7 +104,7 @@ public sealed class FlexLines
 
       // Add child to current line
       currentLine.AddItem(child);
-      lineMainSize += childMainSize;
+      lineMainSize += childOuterSize;
 
       // Accumulate flex factors
       currentLine.TotalFlexGrow += child.FlexGrow;
@@ -122,6 +132,38 @@ public sealed class FlexLines
     {
       LinesInternal.Reverse();
     }
+  }
+
+  /// <summary>
+  /// Gets the total margin for the main axis edges.
+  /// </summary>
+  private static float GetMarginForAxis(FlexNode node, Edge leadingEdge, Edge trailingEdge, float containerWidth, bool isRtl)
+  {
+    float leading = GetMargin(node, leadingEdge, containerWidth, isRtl);
+    float trailing = GetMargin(node, trailingEdge, containerWidth, isRtl);
+    return leading + trailing;
+  }
+
+  /// <summary>
+  /// Gets the resolved margin value for an edge, resolving percentages against container width.
+  /// </summary>
+  private static float GetMargin(FlexNode node, Edge edge, float containerWidth, bool isRtl)
+  {
+    FlexValue value = edge switch
+    {
+      Edge.Left => node.Margin.ComputedLeft(FlexValue.Point(0), isRtl),
+      Edge.Right => node.Margin.ComputedRight(FlexValue.Point(0), isRtl),
+      Edge.Top => node.Margin.ComputedTop(FlexValue.Point(0)),
+      Edge.Bottom => node.Margin.ComputedBottom(FlexValue.Point(0)),
+      _ => FlexValue.Point(0)
+    };
+
+    // Auto margins are treated as 0 during line collection
+    if (value.Unit == Unit.Auto)
+      return 0;
+
+    // Percentages are always resolved against container width (per CSS spec)
+    return ValueResolver.ResolveValueOrDefault(value, containerWidth, 0);
   }
 
   /// <summary>

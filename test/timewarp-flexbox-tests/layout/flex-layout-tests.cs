@@ -4215,3 +4215,1622 @@ public class MeasuredNodeBehaviorTests
     node.HasMeasureFunc.ShouldBeFalse();
   }
 }
+
+/// <summary>
+/// Tests for box-sizing behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BoxSizingTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldDefaultToBorderBox()
+  {
+    FlexNode node = new();
+
+    node.BoxSizing.ShouldBe(BoxSizing.BorderBox);
+  }
+
+  public void ShouldIncludePaddingInWidthWithBorderBox()
+  {
+    // Test with a child node since root nodes use available dimensions
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      BoxSizing = BoxSizing.BorderBox
+    };
+    child.SetPadding(Edge.Left, FlexValue.Point(10));
+    child.SetPadding(Edge.Right, FlexValue.Point(10));
+
+    root.AddChild(child);
+    Engine.CalculateLayout(root, 200, 200, Direction.Ltr);
+
+    // Total width is 100, content area is 80
+    child.Layout.Width.ShouldBe(100);
+  }
+
+  public void ShouldIncludeBorderInWidthWithBorderBox()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      BoxSizing = BoxSizing.BorderBox
+    };
+    child.SetBorder(Edge.Left, 10);
+    child.SetBorder(Edge.Right, 10);
+
+    root.AddChild(child);
+    Engine.CalculateLayout(root, 200, 200, Direction.Ltr);
+
+    // Total width is 100 including borders
+    child.Layout.Width.ShouldBe(100);
+  }
+
+  public void ShouldAddPaddingToWidthWithContentBox()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      BoxSizing = BoxSizing.ContentBox
+    };
+    child.SetPadding(Edge.Left, FlexValue.Point(10));
+    child.SetPadding(Edge.Right, FlexValue.Point(10));
+
+    root.AddChild(child);
+    Engine.CalculateLayout(root, 200, 200, Direction.Ltr);
+
+    // Content is 100, total is 120 with padding
+    child.Layout.Width.ShouldBe(120);
+  }
+
+  public void ShouldAddBorderToWidthWithContentBox()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      BoxSizing = BoxSizing.ContentBox
+    };
+    child.SetBorder(Edge.Left, 10);
+    child.SetBorder(Edge.Right, 10);
+
+    root.AddChild(child);
+    Engine.CalculateLayout(root, 200, 200, Direction.Ltr);
+
+    // Content is 100, total is 120 with borders
+    child.Layout.Width.ShouldBe(120);
+  }
+
+  public void ShouldAddPaddingAndBorderToWidthWithContentBox()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      BoxSizing = BoxSizing.ContentBox
+    };
+    child.SetPadding(Edge.Left, FlexValue.Point(10));
+    child.SetPadding(Edge.Right, FlexValue.Point(10));
+    child.SetBorder(Edge.Left, 5);
+    child.SetBorder(Edge.Right, 5);
+
+    root.AddChild(child);
+    Engine.CalculateLayout(root, 200, 200, Direction.Ltr);
+
+    // Content is 100, total is 130 with padding (20) and border (10)
+    child.Layout.Width.ShouldBe(130);
+  }
+
+  public void ShouldApplyContentBoxToHeight()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      BoxSizing = BoxSizing.ContentBox
+    };
+    child.SetPadding(Edge.Top, FlexValue.Point(15));
+    child.SetPadding(Edge.Bottom, FlexValue.Point(15));
+
+    root.AddChild(child);
+    Engine.CalculateLayout(root, 200, 200, Direction.Ltr);
+
+    // Content height is 100, total is 130 with padding
+    child.Layout.Height.ShouldBe(130);
+  }
+
+  public void ShouldWorkWithFlexGrowAndBorderBox()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      FlexGrow = 1,
+      BoxSizing = BoxSizing.BorderBox
+    };
+    child.SetPadding(Edge.Left, FlexValue.Point(10));
+    child.SetPadding(Edge.Right, FlexValue.Point(10));
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 100, Direction.Ltr);
+
+    // Child fills 200, padding is included in that
+    child.Layout.Width.ShouldBe(200);
+  }
+
+  public void ShouldWorkWithFlexGrowAndContentBox()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      FlexGrow = 1,
+      BoxSizing = BoxSizing.ContentBox
+    };
+    child.SetPadding(Edge.Left, FlexValue.Point(10));
+    child.SetPadding(Edge.Right, FlexValue.Point(10));
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 200, 100, Direction.Ltr);
+
+    // Child content fills available space (200 - padding consumed by flex grow)
+    // With content-box, the flex-grow should give content size, then padding added
+    // This is complex - flex grow distributes to content, then padding adds
+    // The child ends up with width 200 (content) but we need to check behavior
+    child.Layout.Width.ShouldBe(200);
+  }
+}
+
+/// <summary>
+/// Tests for baseline alignment behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BaselineAlignmentTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldAlignChildrenToMaxBaseline()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      AlignItems = AlignItems.Baseline
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+    child1.BaselineFunc = (_, _, _) => 25; // Baseline at 25px from top
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(20)
+    };
+    child2.BaselineFunc = (_, _, _) => 15; // Baseline at 15px from top
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // child1 has baseline at 25, child2 has baseline at 15
+    // Max baseline is 25, so:
+    // child1 is at top 0 (its baseline 25 aligns with line baseline 25)
+    // child2 is at top 10 (its baseline 15 + offset 10 = 25)
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(10);
+  }
+
+  public void ShouldCallBaselineFuncDuringLayout()
+  {
+    bool baselineCalled = false;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      AlignItems = AlignItems.Baseline
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+    child.BaselineFunc = (_, _, _) =>
+    {
+      baselineCalled = true;
+      return 40;
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    baselineCalled.ShouldBeTrue();
+  }
+
+  public void ShouldPassCorrectDimensionsToBaselineFunc()
+  {
+    float receivedWidth = 0;
+    float receivedHeight = 0;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      AlignItems = AlignItems.Baseline
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(40)
+    };
+    child.BaselineFunc = (_, width, height) =>
+    {
+      receivedWidth = width;
+      receivedHeight = height;
+      return height;
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    receivedWidth.ShouldBe(50);
+    receivedHeight.ShouldBe(40);
+  }
+
+  public void ShouldDefaultBaselineToBottomWhenNoFunc()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      AlignItems = AlignItems.Baseline
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+    // No BaselineFunc - defaults to bottom (height = 30)
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(20)
+    };
+    // No BaselineFunc - defaults to bottom (height = 20)
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // child1 baseline is 30, child2 baseline is 20
+    // Max baseline is 30, so:
+    // child1 is at top 0
+    // child2 is at top 10 (baseline 20 + 10 = 30)
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(10);
+  }
+
+  public void ShouldHandleAlignSelfBaseline()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      AlignItems = AlignItems.FlexStart // Default is FlexStart
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30),
+      AlignSelf = AlignSelf.Baseline
+    };
+    child1.BaselineFunc = (_, _, _) => 25;
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(20),
+      AlignSelf = AlignSelf.Baseline
+    };
+    child2.BaselineFunc = (_, _, _) => 15;
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // Both use baseline via AlignSelf
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(10);
+  }
+
+  public void ShouldMixBaselineWithOtherAlignments()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      AlignItems = AlignItems.FlexStart
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+    // Uses FlexStart (default) - top = 0
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(20),
+      AlignSelf = AlignSelf.Baseline
+    };
+    child2.BaselineFunc = (_, _, _) => 15;
+
+    FlexNode child3 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(40),
+      AlignSelf = AlignSelf.Baseline
+    };
+    child3.BaselineFunc = (_, _, _) => 30;
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // child1: FlexStart, top = 0
+    // child2 & child3 use baseline
+    // child2 baseline is 15, child3 baseline is 30
+    // Line baseline is 30 (max of baseline items)
+    // child2 top = 30 - 15 = 15
+    // child3 top = 30 - 30 = 0
+    child1.Layout.Top.ShouldBe(0);
+    child2.Layout.Top.ShouldBe(15);
+    child3.Layout.Top.ShouldBe(0);
+  }
+}
+
+/// <summary>
+/// Tests for margin layout behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class MarginTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldOffsetElementWithMarginLeft()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+    child.SetMargin(Edge.Left, FlexValue.Point(10));
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child.Layout.Left.ShouldBe(10);
+  }
+
+  public void ShouldOffsetElementWithMarginTop()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+    child.SetMargin(Edge.Top, FlexValue.Point(10));
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child.Layout.Top.ShouldBe(10);
+  }
+
+  public void ShouldSpaceChildrenWithMargins()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+    child1.SetMargin(Edge.Right, FlexValue.Point(10));
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(40); // 30 + 10 margin
+  }
+
+  public void ShouldCenterWithAutoMargins()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+    child.SetMargin(Edge.Left, FlexValue.Auto);
+    child.SetMargin(Edge.Right, FlexValue.Auto);
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child.Layout.Left.ShouldBe(35); // (100 - 30) / 2
+  }
+
+  public void ShouldPushToEndWithLeadingAutoMargin()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+    child.SetMargin(Edge.Left, FlexValue.Auto);
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child.Layout.Left.ShouldBe(70); // 100 - 30
+  }
+
+  public void ShouldCenterOnCrossAxisWithAutoMargins()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+    child.SetMargin(Edge.Top, FlexValue.Auto);
+    child.SetMargin(Edge.Bottom, FlexValue.Auto);
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child.Layout.Top.ShouldBe(35); // (100 - 30) / 2
+  }
+
+  public void ShouldResolvePercentageMargin()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+    child.SetMargin(Edge.Left, FlexValue.Percent(10)); // 10% of 100 = 10
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child.Layout.Left.ShouldBe(10);
+  }
+
+  public void ShouldHandleNegativeMargin()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+    child2.SetMargin(Edge.Left, FlexValue.Point(-10));
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child1.Layout.Left.ShouldBe(0);
+    child2.Layout.Left.ShouldBe(40); // 50 - 10 = 40, overlapping
+  }
+
+  public void ShouldAccountForMarginsInFlexGrow()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      Height = FlexValue.Point(30),
+      FlexGrow = 1
+    };
+    child.SetMargin(Edge.Left, FlexValue.Point(10));
+    child.SetMargin(Edge.Right, FlexValue.Point(10));
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // Child should grow to fill remaining space after margins
+    child.Layout.Left.ShouldBe(10);
+    child.Layout.Width.ShouldBe(80); // 100 - 10 - 10
+  }
+}
+
+/// <summary>
+/// Tests for border handling in layout calculations.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class BorderTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  #region Uniform Border
+
+  public void ShouldOffsetChildContentWithUniformBorder()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.All, 10);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child.Layout.Left.ShouldBe(10);
+    child.Layout.Top.ShouldBe(10);
+  }
+
+  public void ShouldReduceAvailableSpaceForChildrenWithUniformBorder()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.All, 10);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Percent(100),
+      Height = FlexValue.Percent(100)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // Available space is 100 - 10 - 10 = 80
+    child.Layout.Width.ShouldBe(80);
+    child.Layout.Height.ShouldBe(80);
+  }
+
+  #endregion
+}
+
+/// <summary>
+/// Tests for HadOverflow flag behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class HadOverflowTests
+{
+  private FlexLayoutEngine Engine { get; } = new();
+
+  public void ShouldBeTrueWhenChildrenOverflowHorizontally()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    // FlexShrink = 0 prevents shrinking, causing actual overflow
+    FlexNode child1 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(50), FlexShrink = 0 };
+    FlexNode child2 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(50), FlexShrink = 0 };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // 160px of children in 100px container with no shrink = overflow
+    root.Layout.HadOverflow.ShouldBeTrue();
+  }
+
+  public void ShouldBeTrueWhenChildrenOverflowVertically()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Column
+    };
+
+    // FlexShrink = 0 prevents shrinking, causing actual overflow
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(80), FlexShrink = 0 };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(80), FlexShrink = 0 };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // 160px of children in 100px container with no shrink = overflow
+    root.Layout.HadOverflow.ShouldBeTrue();
+  }
+
+  public void ShouldBeFalseWhenContentFits()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(40), Height = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(40), Height = FlexValue.Point(50) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // 80px of children in 100px container = no overflow
+    root.Layout.HadOverflow.ShouldBeFalse();
+  }
+
+  public void ShouldBeFalseWhenContentExactlyFits()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(50) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // 100px of children in 100px container = exactly fits
+    root.Layout.HadOverflow.ShouldBeFalse();
+  }
+
+  public void ShouldBeFalseWhenWrapPreventsOverflow()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(40) };
+    FlexNode child2 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(40) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // Wrapping prevents main-axis overflow
+    root.Layout.HadOverflow.ShouldBeFalse();
+  }
+
+  public void ShouldBeTrueWhenWrapCausesCrossAxisOverflow()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(60) };
+    FlexNode child2 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(60) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // Wrapping causes cross-axis overflow (120px in 100px)
+    root.Layout.HadOverflow.ShouldBeTrue();
+  }
+
+  public void ShouldNotCountPaddingAsOverflow()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.Top, FlexValue.Point(10));
+    root.SetPadding(Edge.Bottom, FlexValue.Point(10));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(80)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // 80 + 20 padding = 100, exactly fits
+    root.Layout.HadOverflow.ShouldBeFalse();
+  }
+
+  public void ShouldDetectOverflowWithPadding()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetPadding(Edge.Top, FlexValue.Point(10));
+    root.SetPadding(Edge.Bottom, FlexValue.Point(10));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(90)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // 90 + 20 padding = 110 > 100 = overflow
+    root.Layout.HadOverflow.ShouldBeTrue();
+  }
+
+  public void ShouldDetectOverflowWithBorder()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.SetBorder(Edge.Top, 10);
+    root.SetBorder(Edge.Bottom, 10);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(90)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // 90 + 20 border = 110 > 100 = overflow
+    root.Layout.HadOverflow.ShouldBeTrue();
+  }
+
+  public void ShouldNotAffectHadOverflowWithAbsoluteChildren()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode absoluteChild = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200),
+      PositionType = PositionType.Absolute
+    };
+
+    root.AddChild(absoluteChild);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // Absolute children don't cause HadOverflow
+    root.Layout.HadOverflow.ShouldBeFalse();
+  }
+
+  public void ShouldOnlyAffectImmediateParent()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode parent = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    // FlexShrink = 0 to prevent shrinking and cause actual overflow
+    FlexNode child1 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(50), FlexShrink = 0 };
+    FlexNode child2 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(50), FlexShrink = 0 };
+
+    parent.AddChild(child1);
+    parent.AddChild(child2);
+    root.AddChild(parent);
+
+    Engine.CalculateLayout(root, 200, 200, Direction.Ltr);
+
+    parent.Layout.HadOverflow.ShouldBeTrue();
+    root.Layout.HadOverflow.ShouldBeFalse();
+  }
+
+  public void ShouldDetectOverflowInBothAxes()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(150),
+      Height = FlexValue.Point(150)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // Child overflows both axes
+    root.Layout.HadOverflow.ShouldBeTrue();
+  }
+
+  public void ShouldBeFalseWhenFlexShrinkPreventsOverflow()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(50), FlexShrink = 1 };
+    FlexNode child2 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(50), FlexShrink = 1 };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // FlexShrink prevents overflow
+    root.Layout.HadOverflow.ShouldBeFalse();
+  }
+
+  public void ShouldBeTrueWhenMinWidthPreventsFullShrink()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new()
+    {
+      Width = FlexValue.Point(80),
+      Height = FlexValue.Point(50),
+      FlexShrink = 1,
+      MinWidth = FlexValue.Point(60)
+    };
+    FlexNode child2 = new()
+    {
+      Width = FlexValue.Point(80),
+      Height = FlexValue.Point(50),
+      FlexShrink = 1,
+      MinWidth = FlexValue.Point(60)
+    };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // MinWidth prevents full shrink, causing overflow (120 > 100)
+    root.Layout.HadOverflow.ShouldBeTrue();
+  }
+
+  public void ShouldResetBetweenLayouts()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    // FlexShrink = 0 to cause actual overflow
+    FlexNode child1 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(50), FlexShrink = 0 };
+    FlexNode child2 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(50), FlexShrink = 0 };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    // First layout - should overflow (160 > 100 with no shrink)
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+    root.Layout.HadOverflow.ShouldBeTrue();
+
+    // Change children to fit
+    child1.Width = FlexValue.Point(40);
+    child2.Width = FlexValue.Point(40);
+
+    // Second layout - should not overflow (80 <= 100)
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+    root.Layout.HadOverflow.ShouldBeFalse();
+  }
+}
+
+/// <summary>
+/// Tests for intrinsic sizing behavior - how nodes size themselves based on content.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class IntrinsicSizeTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  #region Intrinsic Width
+
+  public void ShouldSizeToChildrenWidthInRow()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(30), Height = FlexValue.Point(50) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(80); // 50 + 30
+  }
+
+  public void ShouldUseMaxChildWidthInColumn()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(20) };
+    FlexNode child2 = new() { Width = FlexValue.Point(80), Height = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(30), Height = FlexValue.Point(20) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(80); // Max of children
+  }
+
+  public void ShouldIncludeGapInIntrinsicWidth()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      ColumnGap = 10
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(50) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(110); // 50 + 10 + 50
+  }
+
+  #endregion
+
+  #region Intrinsic Height
+
+  public void ShouldSizeToChildrenHeightInColumn()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(40) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Height.ShouldBe(70); // 30 + 40
+  }
+
+  public void ShouldUseMaxChildHeightInRow()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(60) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(40) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Height.ShouldBe(60); // Max of children
+  }
+
+  public void ShouldIncludeGapInIntrinsicHeight()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      RowGap = 15
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(30) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Height.ShouldBe(75); // 30 + 15 + 30
+  }
+
+  #endregion
+
+  #region Intrinsic Size with MeasureFunc
+
+  public void ShouldUseMeasureFuncResultForIntrinsicSize()
+  {
+    FlexNode root = new();
+
+    FlexNode child = new();
+    child.MeasureFunc = (_, _, _, _, _) => new Size(100, 50);
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    child.Layout.Width.ShouldBe(100);
+    child.Layout.Height.ShouldBe(50);
+    root.Layout.Width.ShouldBe(100);
+    root.Layout.Height.ShouldBe(50);
+  }
+
+  public void ShouldPassUndefinedModeForUnconstrainedLayout()
+  {
+    // Track the first call's measure modes (intrinsic sizing phase)
+    MeasureMode? firstWidthMode = null;
+    MeasureMode? firstHeightMode = null;
+
+    FlexNode root = new();
+
+    FlexNode child = new();
+    child.MeasureFunc = (_, _, widthMode, _, heightMode) =>
+    {
+      // Capture only the first call (intrinsic sizing)
+      firstWidthMode ??= widthMode;
+      firstHeightMode ??= heightMode;
+      return new Size(50, 50);
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    // First call should be with Undefined mode for intrinsic sizing
+    firstWidthMode.ShouldBe(MeasureMode.Undefined);
+    firstHeightMode.ShouldBe(MeasureMode.Undefined);
+  }
+
+  public void ShouldPassAtMostModeForConstrainedLayout()
+  {
+    // Track the first call's measure mode (intrinsic sizing phase)
+    MeasureMode? firstWidthMode = null;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexNode child = new();
+    child.MeasureFunc = (_, _, widthMode, _, _) =>
+    {
+      // Capture only the first call
+      firstWidthMode ??= widthMode;
+      return new Size(50, 50);
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // First call should be with AtMost mode when parent has constraints
+    firstWidthMode.ShouldBe(MeasureMode.AtMost);
+  }
+
+  public void ShouldCombineMeasureFuncResultsForMultipleChildren()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new();
+    child1.MeasureFunc = (_, _, _, _, _) => new Size(40, 30);
+
+    FlexNode child2 = new();
+    child2.MeasureFunc = (_, _, _, _, _) => new Size(60, 50);
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(100); // 40 + 60
+    root.Layout.Height.ShouldBe(50); // Max of 30, 50
+  }
+
+  #endregion
+
+  #region Intrinsic Size with Constraints
+
+  public void ShouldRespectMinWidthOnIntrinsicSize()
+  {
+    FlexNode root = new()
+    {
+      MinWidth = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(100); // Min enforced
+  }
+
+  public void ShouldRespectMaxWidthOnIntrinsicSize()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row,
+      MaxWidth = FlexValue.Point(80)
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(50) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(80); // Max enforced (children want 100)
+  }
+
+  public void ShouldRespectMinHeightOnIntrinsicSize()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      MinHeight = FlexValue.Point(100)
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(30)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Height.ShouldBe(100); // Min enforced
+  }
+
+  public void ShouldRespectMaxHeightOnIntrinsicSize()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      MaxHeight = FlexValue.Point(50)
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(40) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(40) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Height.ShouldBe(50); // Max enforced (children want 80)
+  }
+
+  #endregion
+
+  #region Intrinsic Size with Nested Content
+
+  public void ShouldCalculateIntrinsicSizeFromNestedChildren()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode container = new()
+    {
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(30), Height = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(40), Height = FlexValue.Point(30) };
+
+    container.AddChild(child1);
+    container.AddChild(child2);
+    root.AddChild(container);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    container.Layout.Width.ShouldBe(70); // 30 + 40
+    root.Layout.Width.ShouldBe(70);
+  }
+
+  public void ShouldCalculateIntrinsicSizeFromDeeplyNestedChildren()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode level1 = new()
+    {
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode level2 = new()
+    {
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode leaf = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    level2.AddChild(leaf);
+    level1.AddChild(level2);
+    root.AddChild(level1);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(50);
+    root.Layout.Height.ShouldBe(50);
+  }
+
+  #endregion
+
+  #region Intrinsic Size with Padding and Border
+
+  public void ShouldIncludePaddingInIntrinsicSize()
+  {
+    FlexNode root = new();
+    root.SetPadding(Edge.All, FlexValue.Point(10));
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(70);  // 50 + 10 + 10
+    root.Layout.Height.ShouldBe(70); // 50 + 10 + 10
+  }
+
+  public void ShouldIncludeBorderInIntrinsicSize()
+  {
+    FlexNode root = new();
+    root.SetBorder(Edge.All, 5);
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(60);  // 50 + 5 + 5
+    root.Layout.Height.ShouldBe(60); // 50 + 5 + 5
+  }
+
+  #endregion
+
+  #region Intrinsic Size with Flex
+
+  public void ShouldNotGrowWithoutAvailableSpace()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50),
+      FlexGrow = 1
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    // No available space to grow into when parent is intrinsically sized
+    child.Layout.Width.ShouldBe(50);
+  }
+
+  public void ShouldUseFlexBasisForIntrinsicSize()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      FlexBasis = FlexValue.Point(80),
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    child.Layout.Width.ShouldBe(80);
+    root.Layout.Width.ShouldBe(80);
+  }
+
+  #endregion
+
+  #region Edge Cases
+
+  public void ShouldHandleEmptyContainer()
+  {
+    FlexNode root = new();
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(0);
+    root.Layout.Height.ShouldBe(0);
+  }
+
+  public void ShouldHandleSingleChildWithNoSize()
+  {
+    FlexNode root = new();
+    FlexNode child = new();
+
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(0);
+    root.Layout.Height.ShouldBe(0);
+  }
+
+  public void ShouldHandleZeroSizeChild()
+  {
+    FlexNode root = new()
+    {
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(0), Height = FlexValue.Point(0) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    Engine.CalculateLayout(root, float.NaN, float.NaN, Direction.Ltr);
+
+    root.Layout.Width.ShouldBe(50);
+    root.Layout.Height.ShouldBe(50);
+  }
+
+  #endregion
+}

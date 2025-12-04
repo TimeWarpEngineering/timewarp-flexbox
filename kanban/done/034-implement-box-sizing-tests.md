@@ -4,16 +4,16 @@
 Implement tests for box-sizing behavior (content-box vs border-box). Box-sizing determines whether width/height include padding and border or only content. This is critical for CSS compatibility and predictable sizing.
 
 ## Todo List
-- [ ] Test default box-sizing behavior (border-box for flexbox)
-- [ ] Test content-box includes only content in width/height
-- [ ] Test border-box includes padding in width/height
-- [ ] Test border-box includes border in width/height
-- [ ] Test box-sizing with percentage dimensions
-- [ ] Test box-sizing with min/max constraints
-- [ ] Test box-sizing inheritance/override
-- [ ] Test box-sizing with flex-grow
-- [ ] Test box-sizing with flex-shrink
-- [ ] Test box-sizing with aspect ratio
+- [x] Test default box-sizing behavior (border-box for flexbox)
+- [x] Test content-box includes only content in width/height
+- [x] Test border-box includes padding in width/height
+- [x] Test border-box includes border in width/height
+- [ ] Test box-sizing with percentage dimensions (future)
+- [ ] Test box-sizing with min/max constraints (future)
+- [ ] Test box-sizing inheritance/override (future)
+- [x] Test box-sizing with flex-grow
+- [ ] Test box-sizing with flex-shrink (future)
+- [ ] Test box-sizing with aspect ratio (future)
 
 ## Notes
 Test file: test/TimeWarp.Flexbox.Tests/Layout/BoxSizing_/
@@ -135,7 +135,25 @@ public class BoxSizingWithFlexGrow_Should_
 ```
 
 ## Results
-(Add after completion)
-- Document outcomes
-- Include metrics, observations, decisions
-- Note any deviations from plan
+- **Implementation required**: BoxSizing was not implemented. Added full box-sizing support:
+  - Created `BoxSizing` enum with `BorderBox` (default) and `ContentBox` values
+  - Added `BoxSizing` property to `FlexNode.style.cs`
+  - Updated `ValueResolver.ResolveWidth/ResolveHeight` to accept padding/border for ContentBox calculations
+  - Updated `CalculateMainAxisSizes` to apply ContentBox adjustments
+  - Updated `CalculateCrossAxisSizes` to apply ContentBox adjustments
+  - Updated `CalculateNodeSize` and `LayoutAbsoluteChild` to pass padding/border values
+
+- **Tests added**: 9 box-sizing tests in `BoxSizingTests` class:
+  - `ShouldDefaultToBorderBox`
+  - `ShouldIncludePaddingInWidthWithBorderBox`
+  - `ShouldIncludeBorderInWidthWithBorderBox`
+  - `ShouldAddPaddingToWidthWithContentBox`
+  - `ShouldAddBorderToWidthWithContentBox`
+  - `ShouldAddPaddingAndBorderToWidthWithContentBox`
+  - `ShouldApplyContentBoxToHeight`
+  - `ShouldWorkWithFlexGrowAndBorderBox`
+  - `ShouldWorkWithFlexGrowAndContentBox`
+
+- **Test count**: 383 → 392 tests (added 9 tests)
+
+- **Deviations**: Percentage dimensions, min/max constraints, inheritance, flex-shrink, and aspect ratio box-sizing tests deferred for future work.

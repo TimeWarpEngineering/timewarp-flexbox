@@ -26,6 +26,7 @@ public partial class FlexNode
   private PositionType StylePositionType = PositionType.Relative;
   private Overflow StyleOverflow = Overflow.Visible;
   private float? StyleAspectRatio;
+  private BoxSizing StyleBoxSizing = BoxSizing.BorderBox;
 
   #region Direction & Wrapping
 
@@ -265,6 +266,18 @@ public partial class FlexNode
   {
     get => StyleAspectRatio;
     set => SetStyleProperty(ref StyleAspectRatio, value);
+  }
+
+  /// <summary>
+  /// Gets or sets the box sizing mode.
+  /// BorderBox: Width/height include padding and border.
+  /// ContentBox: Width/height are content only; padding/border added on top.
+  /// Default: BorderBox
+  /// </summary>
+  public BoxSizing BoxSizing
+  {
+    get => StyleBoxSizing;
+    set => SetStyleProperty(ref StyleBoxSizing, value);
   }
 
   #endregion

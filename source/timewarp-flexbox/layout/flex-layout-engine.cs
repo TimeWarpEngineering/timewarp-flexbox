@@ -46,13 +46,17 @@ public sealed class FlexLayoutEngine
     // Reset layout results for the entire tree
     ResetLayoutResults(root);
 
+    // Determine measure modes based on whether dimensions are defined
+    MeasureMode widthMode = float.IsNaN(availableWidth) ? MeasureMode.Undefined : MeasureMode.Exactly;
+    MeasureMode heightMode = float.IsNaN(availableHeight) ? MeasureMode.Undefined : MeasureMode.Exactly;
+
     // Calculate layout recursively starting from root
     LayoutNode(
       root,
       availableWidth,
-      MeasureMode.Exactly,
+      widthMode,
       availableHeight,
-      MeasureMode.Exactly,
+      heightMode,
       direction);
 
     // Apply pixel grid rounding if requested
@@ -157,30 +161,32 @@ public sealed class FlexLayoutEngine
     // Handle leaf nodes without children
     if (node.ChildCount == 0)
     {
-      CalculateNodeSize(node, availableWidth, widthMode, availableHeight, heightMode);
+      CalculateNodeSize(node, availableWidth, widthMode, availableHeight, heightMode, direction);
       return;
     }
 
     // Collect children into flex lines
-    FlexLinesCache.CollectLines(node, availableInnerMainSize, resolvedDirection, node.FlexWrap);
+    bool isRtl = direction == Direction.Rtl;
+    FlexLinesCache.CollectLines(node, availableInnerMainSize, resolvedDirection, node.FlexWrap, availableWidth, isRtl);
 
     // Process each flex line
     float totalLineCrossSize = 0;
 
-    foreach (FlexLine line in FlexLinesCache.Lines)
+    foreach (FlexLine line in FlexLinesCache.Lines.ToList())
     {
       // Calculate main axis sizes for items in this line
-      CalculateMainAxisSizes(line, availableInnerMainSize, resolvedDirection);
+      CalculateMainAxisSizes(line, availableInnerMainSize, resolvedDirection, direction);
 
       // Resolve flexible lengths (grow/shrink)
-      ResolveFlexibleLengths(line, availableInnerMainSize, resolvedDirection, mainAxisGap);
+      ResolveFlexibleLengths(line, availableInnerMainSize, resolvedDirection, mainAxisGap, availableWidth, isRtl);
 
       // Calculate cross axis sizes
       float lineCrossSize = CalculateCrossAxisSizes(
         line,
         availableInnerCrossSize,
         resolvedDirection,
-        node.AlignItems);
+        node.AlignItems,
+        direction);
 
       line.CrossSize = lineCrossSize;
       totalLineCrossSize += lineCrossSize;
@@ -222,7 +228,11 @@ public sealed class FlexLayoutEngine
       availableInnerCrossSize,
       totalLineCrossSize,
       mainAxisGap,
-      crossAxisGap);
+      crossAxisGap,
+      direction);
+
+    // Detect overflow
+    DetectOverflow(node, FlexLinesCache, availableInnerMainSize, availableInnerCrossSize, crossAxisGap);
 
     // Recursively layout children
     foreach (FlexNode child in node.Children)
@@ -288,8 +298,19 @@ public sealed class FlexLayoutEngine
     float availableWidth,
     MeasureMode widthMode,
     float availableHeight,
-    MeasureMode heightMode)
+    MeasureMode heightMode,
+    Direction direction)
   {
+    bool isRtl = direction == Direction.Rtl;
+
+    // Calculate padding and border for box sizing
+    float paddingBorderLeft = GetPaddingAndBorder(node, Edge.Left, direction);
+    float paddingBorderRight = GetPaddingAndBorder(node, Edge.Right, direction);
+    float paddingBorderTop = GetPaddingAndBorder(node, Edge.Top, direction);
+    float paddingBorderBottom = GetPaddingAndBorder(node, Edge.Bottom, direction);
+    float paddingBorderWidth = paddingBorderLeft + paddingBorderRight;
+    float paddingBorderHeight = paddingBorderTop + paddingBorderBottom;
+
     float width;
     float height;
 
@@ -300,7 +321,7 @@ public sealed class FlexLayoutEngine
     }
     else
     {
-      width = ValueResolver.ResolveWidth(node, availableWidth);
+      width = ValueResolver.ResolveWidth(node, availableWidth, paddingBorderWidth);
 
       if (float.IsNaN(width))
         width = 0;
@@ -312,7 +333,7 @@ public sealed class FlexLayoutEngine
     }
     else
     {
-      height = ValueResolver.ResolveHeight(node, availableHeight);
+      height = ValueResolver.ResolveHeight(node, availableHeight, paddingBorderHeight);
 
       if (float.IsNaN(height))
         height = 0;
@@ -325,31 +346,90 @@ public sealed class FlexLayoutEngine
   /// <summary>
   /// Calculates main axis sizes for items in a flex line.
   /// </summary>
-  private static void CalculateMainAxisSizes(
+  private void CalculateMainAxisSizes(
     FlexLine line,
     float availableMainSize,
-    FlexDirection direction)
+    FlexDirection direction,
+    Direction layoutDirection)
   {
     bool isRow = LayoutHelpers.IsRow(direction);
 
     foreach (FlexNode child in line.Items)
     {
+      // Calculate child padding/border for box sizing
+      float childPaddingBorderLeft = GetPaddingAndBorder(child, Edge.Left, layoutDirection);
+      float childPaddingBorderRight = GetPaddingAndBorder(child, Edge.Right, layoutDirection);
+      float childPaddingBorderTop = GetPaddingAndBorder(child, Edge.Top, layoutDirection);
+      float childPaddingBorderBottom = GetPaddingAndBorder(child, Edge.Bottom, layoutDirection);
+      float childPaddingBorderWidth = childPaddingBorderLeft + childPaddingBorderRight;
+      float childPaddingBorderHeight = childPaddingBorderTop + childPaddingBorderBottom;
+      float childPaddingBorderMain = isRow ? childPaddingBorderWidth : childPaddingBorderHeight;
+
       float childMainSize;
 
       // Resolve flex-basis or use explicit width/height
       if (child.FlexBasis.IsDefined)
       {
         childMainSize = ValueResolver.ResolveValue(child.FlexBasis, availableMainSize);
+        // Apply ContentBox adjustment to flex-basis
+        if (!float.IsNaN(childMainSize) && child.BoxSizing == BoxSizing.ContentBox)
+        {
+          childMainSize += childPaddingBorderMain;
+        }
       }
       else
       {
         FlexValue dimension = isRow ? child.Width : child.Height;
         childMainSize = ValueResolver.ResolveValue(dimension, availableMainSize);
+        // Apply ContentBox adjustment
+        if (!float.IsNaN(childMainSize) && child.BoxSizing == BoxSizing.ContentBox)
+        {
+          childMainSize += childPaddingBorderMain;
+        }
       }
 
       if (float.IsNaN(childMainSize))
       {
-        childMainSize = 0;
+        // If child has a measure function, call it to get intrinsic size
+        if (child.HasMeasureFunc && child.MeasureFunc is not null)
+        {
+          Size measuredSize = child.MeasureFunc(
+            child,
+            availableMainSize,
+            float.IsNaN(availableMainSize) ? MeasureMode.Undefined : MeasureMode.AtMost,
+            float.NaN,
+            MeasureMode.Undefined);
+
+          childMainSize = isRow ? measuredSize.Width : measuredSize.Height;
+
+          // Also set cross size from measure
+          float childCrossSize = isRow ? measuredSize.Height : measuredSize.Width;
+          if (isRow)
+          {
+            child.Layout.Height = childCrossSize;
+          }
+          else
+          {
+            child.Layout.Width = childCrossSize;
+          }
+        }
+        else if (child.ChildCount > 0)
+        {
+          // Child has children but no explicit size - recursively calculate intrinsic size
+          LayoutNode(
+            child,
+            float.NaN,
+            MeasureMode.Undefined,
+            float.NaN,
+            MeasureMode.Undefined,
+            layoutDirection);
+
+          childMainSize = isRow ? child.Layout.Width : child.Layout.Height;
+        }
+        else
+        {
+          childMainSize = 0;
+        }
       }
 
       // Apply min/max constraints
@@ -383,31 +463,43 @@ public sealed class FlexLayoutEngine
     FlexLine line,
     float availableMainSize,
     FlexDirection direction,
-    float mainAxisGap)
+    float mainAxisGap,
+    float containerWidth,
+    bool isRtl)
   {
     if (float.IsNaN(availableMainSize) || line.ItemCount == 0)
       return;
 
     bool isRow = LayoutHelpers.IsRow(direction);
+    Edge mainLeadingEdge = LayoutHelpers.GetLeadingEdge(direction);
+    Edge mainTrailingEdge = LayoutHelpers.GetTrailingEdge(direction);
 
     // Track frozen state for each item (items that hit min/max constraints)
     bool[] frozen = new bool[line.ItemCount];
     float[] targetMainSizes = new float[line.ItemCount];
     float[] flexBases = new float[line.ItemCount];
+    float[] margins = new float[line.ItemCount];
 
-    // Initialize target sizes and flex bases
+    // Initialize target sizes, flex bases, and margins
+    float totalMargins = 0;
     for (int i = 0; i < line.ItemCount; i++)
     {
       FlexNode child = line.Items[i];
       float currentSize = isRow ? child.Layout.Width : child.Layout.Height;
       targetMainSizes[i] = currentSize;
       flexBases[i] = currentSize;
+
+      // Calculate margin for this item (non-auto margins only)
+      float leadingMargin = GetMargin(child, mainLeadingEdge, containerWidth, isRtl);
+      float trailingMargin = GetMargin(child, mainTrailingEdge, containerWidth, isRtl);
+      margins[i] = leadingMargin + trailingMargin;
+      totalMargins += margins[i];
     }
 
     // Calculate total gap space
     float totalGapSpace = line.ItemCount > 1 ? mainAxisGap * (line.ItemCount - 1) : 0;
 
-    // Calculate initial free space (accounting for gaps)
+    // Calculate initial free space (accounting for gaps AND margins)
     float usedMainSize = 0;
 
     for (int i = 0; i < line.ItemCount; i++)
@@ -415,8 +507,9 @@ public sealed class FlexLayoutEngine
       usedMainSize += targetMainSizes[i];
     }
 
-    float freeSpace = availableMainSize - usedMainSize - totalGapSpace;
+    float freeSpace = availableMainSize - usedMainSize - totalGapSpace - totalMargins;
     line.RemainingFreeSpace = freeSpace;
+    line.InitialFreeSpace = freeSpace; // Store initial value for overflow detection
 
     // Determine if we're growing or shrinking
     bool isGrowing = freeSpace > 0;
@@ -469,7 +562,7 @@ public sealed class FlexLayoutEngine
         }
       }
 
-      float remainingSpace = availableMainSize - frozenSpace - unfrozenUsedSpace - totalGapSpace;
+      float remainingSpace = availableMainSize - frozenSpace - unfrozenUsedSpace - totalGapSpace - totalMargins;
 
       // Distribute space
       bool anyViolation = false;
@@ -568,32 +661,57 @@ public sealed class FlexLayoutEngine
     FlexLine line,
     float availableCrossSize,
     FlexDirection direction,
-    AlignItems alignItems)
+    AlignItems alignItems,
+    Direction layoutDirection)
   {
     bool isRow = LayoutHelpers.IsRow(direction);
     float maxCrossSize = 0;
 
     foreach (FlexNode child in line.Items)
     {
+      // Calculate child padding/border for box sizing
+      float childPaddingBorderLeft = GetPaddingAndBorder(child, Edge.Left, layoutDirection);
+      float childPaddingBorderRight = GetPaddingAndBorder(child, Edge.Right, layoutDirection);
+      float childPaddingBorderTop = GetPaddingAndBorder(child, Edge.Top, layoutDirection);
+      float childPaddingBorderBottom = GetPaddingAndBorder(child, Edge.Bottom, layoutDirection);
+      float childPaddingBorderWidth = childPaddingBorderLeft + childPaddingBorderRight;
+      float childPaddingBorderHeight = childPaddingBorderTop + childPaddingBorderBottom;
+      float childPaddingBorderCross = isRow ? childPaddingBorderHeight : childPaddingBorderWidth;
+
       float childCrossSize;
 
       FlexValue dimension = isRow ? child.Height : child.Width;
       childCrossSize = ValueResolver.ResolveValue(dimension, availableCrossSize);
 
+      // Apply ContentBox adjustment
+      if (!float.IsNaN(childCrossSize) && child.BoxSizing == BoxSizing.ContentBox)
+      {
+        childCrossSize += childPaddingBorderCross;
+      }
+
       // Handle stretch alignment
       if (float.IsNaN(childCrossSize))
       {
-        AlignSelf alignSelf = child.AlignSelf == AlignSelf.Auto
-          ? ConvertAlignItemsToAlignSelf(alignItems)
-          : child.AlignSelf;
-
-        if (alignSelf == AlignSelf.Stretch && !float.IsNaN(availableCrossSize))
+        // Check if cross size was already set (e.g., by MeasureFunc in CalculateMainAxisSizes)
+        float existingCrossSize = isRow ? child.Layout.Height : child.Layout.Width;
+        if (existingCrossSize > 0)
         {
-          childCrossSize = availableCrossSize;
+          childCrossSize = existingCrossSize;
         }
         else
         {
-          childCrossSize = 0;
+          AlignSelf alignSelf = child.AlignSelf == AlignSelf.Auto
+            ? ConvertAlignItemsToAlignSelf(alignItems)
+            : child.AlignSelf;
+
+          if (alignSelf == AlignSelf.Stretch && !float.IsNaN(availableCrossSize))
+          {
+            childCrossSize = availableCrossSize;
+          }
+          else
+          {
+            childCrossSize = 0;
+          }
         }
       }
 
@@ -637,9 +755,11 @@ public sealed class FlexLayoutEngine
     float paddingBorderWidth,
     float paddingBorderHeight)
   {
-    // Resolve explicit dimensions
-    float width = ValueResolver.ResolveWidth(node, availableWidth);
-    float height = ValueResolver.ResolveHeight(node, availableHeight);
+    // Resolve explicit dimensions (pass padding/border for ContentBox sizing)
+    float width = ValueResolver.ResolveWidth(node, availableWidth, paddingBorderWidth);
+    float height = ValueResolver.ResolveHeight(node, availableHeight, paddingBorderHeight);
+
+    bool isRow = LayoutHelpers.IsRow(node.FlexDirection);
 
     if (float.IsNaN(width))
     {
@@ -649,18 +769,52 @@ public sealed class FlexLayoutEngine
       }
       else
       {
-        // Calculate from children
+        // Calculate from children based on flex direction
         float contentWidth = 0;
+        int childCount = 0;
 
         foreach (FlexNode child in node.Children)
         {
           if (child.Display == Display.None || child.PositionType == PositionType.Absolute)
             continue;
 
-          contentWidth = Math.Max(contentWidth, child.Layout.Left + child.Layout.Width);
+          // Get child margins (margins use availableWidth for percentage resolution)
+          FlexValue marginLeft = child.Margin.ComputedLeft(FlexValue.Undefined);
+          FlexValue marginRight = child.Margin.ComputedRight(FlexValue.Undefined);
+          float childMarginLeft = ValueResolver.ResolveValueOrDefault(marginLeft, availableWidth, 0);
+          float childMarginRight = ValueResolver.ResolveValueOrDefault(marginRight, availableWidth, 0);
+          float childTotalWidth = child.Layout.Width + childMarginLeft + childMarginRight;
+
+          if (isRow)
+          {
+            // In row direction, sum widths along main axis
+            contentWidth += childTotalWidth;
+          }
+          else
+          {
+            // In column direction, take max width (cross axis)
+            contentWidth = Math.Max(contentWidth, childTotalWidth);
+          }
+
+          childCount++;
+        }
+
+        // Add gaps for row direction
+        if (isRow && childCount > 1)
+        {
+          contentWidth += node.ColumnGap * (childCount - 1);
         }
 
         width = contentWidth + paddingBorderWidth;
+
+        // Apply min/max constraints
+        float minWidth = ValueResolver.ResolveValue(node.MinWidth, availableWidth);
+        float maxWidth = ValueResolver.ResolveValue(node.MaxWidth, availableWidth);
+
+        if (!float.IsNaN(minWidth))
+          width = Math.Max(width, minWidth);
+        if (!float.IsNaN(maxWidth))
+          width = Math.Min(width, maxWidth);
       }
     }
 
@@ -672,18 +826,52 @@ public sealed class FlexLayoutEngine
       }
       else
       {
-        // Calculate from children
+        // Calculate from children based on flex direction
         float contentHeight = 0;
+        int childCount = 0;
 
         foreach (FlexNode child in node.Children)
         {
           if (child.Display == Display.None || child.PositionType == PositionType.Absolute)
             continue;
 
-          contentHeight = Math.Max(contentHeight, child.Layout.Top + child.Layout.Height);
+          // Get child margins (margins use availableWidth for percentage resolution per CSS spec)
+          FlexValue marginTop = child.Margin.ComputedTop(FlexValue.Undefined);
+          FlexValue marginBottom = child.Margin.ComputedBottom(FlexValue.Undefined);
+          float childMarginTop = ValueResolver.ResolveValueOrDefault(marginTop, availableWidth, 0);
+          float childMarginBottom = ValueResolver.ResolveValueOrDefault(marginBottom, availableWidth, 0);
+          float childTotalHeight = child.Layout.Height + childMarginTop + childMarginBottom;
+
+          if (isRow)
+          {
+            // In row direction, take max height (cross axis)
+            contentHeight = Math.Max(contentHeight, childTotalHeight);
+          }
+          else
+          {
+            // In column direction, sum heights along main axis
+            contentHeight += childTotalHeight;
+          }
+
+          childCount++;
+        }
+
+        // Add gaps for column direction
+        if (!isRow && childCount > 1)
+        {
+          contentHeight += node.RowGap * (childCount - 1);
         }
 
         height = contentHeight + paddingBorderHeight;
+
+        // Apply min/max constraints
+        float minHeight = ValueResolver.ResolveValue(node.MinHeight, availableHeight);
+        float maxHeight = ValueResolver.ResolveValue(node.MaxHeight, availableHeight);
+
+        if (!float.IsNaN(minHeight))
+          height = Math.Max(height, minHeight);
+        if (!float.IsNaN(maxHeight))
+          height = Math.Min(height, maxHeight);
       }
     }
 
@@ -703,11 +891,20 @@ public sealed class FlexLayoutEngine
     float availableCrossSize,
     float totalLineCrossSize,
     float mainAxisGap,
-    float crossAxisGap)
+    float crossAxisGap,
+    Direction layoutDirection)
   {
     bool isRow = LayoutHelpers.IsRow(direction);
     bool isReverse = LayoutHelpers.IsReverse(direction);
+    bool isRtl = layoutDirection == Direction.Rtl;
     int lineCount = flexLines.LineCount;
+    float containerWidth = node.Layout.Width;
+
+    // Get main axis edges
+    Edge mainLeadingEdge = LayoutHelpers.GetLeadingEdge(direction);
+    Edge mainTrailingEdge = LayoutHelpers.GetTrailingEdge(direction);
+    Edge crossLeadingEdge = isRow ? Edge.Top : Edge.Left;
+    Edge crossTrailingEdge = isRow ? Edge.Bottom : Edge.Right;
 
     // Calculate align-content distribution
     float crossFreeSpace = availableCrossSize - totalLineCrossSize;
@@ -741,21 +938,45 @@ public sealed class FlexLayoutEngine
 
     foreach (FlexLine line in flexLines.Lines)
     {
+      // Calculate auto margin distribution for main axis
+      float autoMarginFreeSpace = line.RemainingFreeSpace;
+      int autoMarginCount = 0;
+
+      foreach (FlexNode child in line.Items)
+      {
+        if (child.PositionType == PositionType.Absolute)
+          continue;
+
+        if (IsMarginAuto(child, mainLeadingEdge, isRtl))
+          autoMarginCount++;
+
+        if (IsMarginAuto(child, mainTrailingEdge, isRtl))
+          autoMarginCount++;
+      }
+
+      float autoMarginSize = autoMarginCount > 0 && autoMarginFreeSpace > 0
+        ? autoMarginFreeSpace / autoMarginCount
+        : 0;
+
+      // If there are auto margins, they consume free space instead of justify-content
+      float effectiveFreeSpace = autoMarginCount > 0 ? 0 : line.RemainingFreeSpace;
+
       // Calculate justify-content offset
       float mainPosition = CalculateJustifyContentOffset(
         node.JustifyContent,
         paddingBorderMainStart,
-        line.RemainingFreeSpace,
+        effectiveFreeSpace,
         line.ItemCount);
 
       float spaceBetween = CalculateJustifyContentSpacing(
         node.JustifyContent,
-        line.RemainingFreeSpace,
+        effectiveFreeSpace,
         line.ItemCount);
 
+      // Calculate line baseline for baseline alignment
+      float lineBaseline = CalculateLineBaseline(line, node.AlignItems, isRow);
+
       // Position items in the line
-      // Items are processed in logical order; positioning uses the leading edge
-      Edge mainLeadingEdge = LayoutHelpers.GetLeadingEdge(direction);
       float containerMainSize = isRow ? node.Layout.Width : node.Layout.Height;
       bool isFirstItem = true;
 
@@ -772,19 +993,56 @@ public sealed class FlexLayoutEngine
 
         isFirstItem = false;
 
+        // Add leading margin (fixed or auto)
+        float leadingMargin = IsMarginAuto(child, mainLeadingEdge, isRtl)
+          ? autoMarginSize
+          : GetMargin(child, mainLeadingEdge, containerWidth, isRtl);
+        mainPosition += leadingMargin;
+
         float childMainSize = isRow ? child.Layout.Width : child.Layout.Height;
 
         // Set main axis position using the leading edge
-        // SetPosition converts from edge position to Left/Top coordinates
         child.Layout.SetPosition(mainLeadingEdge, mainPosition, containerMainSize, childMainSize);
 
-        // Calculate cross axis position based on align-items/align-self
-        float childCrossPosition = CalculateAlignItemsOffset(
-          node.AlignItems,
-          child.AlignSelf,
-          crossPosition,
-          line.CrossSize,
-          isRow ? child.Layout.Height : child.Layout.Width);
+        // Calculate cross axis margins and auto-margin behavior
+        float crossLeadingMargin = GetMargin(child, crossLeadingEdge, containerWidth, isRtl);
+        float crossTrailingMargin = GetMargin(child, crossTrailingEdge, containerWidth, isRtl);
+        bool hasAutoLeadingCross = IsMarginAuto(child, crossLeadingEdge, isRtl);
+        bool hasAutoTrailingCross = IsMarginAuto(child, crossTrailingEdge, isRtl);
+
+        float childCrossSize = isRow ? child.Layout.Height : child.Layout.Width;
+        float crossFreeSpaceForChild = line.CrossSize - childCrossSize - crossLeadingMargin - crossTrailingMargin;
+
+        float childCrossPosition;
+
+        if (hasAutoLeadingCross && hasAutoTrailingCross)
+        {
+          // Both auto: center the item
+          childCrossPosition = crossPosition + crossFreeSpaceForChild / 2 + crossLeadingMargin;
+        }
+        else if (hasAutoLeadingCross)
+        {
+          // Only leading auto: push to trailing edge
+          childCrossPosition = crossPosition + crossFreeSpaceForChild + crossLeadingMargin;
+        }
+        else if (hasAutoTrailingCross)
+        {
+          // Only trailing auto: stay at leading edge with margin
+          childCrossPosition = crossPosition + crossLeadingMargin;
+        }
+        else
+        {
+          // No auto margins: use align-items/align-self
+          float itemBaseline = GetItemBaseline(child, isRow);
+          childCrossPosition = CalculateAlignItemsOffset(
+            node.AlignItems,
+            child.AlignSelf,
+            crossPosition + crossLeadingMargin,
+            line.CrossSize - crossLeadingMargin - crossTrailingMargin,
+            childCrossSize,
+            lineBaseline,
+            itemBaseline);
+        }
 
         if (isRow)
         {
@@ -795,8 +1053,13 @@ public sealed class FlexLayoutEngine
           child.Layout.Left = childCrossPosition;
         }
 
+        // Add trailing margin
+        float trailingMargin = IsMarginAuto(child, mainTrailingEdge, isRtl)
+          ? autoMarginSize
+          : GetMargin(child, mainTrailingEdge, containerWidth, isRtl);
+
         // Move to next position (spacing from justify-content)
-        mainPosition += childMainSize + spaceBetween;
+        mainPosition += childMainSize + trailingMargin + spaceBetween;
       }
 
       crossPosition += line.CrossSize + crossSpacing + crossAxisGap;
@@ -898,7 +1161,9 @@ public sealed class FlexLayoutEngine
     AlignSelf alignSelf,
     float lineStart,
     float lineSize,
-    float itemSize)
+    float itemSize,
+    float lineBaseline = 0,
+    float itemBaseline = 0)
   {
     AlignSelf effectiveAlign = alignSelf == AlignSelf.Auto
       ? ConvertAlignItemsToAlignSelf(alignItems)
@@ -910,9 +1175,54 @@ public sealed class FlexLayoutEngine
       AlignSelf.FlexEnd => lineStart + lineSize - itemSize,
       AlignSelf.Center => lineStart + (lineSize - itemSize) / 2,
       AlignSelf.Stretch => lineStart,
-      AlignSelf.Baseline => lineStart, // TODO: Implement baseline alignment
+      AlignSelf.Baseline => lineStart + lineBaseline - itemBaseline,
       _ => lineStart
     };
+  }
+
+  /// <summary>
+  /// Gets the baseline for a flex item.
+  /// If the item has a BaselineFunc, it is called with the item's dimensions.
+  /// Otherwise, the baseline defaults to the bottom of the item (its height).
+  /// </summary>
+  private static float GetItemBaseline(FlexNode item, bool isRow)
+  {
+    float width = item.Layout.Width;
+    float height = item.Layout.Height;
+
+    if (item.BaselineFunc is not null)
+    {
+      return item.BaselineFunc(item, width, height);
+    }
+
+    // Default baseline is at the bottom of the item
+    return isRow ? height : width;
+  }
+
+  /// <summary>
+  /// Calculates the maximum baseline for items in a line that use baseline alignment.
+  /// </summary>
+  private static float CalculateLineBaseline(FlexLine line, AlignItems alignItems, bool isRow)
+  {
+    float maxBaseline = 0;
+
+    foreach (FlexNode child in line.Items)
+    {
+      if (child.PositionType == PositionType.Absolute)
+        continue;
+
+      AlignSelf effectiveAlign = child.AlignSelf == AlignSelf.Auto
+        ? ConvertAlignItemsToAlignSelf(alignItems)
+        : child.AlignSelf;
+
+      if (effectiveAlign == AlignSelf.Baseline)
+      {
+        float itemBaseline = GetItemBaseline(child, isRow);
+        maxBaseline = Math.Max(maxBaseline, itemBaseline);
+      }
+    }
+
+    return maxBaseline;
   }
 
   /// <summary>
@@ -950,8 +1260,16 @@ public sealed class FlexLayoutEngine
     bool hasRight = ValueResolver.IsDefined(right);
     bool hasBottom = ValueResolver.IsDefined(bottom);
 
+    // Calculate child's padding and border for box sizing
+    float childPaddingBorderLeft = GetPaddingAndBorder(child, Edge.Left, direction);
+    float childPaddingBorderRight = GetPaddingAndBorder(child, Edge.Right, direction);
+    float childPaddingBorderTop = GetPaddingAndBorder(child, Edge.Top, direction);
+    float childPaddingBorderBottom = GetPaddingAndBorder(child, Edge.Bottom, direction);
+    float childPaddingBorderWidth = childPaddingBorderLeft + childPaddingBorderRight;
+    float childPaddingBorderHeight = childPaddingBorderTop + childPaddingBorderBottom;
+
     // Calculate width
-    float width = ValueResolver.ResolveWidth(child, paddingBoxWidth);
+    float width = ValueResolver.ResolveWidth(child, paddingBoxWidth, childPaddingBorderWidth);
 
     if (float.IsNaN(width))
     {
@@ -974,7 +1292,7 @@ public sealed class FlexLayoutEngine
     }
 
     // Calculate height
-    float height = ValueResolver.ResolveHeight(child, paddingBoxHeight);
+    float height = ValueResolver.ResolveHeight(child, paddingBoxHeight, childPaddingBorderHeight);
 
     if (float.IsNaN(height))
     {
@@ -1061,6 +1379,78 @@ public sealed class FlexLayoutEngine
   }
 
   /// <summary>
+  /// Gets the resolved margin value for an edge, resolving percentages against container width.
+  /// </summary>
+  private static float GetMargin(FlexNode node, Edge edge, float containerWidth, bool isRtl)
+  {
+    FlexValue value = edge switch
+    {
+      Edge.Left => node.Margin.ComputedLeft(FlexValue.Point(0), isRtl),
+      Edge.Right => node.Margin.ComputedRight(FlexValue.Point(0), isRtl),
+      Edge.Top => node.Margin.ComputedTop(FlexValue.Point(0)),
+      Edge.Bottom => node.Margin.ComputedBottom(FlexValue.Point(0)),
+      _ => FlexValue.Point(0)
+    };
+
+    // Auto margins return 0 here; they are handled separately
+    if (value.Unit == Unit.Auto)
+      return 0;
+
+    // Percentages are always resolved against container width (per CSS spec)
+    return ValueResolver.ResolveValueOrDefault(value, containerWidth, 0);
+  }
+
+  /// <summary>
+  /// Checks if a margin edge is set to auto.
+  /// </summary>
+  private static bool IsMarginAuto(FlexNode node, Edge edge, bool isRtl)
+  {
+    FlexValue value = edge switch
+    {
+      Edge.Left => node.Margin.ComputedLeft(FlexValue.Undefined, isRtl),
+      Edge.Right => node.Margin.ComputedRight(FlexValue.Undefined, isRtl),
+      Edge.Top => node.Margin.ComputedTop(FlexValue.Undefined),
+      Edge.Bottom => node.Margin.ComputedBottom(FlexValue.Undefined),
+      _ => FlexValue.Undefined
+    };
+
+    return value.Unit == Unit.Auto;
+  }
+
+  /// <summary>
+  /// Gets the total margin for both edges on an axis.
+  /// </summary>
+  private static float GetMarginForAxis(FlexNode node, bool isMainAxisRow, bool isMainAxis, float containerWidth, bool isRtl)
+  {
+    if (isMainAxis)
+    {
+      if (isMainAxisRow)
+      {
+        return GetMargin(node, Edge.Left, containerWidth, isRtl) +
+               GetMargin(node, Edge.Right, containerWidth, isRtl);
+      }
+      else
+      {
+        return GetMargin(node, Edge.Top, containerWidth, isRtl) +
+               GetMargin(node, Edge.Bottom, containerWidth, isRtl);
+      }
+    }
+    else
+    {
+      if (isMainAxisRow)
+      {
+        return GetMargin(node, Edge.Top, containerWidth, isRtl) +
+               GetMargin(node, Edge.Bottom, containerWidth, isRtl);
+      }
+      else
+      {
+        return GetMargin(node, Edge.Left, containerWidth, isRtl) +
+               GetMargin(node, Edge.Right, containerWidth, isRtl);
+      }
+    }
+  }
+
+  /// <summary>
   /// Gets the computed value for an edge from float EdgeValues.
   /// </summary>
   private static float GetFloatEdge(EdgeValues<float> edges, Edge edge, bool isRtl)
@@ -1103,4 +1493,56 @@ public sealed class FlexLayoutEngine
     AlignItems.Stretch => AlignSelf.Stretch,
     _ => AlignSelf.Stretch
   };
+
+  /// <summary>
+  /// Detects if children overflow the container bounds.
+  /// Sets HadOverflow on the node's layout result.
+  /// Overflow is detected based on whether children's base sizes exceed available space,
+  /// before flex shrink is applied.
+  /// </summary>
+  private static void DetectOverflow(
+    FlexNode node,
+    FlexLines flexLines,
+    float availableMainSize,
+    float availableCrossSize,
+    float crossAxisGap)
+  {
+    // Reset overflow flag - it should be false by default
+    node.Layout.HadOverflow = false;
+
+    // If sizes are undefined (NaN), we can't detect overflow
+    if (float.IsNaN(availableMainSize) && float.IsNaN(availableCrossSize))
+      return;
+
+    // Check each line for overflow based on RemainingFreeSpace (after flex adjustments)
+    // If RemainingFreeSpace is negative after shrinking, we have actual overflow
+    float totalCrossSize = 0;
+    int lineCount = flexLines.LineCount;
+
+    foreach (FlexLine line in flexLines.Lines)
+    {
+      // Check main axis overflow using final remaining free space (after shrink)
+      // Negative remaining space means children actually exceed available space
+      if (!float.IsNaN(availableMainSize) && line.RemainingFreeSpace < -0.0001f)
+      {
+        node.Layout.HadOverflow = true;
+        return;
+      }
+
+      // Accumulate cross size
+      totalCrossSize += line.CrossSize;
+    }
+
+    // Add cross axis gaps between lines
+    if (lineCount > 1)
+    {
+      totalCrossSize += crossAxisGap * (lineCount - 1);
+    }
+
+    // Check for cross axis overflow
+    if (!float.IsNaN(availableCrossSize) && totalCrossSize > availableCrossSize + 0.0001f)
+    {
+      node.Layout.HadOverflow = true;
+    }
+  }
 }

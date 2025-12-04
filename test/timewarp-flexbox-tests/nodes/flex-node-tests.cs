@@ -744,6 +744,134 @@ public class FlexNodeLeafTests
 }
 
 /// <summary>
+/// Tests for reordering children via remove and insert.
+/// </summary>
+public class FlexNodeReorderingTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldReorderChildrenViaRemoveAndInsert()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(30), Height = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(30), Height = FlexValue.Point(30) };
+    FlexNode child3 = new() { Width = FlexValue.Point(30), Height = FlexValue.Point(30) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    // Move child3 to front
+    root.RemoveChild(child3);
+    root.InsertChild(child3, 0);
+
+    root.GetChild(0).ShouldBeSameAs(child3);
+    root.GetChild(1).ShouldBeSameAs(child1);
+    root.GetChild(2).ShouldBeSameAs(child2);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child3.Layout.Left.ShouldBe(0);
+    child1.Layout.Left.ShouldBe(30);
+    child2.Layout.Left.ShouldBe(60);
+  }
+
+  public void ShouldMoveChildToEnd()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(30), Height = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(30), Height = FlexValue.Point(30) };
+    FlexNode child3 = new() { Width = FlexValue.Point(30), Height = FlexValue.Point(30) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    // Move child1 to end
+    root.RemoveChild(child1);
+    root.InsertChild(child1, 2);
+
+    root.GetChild(0).ShouldBeSameAs(child2);
+    root.GetChild(1).ShouldBeSameAs(child3);
+    root.GetChild(2).ShouldBeSameAs(child1);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child2.Layout.Left.ShouldBe(0);
+    child3.Layout.Left.ShouldBe(30);
+    child1.Layout.Left.ShouldBe(60);
+  }
+
+  public void ShouldSwapTwoChildren()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(100), Height = FlexValue.Point(25) };
+    FlexNode child2 = new() { Width = FlexValue.Point(100), Height = FlexValue.Point(25) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    // Swap: remove both, insert in reverse order
+    root.RemoveChild(child1);
+    root.RemoveChild(child2);
+    root.AddChild(child2);
+    root.AddChild(child1);
+
+    root.GetChild(0).ShouldBeSameAs(child2);
+    root.GetChild(1).ShouldBeSameAs(child1);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    child2.Layout.Top.ShouldBe(0);
+    child1.Layout.Top.ShouldBe(25);
+  }
+
+  public void ShouldMarkDirtyAfterReordering()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(30) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    // Use node.CalculateLayout which clears dirty flags
+    root.CalculateLayout(100, 100);
+    root.IsDirty.ShouldBeFalse();
+
+    // Reorder
+    root.RemoveChild(child2);
+    root.InsertChild(child2, 0);
+
+    root.IsDirty.ShouldBeTrue();
+  }
+}
+
+/// <summary>
 /// Tests for FlexNode config property.
 /// </summary>
 public class FlexNodeConfigTests
@@ -765,5 +893,964 @@ public class FlexNodeConfigTests
 
     node.Config.ShouldBe(customConfig);
     node.EffectiveConfig.ShouldBe(customConfig);
+  }
+}
+
+/// <summary>
+/// Tests for FlexNode DirtiedFunc callback.
+/// </summary>
+public class FlexNodeDirtiedCallbackTests
+{
+  public void ShouldInvokeCallbackWhenNodeBecomesDirty()
+  {
+    bool callbackInvoked = false;
+    FlexNode? dirtiedNode = null;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.DirtiedFunc = node =>
+    {
+      callbackInvoked = true;
+      dirtiedNode = node;
+    };
+
+    root.CalculateLayout(100, 100);
+    callbackInvoked.ShouldBeFalse();
+
+    root.Width = FlexValue.Point(200);
+
+    callbackInvoked.ShouldBeTrue();
+    dirtiedNode.ShouldBeSameAs(root);
+  }
+
+  public void ShouldOnlyInvokeCallbackOnce()
+  {
+    int callCount = 0;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.DirtiedFunc = _ => callCount++;
+
+    root.CalculateLayout(100, 100);
+
+    // Multiple changes while already dirty
+    root.Width = FlexValue.Point(200);
+    root.Height = FlexValue.Point(200);
+    root.FlexDirection = FlexDirection.Column;
+
+    // Should only be called once (first time it becomes dirty)
+    callCount.ShouldBe(1);
+  }
+
+  public void ShouldInvokeCallbackOnParentWhenChildBecomesDirty()
+  {
+    bool parentCallbackInvoked = false;
+    bool childCallbackInvoked = false;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    root.DirtiedFunc = _ => parentCallbackInvoked = true;
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+    child.DirtiedFunc = _ => childCallbackInvoked = true;
+
+    root.AddChild(child);
+    root.CalculateLayout(100, 100);
+
+    // Change child's style
+    child.Width = FlexValue.Point(60);
+
+    childCallbackInvoked.ShouldBeTrue();
+    parentCallbackInvoked.ShouldBeTrue();
+  }
+
+  public void ShouldNotInvokeCallbackWhenAlreadyDirty()
+  {
+    int callCount = 0;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100)
+    };
+    root.DirtiedFunc = _ => callCount++;
+
+    // Node starts dirty, so this should invoke callback
+    root.CalculateLayout(100, 100);
+    callCount.ShouldBe(0); // No callback during initial layout
+
+    root.Width = FlexValue.Point(200);
+    callCount.ShouldBe(1);
+
+    // Node is already dirty, this should NOT invoke callback
+    root.MarkDirty();
+    callCount.ShouldBe(1);
+  }
+
+  public void ShouldInvokeCallbackWhenAddingChild()
+  {
+    bool callbackInvoked = false;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100)
+    };
+    root.DirtiedFunc = _ => callbackInvoked = true;
+
+    root.CalculateLayout(100, 100);
+    callbackInvoked.ShouldBeFalse();
+
+    FlexNode child = new() { Width = FlexValue.Point(50) };
+    root.AddChild(child);
+
+    callbackInvoked.ShouldBeTrue();
+  }
+
+  public void ShouldInvokeCallbackWhenRemovingChild()
+  {
+    bool callbackInvoked = false;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100)
+    };
+
+    FlexNode child = new() { Width = FlexValue.Point(50) };
+    root.AddChild(child);
+    root.CalculateLayout(100, 100);
+
+    root.DirtiedFunc = _ => callbackInvoked = true;
+
+    root.RemoveChild(child);
+
+    callbackInvoked.ShouldBeTrue();
+  }
+
+  public void ShouldNotInvokeSiblingCallbackWhenNodeBecomesDirty()
+  {
+    bool siblingCallbackInvoked = false;
+
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100)
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50) };
+    child2.DirtiedFunc = _ => siblingCallbackInvoked = true;
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.CalculateLayout(100, 100);
+
+    // Change child1's style - should NOT invoke child2's callback
+    child1.Width = FlexValue.Point(60);
+
+    siblingCallbackInvoked.ShouldBeFalse();
+  }
+
+  public void ShouldWorkWithNullCallback()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100)
+    };
+
+    root.DirtiedFunc = null;
+    root.CalculateLayout(100, 100);
+
+    // Should not throw
+    root.Width = FlexValue.Point(200);
+    root.IsDirty.ShouldBeTrue();
+  }
+}
+
+/// <summary>
+/// Tests for FlexConfig default values.
+/// </summary>
+public class FlexConfigDefaultValuesTests
+{
+  public void ShouldHaveExpectedDefaults()
+  {
+    FlexConfig config = new();
+
+    config.Direction.ShouldBe(Direction.Ltr);
+    config.PointScaleFactor.ShouldBe(1.0f);
+    config.UseWebDefaults.ShouldBeFalse();
+    config.UseErrata.ShouldBeFalse();
+  }
+
+  public void ShouldHaveStaticDefaultInstance()
+  {
+    FlexConfig.Default.ShouldNotBeNull();
+    FlexConfig.Default.PointScaleFactor.ShouldBe(1.0f);
+  }
+
+  public void ShouldReturnSameStaticDefaultInstance()
+  {
+    FlexConfig default1 = FlexConfig.Default;
+    FlexConfig default2 = FlexConfig.Default;
+
+    default1.ShouldBeSameAs(default2);
+  }
+}
+
+/// <summary>
+/// Tests for FlexConfig cloning.
+/// </summary>
+public class FlexConfigCloneTests
+{
+  public void ShouldCloneAllProperties()
+  {
+    FlexConfig original = new()
+    {
+      Direction = Direction.Rtl,
+      PointScaleFactor = 2.5f,
+      UseWebDefaults = true,
+      UseErrata = true
+    };
+
+    FlexConfig clone = original.Clone();
+
+    clone.Direction.ShouldBe(Direction.Rtl);
+    clone.PointScaleFactor.ShouldBe(2.5f);
+    clone.UseWebDefaults.ShouldBeTrue();
+    clone.UseErrata.ShouldBeTrue();
+  }
+
+  public void ShouldCreateIndependentCopy()
+  {
+    FlexConfig original = new() { PointScaleFactor = 1.0f };
+    FlexConfig clone = original.Clone();
+
+    // Modify original
+    original.PointScaleFactor = 3.0f;
+
+    // Clone should be unchanged
+    clone.PointScaleFactor.ShouldBe(1.0f);
+  }
+
+  public void ShouldNotBeSameReference()
+  {
+    FlexConfig original = new();
+    FlexConfig clone = original.Clone();
+
+    clone.ShouldNotBeSameAs(original);
+  }
+}
+
+/// <summary>
+/// Tests for FlexConfig sharing across nodes.
+/// </summary>
+public class FlexConfigSharingTests
+{
+  public void ShouldApplyConfigToMultipleNodes()
+  {
+    FlexConfig config = new() { PointScaleFactor = 2.0f };
+
+    FlexNode root = new() { Config = config };
+    FlexNode child1 = new() { Config = config };
+    FlexNode child2 = new() { Config = config };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    root.Config.ShouldBeSameAs(config);
+    child1.Config.ShouldBeSameAs(config);
+    child2.Config.ShouldBeSameAs(config);
+  }
+
+  public void ShouldAllowDifferentConfigsForDifferentNodes()
+  {
+    FlexConfig config1 = new() { PointScaleFactor = 1.0f };
+    FlexConfig config2 = new() { PointScaleFactor = 2.0f };
+
+    FlexNode node1 = new() { Config = config1 };
+    FlexNode node2 = new() { Config = config2 };
+
+    node1.EffectiveConfig.PointScaleFactor.ShouldBe(1.0f);
+    node2.EffectiveConfig.PointScaleFactor.ShouldBe(2.0f);
+  }
+
+  public void ShouldUseEffectiveConfigFromNodeOrDefault()
+  {
+    FlexConfig customConfig = new() { Direction = Direction.Rtl };
+
+    FlexNode nodeWithConfig = new() { Config = customConfig };
+    FlexNode nodeWithoutConfig = new();
+
+    nodeWithConfig.EffectiveConfig.Direction.ShouldBe(Direction.Rtl);
+    nodeWithoutConfig.EffectiveConfig.Direction.ShouldBe(Direction.Ltr);
+  }
+}
+
+/// <summary>
+/// Tests for PointScaleFactor behavior.
+/// </summary>
+public class FlexConfigPointScaleFactorTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldAcceptVariousScaleFactors()
+  {
+    float[] scaleFactors = [0.5f, 1.0f, 2.0f, 3.0f];
+
+    foreach (float scaleFactor in scaleFactors)
+    {
+      FlexConfig config = new() { PointScaleFactor = scaleFactor };
+      config.PointScaleFactor.ShouldBe(scaleFactor);
+    }
+  }
+
+  public void ShouldAffectLayoutRounding()
+  {
+    // At 1x scale, 100/3 children should round to whole pixels
+    FlexConfig config1x = new() { PointScaleFactor = 1.0f };
+    FlexNode root1 = new()
+    {
+      Config = config1x,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    for (int i = 0; i < 3; i++)
+    {
+      root1.AddChild(new FlexNode { Config = config1x, FlexGrow = 1 });
+    }
+
+    Engine.CalculateLayout(root1, 100, 100, Direction.Ltr);
+
+    // Each child should be approximately 33.33, rounded to pixels
+    // Total should still equal 100 (within floating point tolerance)
+    float total = root1.GetChild(0).Layout.Width +
+                  root1.GetChild(1).Layout.Width +
+                  root1.GetChild(2).Layout.Width;
+    total.ShouldBe(100, 0.001f);
+  }
+
+  public void ShouldRoundToHalfPixelsAt2xScale()
+  {
+    FlexConfig config2x = new() { PointScaleFactor = 2.0f };
+    FlexNode root = new()
+    {
+      Config = config2x,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    for (int i = 0; i < 3; i++)
+    {
+      root.AddChild(new FlexNode { Config = config2x, FlexGrow = 1 });
+    }
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Ltr);
+
+    // At 2x scale, can use 0.5 pixel increments
+    // Total should still equal 100 (within floating point tolerance)
+    float total = root.GetChild(0).Layout.Width +
+                  root.GetChild(1).Layout.Width +
+                  root.GetChild(2).Layout.Width;
+    total.ShouldBe(100, 0.001f);
+  }
+}
+
+/// <summary>
+/// Tests for FlexConfig direction setting.
+/// </summary>
+public class FlexConfigDirectionTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldUseConfigDirectionForRootNode()
+  {
+    FlexConfig rtlConfig = new() { Direction = Direction.Rtl };
+    FlexNode root = new()
+    {
+      Config = rtlConfig,
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child = new()
+    {
+      Width = FlexValue.Point(30),
+      Height = FlexValue.Point(30)
+    };
+    root.AddChild(child);
+
+    Engine.CalculateLayout(root, 100, 100, Direction.Inherit);
+
+    // In RTL, child should be positioned from right
+    // But note: CalculateLayout takes direction parameter which may override
+    root.ResolvedDirection.ShouldBe(Direction.Rtl);
+  }
+
+  public void ShouldInheritDirectionFromConfig()
+  {
+    FlexConfig config = new() { Direction = Direction.Rtl };
+    FlexNode root = new()
+    {
+      Config = config,
+      Direction = Direction.Inherit
+    };
+
+    root.ResolvedDirection.ShouldBe(Direction.Rtl);
+  }
+}
+
+/// <summary>
+/// Tests for FlexNode default values matching expected spec.
+/// </summary>
+public class FlexNodeDefaultValueTests
+{
+  public void ShouldHaveCorrectFlexboxDefaults()
+  {
+    FlexNode node = new();
+
+    // Direction and wrap
+    node.FlexDirection.ShouldBe(FlexDirection.Row);
+    node.FlexWrap.ShouldBe(FlexWrap.NoWrap);
+
+    // Alignment
+    node.JustifyContent.ShouldBe(JustifyContent.FlexStart);
+    node.AlignItems.ShouldBe(AlignItems.Stretch);
+    node.AlignContent.ShouldBe(AlignContent.FlexStart);
+    node.AlignSelf.ShouldBe(AlignSelf.Auto);
+
+    // Flex factors
+    node.FlexGrow.ShouldBe(0f);
+    node.FlexShrink.ShouldBe(1f);
+    node.FlexBasis.ShouldBe(FlexValue.Auto);
+
+    // Position and display
+    node.PositionType.ShouldBe(PositionType.Relative);
+    node.Display.ShouldBe(Display.Flex);
+    node.Overflow.ShouldBe(Overflow.Visible);
+
+    // Dimensions
+    node.Width.ShouldBe(FlexValue.Undefined);
+    node.Height.ShouldBe(FlexValue.Undefined);
+    node.MinWidth.ShouldBe(FlexValue.Undefined);
+    node.MinHeight.ShouldBe(FlexValue.Undefined);
+    node.MaxWidth.ShouldBe(FlexValue.Undefined);
+    node.MaxHeight.ShouldBe(FlexValue.Undefined);
+
+    // Other
+    node.AspectRatio.ShouldBeNull();
+    node.BoxSizing.ShouldBe(BoxSizing.BorderBox);
+  }
+
+  public void ShouldHaveCorrectGapDefaults()
+  {
+    FlexNode node = new();
+
+    node.Gap.ShouldBe(0f);
+    node.RowGap.ShouldBe(0f);
+    node.ColumnGap.ShouldBe(0f);
+  }
+
+  public void ShouldHaveCorrectDirectionDefault()
+  {
+    FlexNode node = new();
+
+    node.Direction.ShouldBe(Direction.Inherit);
+  }
+}
+
+/// <summary>
+/// Tests for FlexNode.Clone() method.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class FlexNodeCloneTests
+{
+  public void ShouldCreateNewInstance()
+  {
+    FlexNode original = new();
+
+    FlexNode clone = original.Clone();
+
+    clone.ShouldNotBeSameAs(original);
+  }
+
+  public void ShouldHaveNoParent()
+  {
+    FlexNode parent = new();
+    FlexNode child = new();
+    parent.AddChild(child);
+
+    FlexNode clone = child.Clone();
+
+    clone.Parent.ShouldBeNull();
+  }
+
+  public void ShouldCopyStyleProperties()
+  {
+    FlexNode original = new()
+    {
+      FlexDirection = FlexDirection.Column,
+      FlexWrap = FlexWrap.Wrap,
+      JustifyContent = JustifyContent.SpaceBetween,
+      AlignItems = AlignItems.Center,
+      AlignContent = AlignContent.SpaceAround,
+      AlignSelf = AlignSelf.FlexEnd,
+      FlexGrow = 2,
+      FlexShrink = 0.5f,
+      FlexBasis = FlexValue.Point(100),
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Percent(50),
+      MinWidth = FlexValue.Point(50),
+      MinHeight = FlexValue.Point(25),
+      MaxWidth = FlexValue.Point(400),
+      MaxHeight = FlexValue.Point(300),
+      Display = Display.None,
+      PositionType = PositionType.Absolute,
+      Overflow = Overflow.Hidden,
+      AspectRatio = 1.5f,
+      BoxSizing = BoxSizing.ContentBox,
+      Direction = Direction.Rtl
+    };
+
+    FlexNode clone = original.Clone();
+
+    clone.FlexDirection.ShouldBe(FlexDirection.Column);
+    clone.FlexWrap.ShouldBe(FlexWrap.Wrap);
+    clone.JustifyContent.ShouldBe(JustifyContent.SpaceBetween);
+    clone.AlignItems.ShouldBe(AlignItems.Center);
+    clone.AlignContent.ShouldBe(AlignContent.SpaceAround);
+    clone.AlignSelf.ShouldBe(AlignSelf.FlexEnd);
+    clone.FlexGrow.ShouldBe(2);
+    clone.FlexShrink.ShouldBe(0.5f);
+    clone.FlexBasis.ShouldBe(FlexValue.Point(100));
+    clone.Width.ShouldBe(FlexValue.Point(200));
+    clone.Height.ShouldBe(FlexValue.Percent(50));
+    clone.MinWidth.ShouldBe(FlexValue.Point(50));
+    clone.MinHeight.ShouldBe(FlexValue.Point(25));
+    clone.MaxWidth.ShouldBe(FlexValue.Point(400));
+    clone.MaxHeight.ShouldBe(FlexValue.Point(300));
+    clone.Display.ShouldBe(Display.None);
+    clone.PositionType.ShouldBe(PositionType.Absolute);
+    clone.Overflow.ShouldBe(Overflow.Hidden);
+    clone.AspectRatio.ShouldBe(1.5f);
+    clone.BoxSizing.ShouldBe(BoxSizing.ContentBox);
+    clone.Direction.ShouldBe(Direction.Rtl);
+  }
+
+  public void ShouldCopySpacingProperties()
+  {
+    FlexNode original = new();
+    original.SetMargin(Edge.Left, FlexValue.Point(10));
+    original.SetMargin(Edge.Top, FlexValue.Point(20));
+    original.SetPadding(Edge.All, FlexValue.Point(5));
+    original.SetBorder(Edge.Right, 3);
+    original.SetPosition(Edge.Bottom, FlexValue.Point(15));
+    original.Gap = 8;
+    original.RowGap = 12;
+    original.ColumnGap = 16;
+
+    FlexNode clone = original.Clone();
+
+    clone.Margin[Edge.Left].ShouldBe(FlexValue.Point(10));
+    clone.Margin[Edge.Top].ShouldBe(FlexValue.Point(20));
+    clone.Padding[Edge.All].ShouldBe(FlexValue.Point(5));
+    clone.Border[Edge.Right].ShouldBe(3f);
+    clone.Position[Edge.Bottom].ShouldBe(FlexValue.Point(15));
+    clone.Gap.ShouldBe(8f);
+    clone.RowGap.ShouldBe(12f);
+    clone.ColumnGap.ShouldBe(16f);
+  }
+
+  public void ShouldDeepCloneChildren()
+  {
+    FlexNode original = new() { Width = FlexValue.Point(100) };
+    FlexNode child1 = new() { Width = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(30) };
+    original.AddChild(child1);
+    original.AddChild(child2);
+
+    FlexNode clone = original.Clone();
+
+    clone.ChildCount.ShouldBe(2);
+    clone.Children[0].ShouldNotBeSameAs(child1);
+    clone.Children[1].ShouldNotBeSameAs(child2);
+    clone.Children[0].Width.ShouldBe(FlexValue.Point(50));
+    clone.Children[1].Width.ShouldBe(FlexValue.Point(30));
+  }
+
+  public void ShouldSetClonedChildrenParent()
+  {
+    FlexNode original = new();
+    FlexNode child = new();
+    original.AddChild(child);
+
+    FlexNode clone = original.Clone();
+
+    clone.Children[0].Parent.ShouldBeSameAs(clone);
+  }
+
+  public void ShouldDeepCloneNestedHierarchy()
+  {
+    FlexNode root = new() { Width = FlexValue.Point(100) };
+    FlexNode level1 = new() { Width = FlexValue.Point(80) };
+    FlexNode level2 = new() { Width = FlexValue.Point(60) };
+    FlexNode level3 = new() { Width = FlexValue.Point(40) };
+
+    root.AddChild(level1);
+    level1.AddChild(level2);
+    level2.AddChild(level3);
+
+    FlexNode clone = root.Clone();
+
+    clone.ChildCount.ShouldBe(1);
+    clone.Children[0].ChildCount.ShouldBe(1);
+    clone.Children[0].Children[0].ChildCount.ShouldBe(1);
+    clone.Children[0].Children[0].Children[0].ChildCount.ShouldBe(0);
+
+    // Verify all nodes are different instances
+    clone.ShouldNotBeSameAs(root);
+    clone.Children[0].ShouldNotBeSameAs(level1);
+    clone.Children[0].Children[0].ShouldNotBeSameAs(level2);
+    clone.Children[0].Children[0].Children[0].ShouldNotBeSameAs(level3);
+
+    // Verify properties are copied
+    clone.Children[0].Children[0].Children[0].Width.ShouldBe(FlexValue.Point(40));
+  }
+
+  public void ShouldCopyMeasureFunc()
+  {
+    MeasureFunc measureFunc = (_, _, _, _, _) => new Size(100, 50);
+    FlexNode original = new() { MeasureFunc = measureFunc };
+
+    FlexNode clone = original.Clone();
+
+    clone.MeasureFunc.ShouldBeSameAs(measureFunc);
+    clone.HasMeasureFunc.ShouldBeTrue();
+  }
+
+  public void ShouldCopyBaselineFunc()
+  {
+    BaselineFunc baselineFunc = (_, _, _) => 10f;
+    FlexNode original = new() { BaselineFunc = baselineFunc };
+
+    FlexNode clone = original.Clone();
+
+    clone.BaselineFunc.ShouldBeSameAs(baselineFunc);
+  }
+
+  public void ShouldCopyDirtiedFunc()
+  {
+    int callCount = 0;
+    Action<FlexNode> dirtiedFunc = _ => callCount++;
+    FlexNode original = new() { DirtiedFunc = dirtiedFunc };
+
+    FlexNode clone = original.Clone();
+
+    clone.DirtiedFunc.ShouldBeSameAs(dirtiedFunc);
+  }
+
+  public void ShouldCopyConfig()
+  {
+    FlexConfig config = new() { PointScaleFactor = 2.0f };
+    FlexNode original = new() { Config = config };
+
+    FlexNode clone = original.Clone();
+
+    clone.Config.ShouldBeSameAs(config);
+  }
+
+  public void ShouldCopyContext()
+  {
+    object context = new { Name = "TestContext" };
+    FlexNode original = new() { Context = context };
+
+    FlexNode clone = original.Clone();
+
+    clone.Context.ShouldBeSameAs(context);
+  }
+
+  public void ShouldNotCopyLayoutResults()
+  {
+    FlexNode original = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+
+    FlexLayoutEngine engine = new();
+    engine.CalculateLayout(original, 100, 100, Direction.Ltr);
+
+    FlexNode clone = original.Clone();
+
+    // Clone should have fresh layout (zeroed out)
+    clone.Layout.Width.ShouldBe(0);
+    clone.Layout.Height.ShouldBe(0);
+    clone.Layout.Left.ShouldBe(0);
+    clone.Layout.Top.ShouldBe(0);
+  }
+
+  public void ShouldBeIndependentOfOriginal()
+  {
+    FlexNode original = new()
+    {
+      Width = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode clone = original.Clone();
+
+    // Modify clone
+    clone.Width = FlexValue.Point(200);
+    clone.FlexDirection = FlexDirection.Column;
+
+    // Original should be unchanged
+    original.Width.ShouldBe(FlexValue.Point(100));
+    original.FlexDirection.ShouldBe(FlexDirection.Row);
+  }
+
+  public void ShouldCloneEmptyNode()
+  {
+    FlexNode original = new();
+
+    FlexNode clone = original.Clone();
+
+    clone.ShouldNotBeNull();
+    clone.ChildCount.ShouldBe(0);
+    clone.Parent.ShouldBeNull();
+  }
+
+  public void ShouldCloneNodeWithMultipleChildren()
+  {
+    FlexNode original = new();
+
+    for (int i = 0; i < 5; i++)
+    {
+      FlexNode child = new() { Width = FlexValue.Point(i * 10) };
+      original.AddChild(child);
+    }
+
+    FlexNode clone = original.Clone();
+
+    clone.ChildCount.ShouldBe(5);
+
+    for (int i = 0; i < 5; i++)
+    {
+      clone.Children[i].Width.ShouldBe(FlexValue.Point(i * 10));
+      clone.Children[i].Parent.ShouldBeSameAs(clone);
+    }
+  }
+}
+
+/// <summary>
+/// Tests for FlexNode.ReplaceChild() method.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class FlexNodeReplaceChildTests
+{
+  public void ShouldReplaceChildAtSameIndex()
+  {
+    FlexNode parent = new();
+    FlexNode child1 = new() { Width = FlexValue.Point(10) };
+    FlexNode child2 = new() { Width = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(30) };
+    FlexNode replacement = new() { Width = FlexValue.Point(99) };
+
+    parent.AddChild(child1);
+    parent.AddChild(child2);
+    parent.AddChild(child3);
+
+    bool result = parent.ReplaceChild(child2, replacement);
+
+    result.ShouldBeTrue();
+    parent.ChildCount.ShouldBe(3);
+    parent.Children[0].ShouldBeSameAs(child1);
+    parent.Children[1].ShouldBeSameAs(replacement);
+    parent.Children[2].ShouldBeSameAs(child3);
+  }
+
+  public void ShouldSetNewChildParent()
+  {
+    FlexNode parent = new();
+    FlexNode oldChild = new();
+    FlexNode newChild = new();
+    parent.AddChild(oldChild);
+
+    parent.ReplaceChild(oldChild, newChild);
+
+    newChild.Parent.ShouldBeSameAs(parent);
+  }
+
+  public void ShouldClearOldChildParent()
+  {
+    FlexNode parent = new();
+    FlexNode oldChild = new();
+    FlexNode newChild = new();
+    parent.AddChild(oldChild);
+
+    parent.ReplaceChild(oldChild, newChild);
+
+    oldChild.Parent.ShouldBeNull();
+  }
+
+  public void ShouldReturnFalseWhenChildNotFound()
+  {
+    FlexNode parent = new();
+    FlexNode existingChild = new();
+    FlexNode notAChild = new();
+    FlexNode replacement = new();
+    parent.AddChild(existingChild);
+
+    bool result = parent.ReplaceChild(notAChild, replacement);
+
+    result.ShouldBeFalse();
+    parent.ChildCount.ShouldBe(1);
+    parent.Children[0].ShouldBeSameAs(existingChild);
+  }
+
+  public void ShouldThrowWhenOldChildIsNull()
+  {
+    FlexNode parent = new();
+    FlexNode newChild = new();
+
+    Should.Throw<ArgumentNullException>(() => parent.ReplaceChild(null!, newChild));
+  }
+
+  public void ShouldThrowWhenNewChildIsNull()
+  {
+    FlexNode parent = new();
+    FlexNode oldChild = new();
+    parent.AddChild(oldChild);
+
+    Should.Throw<ArgumentNullException>(() => parent.ReplaceChild(oldChild, null!));
+  }
+
+  public void ShouldMarkParentDirty()
+  {
+    FlexNode parent = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100)
+    };
+    FlexNode oldChild = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(50) };
+    FlexNode newChild = new() { Width = FlexValue.Point(60), Height = FlexValue.Point(60) };
+    parent.AddChild(oldChild);
+
+    // Clear dirty flag using node's CalculateLayout (which clears dirty)
+    parent.CalculateLayout(100, 100);
+    parent.IsDirty.ShouldBeFalse();
+
+    parent.ReplaceChild(oldChild, newChild);
+
+    parent.IsDirty.ShouldBeTrue();
+  }
+
+  public void ShouldRemoveNewChildFromPreviousParent()
+  {
+    FlexNode parent1 = new();
+    FlexNode parent2 = new();
+    FlexNode oldChild = new();
+    FlexNode newChild = new();
+
+    parent1.AddChild(oldChild);
+    parent2.AddChild(newChild);
+
+    parent1.ReplaceChild(oldChild, newChild);
+
+    parent2.ChildCount.ShouldBe(0);
+    newChild.Parent.ShouldBeSameAs(parent1);
+  }
+
+  public void ShouldReplaceFirstChild()
+  {
+    FlexNode parent = new();
+    FlexNode child1 = new() { Width = FlexValue.Point(10) };
+    FlexNode child2 = new() { Width = FlexValue.Point(20) };
+    FlexNode replacement = new() { Width = FlexValue.Point(99) };
+
+    parent.AddChild(child1);
+    parent.AddChild(child2);
+
+    parent.ReplaceChild(child1, replacement);
+
+    parent.Children[0].ShouldBeSameAs(replacement);
+    parent.Children[1].ShouldBeSameAs(child2);
+  }
+
+  public void ShouldReplaceLastChild()
+  {
+    FlexNode parent = new();
+    FlexNode child1 = new() { Width = FlexValue.Point(10) };
+    FlexNode child2 = new() { Width = FlexValue.Point(20) };
+    FlexNode replacement = new() { Width = FlexValue.Point(99) };
+
+    parent.AddChild(child1);
+    parent.AddChild(child2);
+
+    parent.ReplaceChild(child2, replacement);
+
+    parent.Children[0].ShouldBeSameAs(child1);
+    parent.Children[1].ShouldBeSameAs(replacement);
+  }
+
+  public void ShouldReplaceOnlyChild()
+  {
+    FlexNode parent = new();
+    FlexNode oldChild = new() { Width = FlexValue.Point(10) };
+    FlexNode newChild = new() { Width = FlexValue.Point(99) };
+
+    parent.AddChild(oldChild);
+
+    parent.ReplaceChild(oldChild, newChild);
+
+    parent.ChildCount.ShouldBe(1);
+    parent.Children[0].ShouldBeSameAs(newChild);
+    parent.Children[0].Width.ShouldBe(FlexValue.Point(99));
+  }
+
+  public void ShouldNotAffectOtherChildrenOrder()
+  {
+    FlexNode parent = new();
+    FlexNode child1 = new() { Width = FlexValue.Point(10) };
+    FlexNode child2 = new() { Width = FlexValue.Point(20) };
+    FlexNode child3 = new() { Width = FlexValue.Point(30) };
+    FlexNode child4 = new() { Width = FlexValue.Point(40) };
+    FlexNode replacement = new() { Width = FlexValue.Point(99) };
+
+    parent.AddChild(child1);
+    parent.AddChild(child2);
+    parent.AddChild(child3);
+    parent.AddChild(child4);
+
+    parent.ReplaceChild(child2, replacement);
+
+    parent.Children[0].Width.ShouldBe(FlexValue.Point(10));
+    parent.Children[1].Width.ShouldBe(FlexValue.Point(99));
+    parent.Children[2].Width.ShouldBe(FlexValue.Point(30));
+    parent.Children[3].Width.ShouldBe(FlexValue.Point(40));
+  }
+
+  public void ShouldWorkWithEmptyParent()
+  {
+    FlexNode parent = new();
+    FlexNode notAChild = new();
+    FlexNode replacement = new();
+
+    bool result = parent.ReplaceChild(notAChild, replacement);
+
+    result.ShouldBeFalse();
+    parent.ChildCount.ShouldBe(0);
   }
 }

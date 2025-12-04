@@ -4,16 +4,16 @@
 Implement tests for baseline alignment behavior, covering align-items: baseline and align-self: baseline scenarios. Baseline alignment aligns flex items along their text baselines, which is critical for UI layouts with text elements of different sizes.
 
 ## Todo List
-- [ ] Test align-items: baseline with children of different heights
-- [ ] Test align-items: baseline with custom baseline from BaselineFunc
-- [ ] Test align-self: baseline overriding parent's align-items
-- [ ] Test baseline alignment with mixed content (text and boxes)
-- [ ] Test baseline alignment in row direction
-- [ ] Test baseline alignment in column direction
-- [ ] Test baseline with nested flex containers
-- [ ] Test first baseline vs last baseline behavior
-- [ ] Test baseline when no BaselineFunc is provided (fallback to bottom)
-- [ ] Test baseline with padding affecting position
+- [x] Test align-items: baseline with children of different heights
+- [x] Test align-items: baseline with custom baseline from BaselineFunc
+- [x] Test align-self: baseline overriding parent's align-items
+- [x] Test baseline alignment with mixed content (text and boxes)
+- [x] Test baseline alignment in row direction
+- [ ] Test baseline alignment in column direction (future)
+- [ ] Test baseline with nested flex containers (future)
+- [ ] Test first baseline vs last baseline behavior (future)
+- [x] Test baseline when no BaselineFunc is provided (fallback to bottom)
+- [ ] Test baseline with padding affecting position (future)
 
 ## Notes
 Test file: test/TimeWarp.Flexbox.Tests/Layout/AlignBaseline_/
@@ -177,7 +177,20 @@ public class AlignSelfBaseline_Should_
 ```
 
 ## Results
-(Add after completion)
-- Document outcomes
-- Include metrics, observations, decisions
-- Note any deviations from plan
+- **Implementation required**: Baseline alignment was not implemented. Added full baseline support:
+  - Added `GetItemBaseline` helper to get baseline from `BaselineFunc` or default to bottom
+  - Added `CalculateLineBaseline` to calculate the maximum baseline for items using baseline alignment
+  - Updated `CalculateAlignItemsOffset` to accept baseline parameters
+  - Updated `PositionChildren` to calculate line baseline and apply it
+
+- **Tests added**: 6 baseline tests in `BaselineAlignmentTests` class:
+  - `ShouldAlignChildrenToMaxBaseline`
+  - `ShouldCallBaselineFuncDuringLayout`
+  - `ShouldPassCorrectDimensionsToBaselineFunc`
+  - `ShouldDefaultBaselineToBottomWhenNoFunc`
+  - `ShouldHandleAlignSelfBaseline`
+  - `ShouldMixBaselineWithOtherAlignments`
+
+- **Test count**: 377 → 383 tests (added 6 tests)
+
+- **Deviations**: Column direction baseline, nested containers, first/last baseline, and padding effects deferred for future work.
