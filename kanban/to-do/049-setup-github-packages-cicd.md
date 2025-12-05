@@ -1,7 +1,7 @@
 # Task 049-setup-github-packages-cicd
 
 ## Summary
-Set up CI/CD pipeline to publish TimeWarp.Flexbox as a **private** NuGet package to GitHub Packages, and configure `nuget.config` so consuming projects can authenticate and restore the package.
+Set up CI/CD pipeline to publish TimeWarp.Flexbox as a **private** NuGet package to GitHub Packages, and document how consuming projects authenticate and restore the package.
 
 ## Todo List
 - [ ] Create `.github/workflows/ci-cd.yml`
@@ -64,8 +64,15 @@ on:
       - 'Directory.Packages.props'
   pull_request:
     branches: [master, main]
+    paths:
+      - 'source/**'
+      - 'test/**'
+      - '.github/workflows/**'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build-and-publish:
@@ -92,7 +99,7 @@ jobs:
         run: dotnet test --configuration Release --no-build
       
       - name: Publish to GitHub Packages
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |
           dotnet nuget add source \
             --username ${{ github.actor }} \
@@ -102,6 +109,12 @@ jobs:
             "https://nuget.pkg.github.com/TimeWarpEngineering/index.json"
           
           dotnet nuget push artifacts/packages/*.nupkg --source "github" --skip-duplicate
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ github.run_number }}
+          path: artifacts/packages/*.nupkg
 ```
 
 ### Key Points
