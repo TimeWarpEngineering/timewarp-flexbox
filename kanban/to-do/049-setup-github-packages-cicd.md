@@ -4,11 +4,13 @@
 Set up CI/CD pipeline to publish TimeWarp.Flexbox as a **private** NuGet package to GitHub Packages, and configure `nuget.config` so consuming projects can authenticate and restore the package.
 
 ## Todo List
-- [ ] Create `nuget.config` in repository root for consuming the private package
 - [ ] Create `.github/workflows/ci-cd.yml`
   - Build and test on push/PR
   - Publish to GitHub Packages on release
-- [ ] Document how consuming projects authenticate to GitHub Packages
+- [ ] Add consumer documentation to `readme.md` or `documentation/`
+  - Example `nuget.config` for consuming repos
+  - How to create a PAT with `read:packages` scope
+  - GitHub Actions authentication for consuming repos
 - [ ] Test the full flow: build, publish, consume from another project
 
 ## Existing Configuration
