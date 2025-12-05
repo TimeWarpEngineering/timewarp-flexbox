@@ -91,17 +91,6 @@ jobs:
       - name: Test
         run: dotnet test --configuration Release --no-build
       
-      - name: Pack
-        if: github.event_name == 'release'
-        run: |
-          VERSION="${{ github.event.release.tag_name }}"
-          VERSION="${VERSION#v}"
-          dotnet pack source/timewarp-flexbox/timewarp-flexbox.csproj \
-            --configuration Release \
-            --no-build \
-            --output ./artifacts \
-            -p:PackageVersion=$VERSION
-      
       - name: Publish to GitHub Packages
         if: github.event_name == 'release'
         run: |
@@ -112,7 +101,7 @@ jobs:
             --name github \
             "https://nuget.pkg.github.com/TimeWarpEngineering/index.json"
           
-          dotnet nuget push ./artifacts/*.nupkg --source "github" --skip-duplicate
+          dotnet nuget push artifacts/packages/*.nupkg --source "github" --skip-duplicate
 ```
 
 ### Key Points
