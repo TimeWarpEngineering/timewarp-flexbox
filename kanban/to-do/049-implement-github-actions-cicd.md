@@ -29,8 +29,17 @@ Set up GitHub Actions CI/CD pipeline for automated building, testing, and publis
   - Upload artifacts
 - [ ] Create `runfiles/check-version.cs` to verify package version availability (follow timewarp-nuru pattern)
 - [ ] Add version check step to publish workflow
+- [ ] Create `nuget.config.template` for consumers of the private package
+  - Include GitHub Packages source URL
+  - Document placeholder credentials
+  - Add instructions for local development setup
+- [ ] Document consumer authentication options in readme or docs
+  - Option A: nuget.config with PAT (local development)
+  - Option B: Environment variable authentication
+  - Option C: GitHub Actions workflow authentication for consuming repos
 - [ ] Test CI workflow with a pull request
 - [ ] Test publish workflow with a test tag or manual dispatch
+- [ ] Test consuming the published package from another project
 - [ ] Document release process in repository
 
 ## Notes
@@ -87,6 +96,56 @@ paths:
 ### Secrets Required
 - `GITHUB_TOKEN`: Automatic, no setup needed for GitHub Packages
 - `NUGET_API_KEY`: Only needed if publishing to nuget.org (create in repository settings)
+
+### Consumer Configuration (nuget.config)
+
+Consumers of the private package need a `nuget.config` in their repository root:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+    <add key="github-timewarp" value="https://nuget.pkg.github.com/TimeWarpEngineering/index.json" />
+  </packageSources>
+  <packageSourceCredentials>
+    <github-timewarp>
+      <add key="Username" value="USERNAME" />
+      <add key="ClearTextPassword" value="PAT_WITH_READ_PACKAGES_SCOPE" />
+    </github-timewarp>
+  </packageSourceCredentials>
+</configuration>
+```
+
+**Consumer Authentication Options**:
+
+1. **Local Development** - Create a PAT with `read:packages` scope, add to nuget.config (DO NOT commit credentials)
+   
+2. **Environment Variables** - Use `NUGET_AUTH_TOKEN` environment variable:
+   ```bash
+   export NUGET_AUTH_TOKEN=ghp_your_token_here
+   dotnet nuget add source --username USERNAME --password $NUGET_AUTH_TOKEN \
+     --store-password-in-clear-text --name github-timewarp \
+     "https://nuget.pkg.github.com/TimeWarpEngineering/index.json"
+   ```
+
+3. **GitHub Actions in Consuming Repos** - Use GITHUB_TOKEN (if same org) or a PAT secret:
+   ```yaml
+   - name: Authenticate to GitHub Packages
+     run: |
+       dotnet nuget add source \
+         --username ${{ github.actor }} \
+         --password ${{ secrets.GITHUB_TOKEN }} \
+         --store-password-in-clear-text \
+         --name github-timewarp \
+         "https://nuget.pkg.github.com/TimeWarpEngineering/index.json"
+   ```
+
+**Important**: For cross-organization or public consumers, they need:
+- A GitHub account
+- A PAT with `read:packages` scope
+- The package must be set to public visibility, OR they must be granted explicit access
 
 ## Results
 (Add after completion)
