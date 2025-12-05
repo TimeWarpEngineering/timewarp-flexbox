@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TimeWarp.Flexbox.Benchmarks</RootNamespace>
+    <AssemblyName>TimeWarp.Flexbox.Benchmarks</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <!-- BenchmarkDotNet requires public types -->
+    <NoWarn>$(NoWarn);CA1515</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../source/timewarp-flexbox/timewarp-flexbox.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+  </ItemGroup>
+
+</Project>

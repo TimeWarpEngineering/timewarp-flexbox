@@ -19,6 +19,9 @@ mono_crash.*
 
 # Build results
 [Dd]ebug/
+# Exception: keep source debug folders for debugging utilities
+!source/**/debug/
+!test/**/debug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/

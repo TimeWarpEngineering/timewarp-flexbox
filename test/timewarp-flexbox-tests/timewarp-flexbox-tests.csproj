@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup Label="Testing Packages">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="TimeWarp.Fixie" />
+    <PackageReference Include="Fixie.TestAdapter" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="coverlet.collector" />
+  </ItemGroup>
+
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\..\source\timewarp-flexbox\timewarp-flexbox.csproj" />
+  </ItemGroup>
+
+</Project>
