@@ -109,12 +109,6 @@ jobs:
             "https://nuget.pkg.github.com/TimeWarpEngineering/index.json"
           
           dotnet nuget push artifacts/packages/*.nupkg --source "github" --skip-duplicate
-      
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: packages-${{ github.run_number }}
-          path: artifacts/packages/*.nupkg
 ```
 
 ### Key Points
