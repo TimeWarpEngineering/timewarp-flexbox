@@ -1,0 +1,58 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'source/**'
+      - 'test/**'
+      - '.github/workflows/**'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+  pull_request:
+    branches: [master, main]
+    paths:
+      - 'source/**'
+      - 'test/**'
+      - '.github/workflows/**'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      
+      - name: Restore
+        run: dotnet restore
+      
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      
+      - name: Test
+        run: dotnet test --configuration Release --no-build
+      
+      - name: Publish to GitHub Packages
+        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+        run: |
+          dotnet nuget add source \
+            --username ${{ github.actor }} \
+            --password ${{ secrets.GITHUB_TOKEN }} \
+            --store-password-in-clear-text \
+            --name github \
+            "https://nuget.pkg.github.com/TimeWarpEngineering/index.json"
+          
+          dotnet nuget push artifacts/packages/*.nupkg --source "github" --skip-duplicate
