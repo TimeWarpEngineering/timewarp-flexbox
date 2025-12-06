@@ -11,40 +11,61 @@ public static class ValueResolver
   /// <param name="value">The flex value to resolve.</param>
   /// <param name="containerSize">The container size for percentage calculations.</param>
   /// <returns>
-  /// The resolved value in points, or float.NaN for Auto/Undefined values.
+  /// The resolved value in points, or float.NaN for Auto/Undefined/intrinsic values.
   /// </returns>
+  /// <remarks>
+  /// Intrinsic sizing units (MaxContent, FitContent, Stretch) return float.NaN from this method
+  /// because they require content measurement and cannot be resolved from container size alone.
+  /// The layout algorithm handles these units specially during layout calculation.
+  /// </remarks>
   public static float ResolveValue(FlexValue value, float containerSize) => value.Unit switch
   {
     Unit.Point => value.Value,
     Unit.Percent => containerSize * value.Value / 100f,
     Unit.Auto => float.NaN,
     Unit.Undefined => float.NaN,
+    // Intrinsic sizing units require content measurement and are handled by the layout algorithm
+    Unit.MaxContent => float.NaN,
+    Unit.FitContent => float.NaN,
+    Unit.Stretch => float.NaN,
     _ => float.NaN
   };
 
   /// <summary>
-  /// Resolves a FlexValue to a concrete float value, with a default for Auto/Undefined.
+  /// Resolves a FlexValue to a concrete float value, with a default for Auto/Undefined/intrinsic values.
   /// </summary>
   /// <param name="value">The flex value to resolve.</param>
   /// <param name="containerSize">The container size for percentage calculations.</param>
-  /// <param name="defaultValue">The default value to use for Auto/Undefined.</param>
+  /// <param name="defaultValue">The default value to use for Auto/Undefined/intrinsic values.</param>
   /// <returns>The resolved value in points.</returns>
+  /// <remarks>
+  /// Intrinsic sizing units (MaxContent, FitContent, Stretch) return the default value from this method
+  /// because they require content measurement and cannot be resolved from container size alone.
+  /// </remarks>
   public static float ResolveValueOrDefault(FlexValue value, float containerSize, float defaultValue) => value.Unit switch
   {
     Unit.Point => value.Value,
     Unit.Percent => containerSize * value.Value / 100f,
     Unit.Auto => defaultValue,
     Unit.Undefined => defaultValue,
+    // Intrinsic sizing units require content measurement and are handled by the layout algorithm
+    Unit.MaxContent => defaultValue,
+    Unit.FitContent => defaultValue,
+    Unit.Stretch => defaultValue,
     _ => defaultValue
   };
 
   /// <summary>
-  /// Determines if a FlexValue is defined (Point or Percent).
+  /// Determines if a FlexValue is defined (Point, Percent, or FitContent).
   /// </summary>
   /// <param name="value">The flex value to check.</param>
   /// <returns>True if the value is defined.</returns>
+  /// <remarks>
+  /// FitContent is considered defined because it has a numeric value component
+  /// representing the maximum size to clamp to.
+  /// </remarks>
   public static bool IsDefined(FlexValue value) =>
-    value.Unit is Unit.Point or Unit.Percent;
+    value.Unit is Unit.Point or Unit.Percent or Unit.FitContent;
 
   /// <summary>
   /// Determines if a float value is defined (not NaN).
