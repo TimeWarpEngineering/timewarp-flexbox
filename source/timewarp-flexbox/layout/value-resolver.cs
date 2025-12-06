@@ -56,16 +56,12 @@ public static class ValueResolver
   };
 
   /// <summary>
-  /// Determines if a FlexValue is defined (Point, Percent, or FitContent).
+  /// Determines if a FlexValue is defined (Point or Percent).
   /// </summary>
   /// <param name="value">The flex value to check.</param>
   /// <returns>True if the value is defined.</returns>
-  /// <remarks>
-  /// FitContent is considered defined because it has a numeric value component
-  /// representing the maximum size to clamp to.
-  /// </remarks>
   public static bool IsDefined(FlexValue value) =>
-    value.Unit is Unit.Point or Unit.Percent or Unit.FitContent;
+    value.Unit is Unit.Point or Unit.Percent;
 
   /// <summary>
   /// Determines if a float value is defined (not NaN).

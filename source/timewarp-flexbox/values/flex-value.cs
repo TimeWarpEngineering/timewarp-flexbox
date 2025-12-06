@@ -36,6 +36,11 @@ public readonly struct FlexValue : IEquatable<FlexValue>
   /// </summary>
   public static readonly FlexValue Stretch = new(float.NaN, Unit.Stretch);
 
+  /// <summary>
+  /// A value representing fit-content intrinsic sizing.
+  /// </summary>
+  public static readonly FlexValue FitContent = new(float.NaN, Unit.FitContent);
+
   private FlexValue(float value, Unit unit)
   {
     Value = value;
@@ -55,13 +60,6 @@ public readonly struct FlexValue : IEquatable<FlexValue>
   /// <param name="value">The percentage value (0-100).</param>
   /// <returns>A FlexValue with Unit.Percent.</returns>
   public static FlexValue Percent(float value) => new(value, Unit.Percent);
-
-  /// <summary>
-  /// Creates a FlexValue with fit-content sizing and a maximum value.
-  /// </summary>
-  /// <param name="value">The maximum value to clamp fit-content to.</param>
-  /// <returns>A FlexValue with Unit.FitContent.</returns>
-  public static FlexValue FitContent(float value) => new(value, Unit.FitContent);
 
   /// <summary>
   /// Determines whether this value represents an undefined state.
@@ -89,20 +87,20 @@ public readonly struct FlexValue : IEquatable<FlexValue>
   public bool IsStretch => Unit == Unit.Stretch;
 
   /// <summary>
-  /// Determines whether this value has a defined numeric value (Point, Percent, or FitContent).
+  /// Determines whether this value has a defined numeric value (Point or Percent).
   /// </summary>
-  public bool IsDefined => Unit == Unit.Point || Unit == Unit.Percent || Unit == Unit.FitContent;
+  public bool IsDefined => Unit == Unit.Point || Unit == Unit.Percent;
 
   public bool Equals(FlexValue other)
   {
     if (Unit != other.Unit)
       return false;
 
-    // For Undefined, Auto, MaxContent, and Stretch, we don't compare the float values
-    if (Unit == Unit.Undefined || Unit == Unit.Auto || Unit == Unit.MaxContent || Unit == Unit.Stretch)
+    // For Undefined, Auto, MaxContent, FitContent, and Stretch, we don't compare the float values
+    if (Unit == Unit.Undefined || Unit == Unit.Auto || Unit == Unit.MaxContent || Unit == Unit.FitContent || Unit == Unit.Stretch)
       return true;
 
-    // For Point, Percent, and FitContent, compare the actual values
+    // For Point and Percent, compare the actual values
     return Value.Equals(other.Value);
   }
 
@@ -110,8 +108,8 @@ public readonly struct FlexValue : IEquatable<FlexValue>
 
   public override int GetHashCode()
   {
-    // For Undefined, Auto, MaxContent, and Stretch, only hash the unit
-    if (Unit == Unit.Undefined || Unit == Unit.Auto || Unit == Unit.MaxContent || Unit == Unit.Stretch)
+    // For Undefined, Auto, MaxContent, FitContent, and Stretch, only hash the unit
+    if (Unit == Unit.Undefined || Unit == Unit.Auto || Unit == Unit.MaxContent || Unit == Unit.FitContent || Unit == Unit.Stretch)
       return Unit.GetHashCode();
 
     return HashCode.Combine(Value, Unit);
@@ -130,7 +128,7 @@ public readonly struct FlexValue : IEquatable<FlexValue>
       Unit.Point => $"{Value}pt",
       Unit.Percent => $"{Value}%",
       Unit.MaxContent => "max-content",
-      Unit.FitContent => $"fit-content({Value})",
+      Unit.FitContent => "fit-content",
       Unit.Stretch => "stretch",
       _ => $"{Value} ({Unit})"
     };

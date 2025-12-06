@@ -62,14 +62,13 @@ public class FlexValueTests
     value.IsStretch.ShouldBeFalse();
   }
 
-  public void ShouldCreateFitContentValue()
+  public void ShouldHaveFitContentValue()
   {
-    FlexValue value = FlexValue.FitContent(200);
+    FlexValue value = FlexValue.FitContent;
 
-    value.Value.ShouldBe(200);
     value.Unit.ShouldBe(Unit.FitContent);
     value.IsFitContent.ShouldBeTrue();
-    value.IsDefined.ShouldBeTrue();
+    value.IsDefined.ShouldBeFalse();
     value.IsAuto.ShouldBeFalse();
     value.IsUndefined.ShouldBeFalse();
     value.IsMaxContent.ShouldBeFalse();
@@ -246,22 +245,13 @@ public class FlexValueTests
     (value1 == value2).ShouldBeTrue();
   }
 
-  public void ShouldCompareEqualFitContentValues()
+  public void ShouldCompareFitContentValuesAsEqual()
   {
-    FlexValue value1 = FlexValue.FitContent(200);
-    FlexValue value2 = FlexValue.FitContent(200);
+    FlexValue value1 = FlexValue.FitContent;
+    FlexValue value2 = FlexValue.FitContent;
 
     value1.ShouldBe(value2);
     (value1 == value2).ShouldBeTrue();
-  }
-
-  public void ShouldCompareDifferentFitContentValuesAsNotEqual()
-  {
-    FlexValue value1 = FlexValue.FitContent(100);
-    FlexValue value2 = FlexValue.FitContent(200);
-
-    (value1 != value2).ShouldBeTrue();
-    value1.Equals(value2).ShouldBeFalse();
   }
 
   public void ShouldCompareMaxContentAndStretchAsNotEqual()
@@ -346,10 +336,10 @@ public class FlexValueTests
     value1.GetHashCode().ShouldBe(value2.GetHashCode());
   }
 
-  public void ShouldHaveConsistentHashCodeForEqualFitContentValues()
+  public void ShouldHaveConsistentHashCodeForFitContent()
   {
-    FlexValue value1 = FlexValue.FitContent(200);
-    FlexValue value2 = FlexValue.FitContent(200);
+    FlexValue value1 = FlexValue.FitContent;
+    FlexValue value2 = FlexValue.FitContent;
 
     value1.GetHashCode().ShouldBe(value2.GetHashCode());
   }
@@ -409,9 +399,9 @@ public class FlexValueTests
 
   public void ShouldReturnCorrectStringForFitContent()
   {
-    FlexValue value = FlexValue.FitContent(200);
+    FlexValue value = FlexValue.FitContent;
 
-    value.ToString().ShouldBe("fit-content(200)");
+    value.ToString().ShouldBe("fit-content");
   }
 
   public void ShouldReturnCorrectStringForStretch()

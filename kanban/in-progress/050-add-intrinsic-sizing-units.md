@@ -12,7 +12,7 @@ Add missing CSS intrinsic sizing units to the Unit enum: MaxContent, FitContent,
 - [x] Add factory methods: `FlexValue.MaxContent()`, `FlexValue.FitContent()`, `FlexValue.Stretch()`
 - [x] Update ValueResolver to handle new units during layout
 - [x] Add unit tests for new unit types
-- [ ] Verify layout behavior matches Yoga for intrinsic sizing
+- [x] Verify layout behavior matches Yoga for intrinsic sizing
 
 ## Notes
 Yoga reference (YGEnums.h lines 130-137):
