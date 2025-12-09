@@ -5834,3 +5834,312 @@ public class IntrinsicSizeTests
 
   #endregion
 }
+
+// =============================================================================
+// Layout Idempotency Tests (Task 080 - GitHub Issue #2)
+// =============================================================================
+
+/// <summary>
+/// Tests for layout idempotency - calling CalculateLayout multiple times
+/// should produce consistent results.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class LayoutIdempotencyTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldProduceSameResultsWhenCalledTwice()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(80),
+      Height = FlexValue.Point(24),
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode child = new()
+    {
+      Height = FlexValue.Point(10),
+      FlexGrow = 0
+    };
+
+    root.AddChild(child);
+
+    // First call
+    Engine.CalculateLayout(root, 80, 24);
+    float firstWidth = child.Layout.Width;
+    float firstHeight = child.Layout.Height;
+    float firstLeft = child.Layout.Left;
+    float firstTop = child.Layout.Top;
+
+    // Verify first call produced expected results
+    firstWidth.ShouldBe(80);
+    firstHeight.ShouldBe(10);
+
+    // Second call - should produce identical results
+    Engine.CalculateLayout(root, 80, 24);
+
+    child.Layout.Width.ShouldBe(firstWidth);
+    child.Layout.Height.ShouldBe(firstHeight);
+    child.Layout.Left.ShouldBe(firstLeft);
+    child.Layout.Top.ShouldBe(firstTop);
+  }
+
+  public void ShouldProduceSameResultsWhenCalledThreeTimes()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(30) };
+    FlexNode child3 = new() { Width = FlexValue.Point(30) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+
+    // First call
+    Engine.CalculateLayout(root, 100, 100);
+    float c1Left = child1.Layout.Left;
+    float c2Left = child2.Layout.Left;
+    float c3Left = child3.Layout.Left;
+
+    // Second call
+    Engine.CalculateLayout(root, 100, 100);
+    child1.Layout.Left.ShouldBe(c1Left);
+    child2.Layout.Left.ShouldBe(c2Left);
+    child3.Layout.Left.ShouldBe(c3Left);
+
+    // Third call
+    Engine.CalculateLayout(root, 100, 100);
+    child1.Layout.Left.ShouldBe(c1Left);
+    child2.Layout.Left.ShouldBe(c2Left);
+    child3.Layout.Left.ShouldBe(c3Left);
+  }
+
+  public void ShouldRecalculateAfterStyleChange()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode child = new()
+    {
+      Height = FlexValue.Point(50)
+    };
+
+    root.AddChild(child);
+
+    // First layout
+    Engine.CalculateLayout(root, 100, 100);
+    child.Layout.Width.ShouldBe(100);
+
+    // Change style
+    root.Width = FlexValue.Point(200);
+
+    // Second layout should reflect the change
+    Engine.CalculateLayout(root, 200, 100);
+    child.Layout.Width.ShouldBe(200);
+  }
+
+  public void ShouldHandleNestedContainersIdempotently()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200),
+      FlexDirection = FlexDirection.Column
+    };
+
+    FlexNode container = new()
+    {
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { FlexGrow = 1 };
+    FlexNode child2 = new() { FlexGrow = 1 };
+
+    container.AddChild(child1);
+    container.AddChild(child2);
+    root.AddChild(container);
+
+    // First call
+    Engine.CalculateLayout(root, 200, 200);
+    float containerWidth = container.Layout.Width;
+    float child1Width = child1.Layout.Width;
+    float child2Width = child2.Layout.Width;
+
+    containerWidth.ShouldBe(200);
+    child1Width.ShouldBe(100);
+    child2Width.ShouldBe(100);
+
+    // Second call - should be identical
+    Engine.CalculateLayout(root, 200, 200);
+
+    container.Layout.Width.ShouldBe(containerWidth);
+    child1.Layout.Width.ShouldBe(child1Width);
+    child2.Layout.Width.ShouldBe(child2Width);
+  }
+
+  public void ShouldHandleFlexGrowIdempotently()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(300),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { FlexGrow = 1 };
+    FlexNode child2 = new() { FlexGrow = 2 };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    // First call
+    Engine.CalculateLayout(root, 300, 100);
+    float firstChild1Width = child1.Layout.Width;
+    float firstChild2Width = child2.Layout.Width;
+
+    firstChild1Width.ShouldBe(100); // 1/3 of 300
+    firstChild2Width.ShouldBe(200); // 2/3 of 300
+
+    // Second call
+    Engine.CalculateLayout(root, 300, 100);
+
+    child1.Layout.Width.ShouldBe(firstChild1Width);
+    child2.Layout.Width.ShouldBe(firstChild2Width);
+  }
+
+  public void ShouldHandleAbsolutePositioningIdempotently()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(200)
+    };
+
+    FlexNode absolute = new()
+    {
+      PositionType = PositionType.Absolute,
+      Width = FlexValue.Point(50),
+      Height = FlexValue.Point(50)
+    };
+    absolute.SetPosition(Edge.Left, FlexValue.Point(10));
+    absolute.SetPosition(Edge.Top, FlexValue.Point(20));
+
+    root.AddChild(absolute);
+
+    // First call
+    Engine.CalculateLayout(root, 200, 200);
+    float firstLeft = absolute.Layout.Left;
+    float firstTop = absolute.Layout.Top;
+
+    firstLeft.ShouldBe(10);
+    firstTop.ShouldBe(20);
+
+    // Second call
+    Engine.CalculateLayout(root, 200, 200);
+
+    absolute.Layout.Left.ShouldBe(firstLeft);
+    absolute.Layout.Top.ShouldBe(firstTop);
+  }
+
+  public void ShouldHandleFlexWrapIdempotently()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(60), Height = FlexValue.Point(30) };
+    FlexNode child2 = new() { Width = FlexValue.Point(60), Height = FlexValue.Point(30) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    // First call
+    Engine.CalculateLayout(root, 100, 100);
+    float c1Top = child1.Layout.Top;
+    float c2Top = child2.Layout.Top;
+
+    // Second call
+    Engine.CalculateLayout(root, 100, 100);
+
+    child1.Layout.Top.ShouldBe(c1Top);
+    child2.Layout.Top.ShouldBe(c2Top);
+  }
+
+  public void ShouldHandleMeasureFuncIdempotently()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(100),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode measuredChild = new()
+    {
+      MeasureFunc = (_, _, _, _, _) => new Size(50, 30)
+    };
+
+    root.AddChild(measuredChild);
+
+    // First call
+    Engine.CalculateLayout(root, 100, 100);
+    float firstWidth = measuredChild.Layout.Width;
+    float firstHeight = measuredChild.Layout.Height;
+
+    firstWidth.ShouldBe(50);
+    firstHeight.ShouldBe(30);
+
+    // Second call
+    Engine.CalculateLayout(root, 100, 100);
+
+    measuredChild.Layout.Width.ShouldBe(firstWidth);
+    measuredChild.Layout.Height.ShouldBe(firstHeight);
+  }
+
+  public void ShouldHandleRtlDirectionIdempotently()
+  {
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(200),
+      Height = FlexValue.Point(100),
+      FlexDirection = FlexDirection.Row
+    };
+
+    FlexNode child1 = new() { Width = FlexValue.Point(50) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50) };
+
+    root.AddChild(child1);
+    root.AddChild(child2);
+
+    // First RTL call
+    Engine.CalculateLayout(root, 200, 100, Direction.Rtl);
+    float c1Left = child1.Layout.Left;
+    float c2Left = child2.Layout.Left;
+
+    // In RTL, children positioned from right
+    c1Left.ShouldBe(150);
+    c2Left.ShouldBe(100);
+
+    // Second RTL call
+    Engine.CalculateLayout(root, 200, 100, Direction.Rtl);
+
+    child1.Layout.Left.ShouldBe(c1Left);
+    child2.Layout.Left.ShouldBe(c2Left);
+  }
+}

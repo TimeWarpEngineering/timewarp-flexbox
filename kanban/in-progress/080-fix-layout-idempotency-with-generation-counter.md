@@ -6,16 +6,16 @@ Fix GitHub Issue #2: `FlexLayoutEngine.CalculateLayout()` is not idempotent. Cal
 
 ## Todo List
 
-- [ ] Add global generation counter to `FlexLayoutEngine`
-- [ ] Add `LayoutGeneration` field to `LayoutResult` or `FlexNode` to track when node was last calculated
-- [ ] Remove `ResetLayoutResults()` call from `CalculateLayout()`
-- [ ] Update `LayoutNode()` to accept and use generation counter
-- [ ] Modify cache check to include generation validation (`node.LayoutGeneration != currentGeneration`)
-- [ ] After calculating node, set `node.LayoutGeneration = currentGeneration`
-- [ ] Clear dirty flag after successful layout calculation
-- [ ] Add idempotency test: `CalculateLayout_CalledTwice_ShouldBeIdempotent`
-- [ ] Add test: `CalculateLayout_AfterStyleChange_ShouldRecalculate`
-- [ ] Verify existing tests still pass
+- [x] Add global generation counter to `FlexLayoutEngine`
+- [x] Add `LayoutGeneration` field to `LayoutResult` or `FlexNode` to track when node was last calculated
+- [x] Remove `ResetLayoutResults()` call from `CalculateLayout()`
+- [x] Update `LayoutNode()` to accept and use generation counter
+- [x] Modify cache check to include generation validation (`node.LayoutGeneration != currentGeneration`)
+- [x] After calculating node, set `node.LayoutGeneration = currentGeneration`
+- [x] Clear dirty flag after successful layout calculation
+- [x] Add idempotency test: `CalculateLayout_CalledTwice_ShouldBeIdempotent`
+- [x] Add test: `CalculateLayout_AfterStyleChange_ShouldRecalculate`
+- [x] Verify existing tests still pass
 - [ ] Update any documentation affected by the change
 
 ## Notes
@@ -105,7 +105,37 @@ public void CalculateLayout_CalledTwice_ShouldBeIdempotent()
 
 ## Results
 
-(Add after completion)
-- Document outcomes
-- Include metrics, observations, decisions
-- Note any deviations from plan
+### Outcome: Success
+
+All 511 tests pass. Layout idempotency issue is fixed.
+
+### Changes Made
+
+1. **`flex-layout-engine.cs`**:
+   - Added `GlobalGenerationCount` static field (incremented each `CalculateLayout` call)
+   - Removed `ResetLayoutResults()` call
+   - Added `generationCount` parameter to `LayoutNode()` method
+   - Added `FinalizeNodeLayout()` helper method to consolidate cache storage and generation tracking
+   - Fixed leaf node paths (MeasureFunc and no-children) to call `FinalizeNodeLayout`
+   - Fixed `CalculateCrossAxisSizes` to prioritize stretch alignment over stale layout values
+
+2. **`flex-node.cache.cs`**:
+   - Added `LastLayoutGeneration` property to track when node was last laid out
+
+3. **`flex-layout-tests.cs`**:
+   - Added `LayoutIdempotencyTests` class with 9 comprehensive test methods
+
+### Root Causes Fixed
+
+1. **Leaf nodes not finalized**: Early returns for leaf nodes (MeasureFunc or no children) skipped cache storage and generation tracking
+2. **Stale cross-axis values**: `CalculateCrossAxisSizes` incorrectly preserved layout values from previous passes instead of recalculating stretch alignment
+
+### Deviations from Plan
+
+- Additional bug found: Cross-axis size calculation was using stale `child.Layout.Width/Height` values from previous layouts, preventing proper stretch recalculation
+- Fix required reordering logic in `CalculateCrossAxisSizes` to prioritize stretch alignment
+
+### Metrics
+
+- Tests: 511 passed, 0 failed
+- New tests added: 9 idempotency tests

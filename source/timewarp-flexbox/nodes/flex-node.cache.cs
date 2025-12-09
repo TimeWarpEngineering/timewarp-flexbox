@@ -17,6 +17,12 @@ public partial class FlexNode
   public uint Generation => LayoutGeneration;
 
   /// <summary>
+  /// Gets or sets the last layout generation when this node was calculated.
+  /// Used to determine if the node needs recalculation in the current layout pass.
+  /// </summary>
+  internal uint LastLayoutGeneration { get; set; }
+
+  /// <summary>
   /// Gets whether this node has a valid cached layout.
   /// </summary>
   public bool HasCachedLayout => CachedLayoutEntry.HasValue;
