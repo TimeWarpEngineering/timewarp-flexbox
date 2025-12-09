@@ -49,6 +49,45 @@ public class FlexValueTests
     value.IsAuto.ShouldBeFalse();
   }
 
+  public void ShouldHaveMaxContentValue()
+  {
+    FlexValue value = FlexValue.MaxContent;
+
+    value.Unit.ShouldBe(Unit.MaxContent);
+    value.IsMaxContent.ShouldBeTrue();
+    value.IsDefined.ShouldBeFalse();
+    value.IsAuto.ShouldBeFalse();
+    value.IsUndefined.ShouldBeFalse();
+    value.IsFitContent.ShouldBeFalse();
+    value.IsStretch.ShouldBeFalse();
+  }
+
+  public void ShouldHaveFitContentValue()
+  {
+    FlexValue value = FlexValue.FitContent;
+
+    value.Unit.ShouldBe(Unit.FitContent);
+    value.IsFitContent.ShouldBeTrue();
+    value.IsDefined.ShouldBeFalse();
+    value.IsAuto.ShouldBeFalse();
+    value.IsUndefined.ShouldBeFalse();
+    value.IsMaxContent.ShouldBeFalse();
+    value.IsStretch.ShouldBeFalse();
+  }
+
+  public void ShouldHaveStretchValue()
+  {
+    FlexValue value = FlexValue.Stretch;
+
+    value.Unit.ShouldBe(Unit.Stretch);
+    value.IsStretch.ShouldBeTrue();
+    value.IsDefined.ShouldBeFalse();
+    value.IsAuto.ShouldBeFalse();
+    value.IsUndefined.ShouldBeFalse();
+    value.IsMaxContent.ShouldBeFalse();
+    value.IsFitContent.ShouldBeFalse();
+  }
+
   #endregion
 
   #region Edge Cases
@@ -188,6 +227,41 @@ public class FlexValueTests
     (auto != undefined).ShouldBeTrue();
   }
 
+  public void ShouldCompareMaxContentValuesAsEqual()
+  {
+    FlexValue value1 = FlexValue.MaxContent;
+    FlexValue value2 = FlexValue.MaxContent;
+
+    value1.ShouldBe(value2);
+    (value1 == value2).ShouldBeTrue();
+  }
+
+  public void ShouldCompareStretchValuesAsEqual()
+  {
+    FlexValue value1 = FlexValue.Stretch;
+    FlexValue value2 = FlexValue.Stretch;
+
+    value1.ShouldBe(value2);
+    (value1 == value2).ShouldBeTrue();
+  }
+
+  public void ShouldCompareFitContentValuesAsEqual()
+  {
+    FlexValue value1 = FlexValue.FitContent;
+    FlexValue value2 = FlexValue.FitContent;
+
+    value1.ShouldBe(value2);
+    (value1 == value2).ShouldBeTrue();
+  }
+
+  public void ShouldCompareMaxContentAndStretchAsNotEqual()
+  {
+    FlexValue maxContent = FlexValue.MaxContent;
+    FlexValue stretch = FlexValue.Stretch;
+
+    (maxContent != stretch).ShouldBeTrue();
+  }
+
   public void ShouldNotEqualNull()
   {
     FlexValue value = FlexValue.Point(100);
@@ -246,6 +320,30 @@ public class FlexValueTests
     hash2.ShouldBeOfType<int>();
   }
 
+  public void ShouldHaveConsistentHashCodeForMaxContent()
+  {
+    FlexValue value1 = FlexValue.MaxContent;
+    FlexValue value2 = FlexValue.MaxContent;
+
+    value1.GetHashCode().ShouldBe(value2.GetHashCode());
+  }
+
+  public void ShouldHaveConsistentHashCodeForStretch()
+  {
+    FlexValue value1 = FlexValue.Stretch;
+    FlexValue value2 = FlexValue.Stretch;
+
+    value1.GetHashCode().ShouldBe(value2.GetHashCode());
+  }
+
+  public void ShouldHaveConsistentHashCodeForFitContent()
+  {
+    FlexValue value1 = FlexValue.FitContent;
+    FlexValue value2 = FlexValue.FitContent;
+
+    value1.GetHashCode().ShouldBe(value2.GetHashCode());
+  }
+
   #endregion
 
   #region ToString
@@ -292,6 +390,27 @@ public class FlexValueTests
     value.ToString().ShouldBe("33.33%");
   }
 
+  public void ShouldReturnCorrectStringForMaxContent()
+  {
+    FlexValue value = FlexValue.MaxContent;
+
+    value.ToString().ShouldBe("max-content");
+  }
+
+  public void ShouldReturnCorrectStringForFitContent()
+  {
+    FlexValue value = FlexValue.FitContent;
+
+    value.ToString().ShouldBe("fit-content");
+  }
+
+  public void ShouldReturnCorrectStringForStretch()
+  {
+    FlexValue value = FlexValue.Stretch;
+
+    value.ToString().ShouldBe("stretch");
+  }
+
   #endregion
 }
 
@@ -320,8 +439,23 @@ public class UnitEnumTests
     Unit.Auto.ShouldBe((Unit)3);
   }
 
-  public void ShouldHaveFourValues()
+  public void ShouldHaveMaxContentValue()
   {
-    Enum.GetValues<Unit>().Length.ShouldBe(4);
+    Unit.MaxContent.ShouldBe((Unit)4);
+  }
+
+  public void ShouldHaveFitContentValue()
+  {
+    Unit.FitContent.ShouldBe((Unit)5);
+  }
+
+  public void ShouldHaveStretchValue()
+  {
+    Unit.Stretch.ShouldBe((Unit)6);
+  }
+
+  public void ShouldHaveSevenValues()
+  {
+    Enum.GetValues<Unit>().Length.ShouldBe(7);
   }
 }

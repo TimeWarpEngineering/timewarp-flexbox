@@ -9,6 +9,13 @@ public sealed class FlexLayoutEngine
   private readonly FlexLines FlexLinesCache = new();
 
   /// <summary>
+  /// Global generation counter used to track layout passes.
+  /// Incremented each time CalculateLayout is called.
+  /// This allows the cache to detect when a new layout pass has started.
+  /// </summary>
+  private static uint GlobalGenerationCount;
+
+  /// <summary>
   /// Calculates the layout for a node tree.
   /// </summary>
   /// <param name="root">The root node of the layout tree.</param>
@@ -43,8 +50,10 @@ public sealed class FlexLayoutEngine
   {
     ArgumentNullException.ThrowIfNull(root);
 
-    // Reset layout results for the entire tree
-    ResetLayoutResults(root);
+    // Increment the global generation count. This forces the recursive routine to
+    // visit all dirty nodes at least once. Subsequent visits will use cached results
+    // if the input parameters match and the node hasn't changed.
+    uint currentGeneration = ++GlobalGenerationCount;
 
     // Determine measure modes based on whether dimensions are defined
     MeasureMode widthMode = float.IsNaN(availableWidth) ? MeasureMode.Undefined : MeasureMode.Exactly;
@@ -57,7 +66,8 @@ public sealed class FlexLayoutEngine
       widthMode,
       availableHeight,
       heightMode,
-      direction);
+      direction,
+      currentGeneration);
 
     // Apply pixel grid rounding if requested
     if (roundToPixelGrid)
@@ -68,35 +78,34 @@ public sealed class FlexLayoutEngine
   }
 
   /// <summary>
-  /// Recursively resets layout results for a node and its descendants.
-  /// </summary>
-  private static void ResetLayoutResults(FlexNode node)
-  {
-    node.Layout.Reset();
-
-    foreach (FlexNode child in node.Children)
-    {
-      ResetLayoutResults(child);
-    }
-  }
-
-  /// <summary>
   /// Performs layout calculation for a single node.
   /// </summary>
+  /// <param name="node">The node to layout.</param>
+  /// <param name="availableWidth">The available width.</param>
+  /// <param name="widthMode">The width measure mode.</param>
+  /// <param name="availableHeight">The available height.</param>
+  /// <param name="heightMode">The height measure mode.</param>
+  /// <param name="direction">The layout direction.</param>
+  /// <param name="generationCount">The current layout generation counter.</param>
   private void LayoutNode(
     FlexNode node,
     float availableWidth,
     MeasureMode widthMode,
     float availableHeight,
     MeasureMode heightMode,
-    Direction direction)
+    Direction direction,
+    uint generationCount)
   {
     // Skip nodes with Display.None
     if (node.Display == Display.None)
       return;
 
-    // Check cache for existing layout result
-    if (node.TryGetCachedLayout(availableWidth, availableHeight, widthMode, heightMode, out LayoutCacheEntry cached))
+    // Determine if we need to visit this node based on dirty flag and generation
+    bool needToVisitNode = node.IsDirty || node.LastLayoutGeneration != generationCount;
+
+    // Check cache for existing layout result (only if we don't need to visit)
+    if (!needToVisitNode &&
+        node.TryGetCachedLayout(availableWidth, availableHeight, widthMode, heightMode, out LayoutCacheEntry cached))
     {
       node.Layout.Width = cached.ComputedWidth;
       node.Layout.Height = cached.ComputedHeight;
@@ -155,6 +164,7 @@ public sealed class FlexLayoutEngine
     if (node.IsLeaf && node.HasMeasureFunc)
     {
       MeasureLeafNode(node, availableWidth, widthMode, availableHeight, heightMode);
+      FinalizeNodeLayout(node, availableWidth, availableHeight, widthMode, heightMode, generationCount);
       return;
     }
 
@@ -162,6 +172,7 @@ public sealed class FlexLayoutEngine
     if (node.ChildCount == 0)
     {
       CalculateNodeSize(node, availableWidth, widthMode, availableHeight, heightMode, direction);
+      FinalizeNodeLayout(node, availableWidth, availableHeight, widthMode, heightMode, generationCount);
       return;
     }
 
@@ -175,7 +186,7 @@ public sealed class FlexLayoutEngine
     foreach (FlexLine line in FlexLinesCache.Lines.ToList())
     {
       // Calculate main axis sizes for items in this line
-      CalculateMainAxisSizes(line, availableInnerMainSize, resolvedDirection, direction);
+      CalculateMainAxisSizes(line, availableInnerMainSize, resolvedDirection, direction, generationCount);
 
       // Resolve flexible lengths (grow/shrink)
       ResolveFlexibleLengths(line, availableInnerMainSize, resolvedDirection, mainAxisGap, availableWidth, isRtl);
@@ -253,9 +264,24 @@ public sealed class FlexLayoutEngine
         MeasureMode.Exactly,
         child.Layout.Height,
         MeasureMode.Exactly,
-        direction);
+        direction,
+        generationCount);
     }
 
+    FinalizeNodeLayout(node, availableWidth, availableHeight, widthMode, heightMode, generationCount);
+  }
+
+  /// <summary>
+  /// Finalizes layout for a node by storing results in cache and updating generation tracking.
+  /// </summary>
+  private static void FinalizeNodeLayout(
+    FlexNode node,
+    float availableWidth,
+    float availableHeight,
+    MeasureMode widthMode,
+    MeasureMode heightMode,
+    uint generationCount)
+  {
     // Store layout result in cache
     node.SetCachedLayout(
       availableWidth,
@@ -269,6 +295,10 @@ public sealed class FlexLayoutEngine
         ComputedLeft = node.Layout.Left,
         ComputedTop = node.Layout.Top
       });
+
+    // Mark node as having been laid out in this generation and clear dirty flag
+    node.LastLayoutGeneration = generationCount;
+    node.ClearDirty();
   }
 
   /// <summary>
@@ -350,7 +380,8 @@ public sealed class FlexLayoutEngine
     FlexLine line,
     float availableMainSize,
     FlexDirection direction,
-    Direction layoutDirection)
+    Direction layoutDirection,
+    uint generationCount)
   {
     bool isRow = LayoutHelpers.IsRow(direction);
 
@@ -422,7 +453,8 @@ public sealed class FlexLayoutEngine
             MeasureMode.Undefined,
             float.NaN,
             MeasureMode.Undefined,
-            layoutDirection);
+            layoutDirection,
+            generationCount);
 
           childMainSize = isRow ? child.Layout.Width : child.Layout.Height;
         }
@@ -692,26 +724,20 @@ public sealed class FlexLayoutEngine
       // Handle stretch alignment
       if (float.IsNaN(childCrossSize))
       {
-        // Check if cross size was already set (e.g., by MeasureFunc in CalculateMainAxisSizes)
-        float existingCrossSize = isRow ? child.Layout.Height : child.Layout.Width;
-        if (existingCrossSize > 0)
+        AlignSelf alignSelf = child.AlignSelf == AlignSelf.Auto
+          ? ConvertAlignItemsToAlignSelf(alignItems)
+          : child.AlignSelf;
+
+        if (alignSelf == AlignSelf.Stretch && !float.IsNaN(availableCrossSize))
         {
-          childCrossSize = existingCrossSize;
+          childCrossSize = availableCrossSize;
         }
         else
         {
-          AlignSelf alignSelf = child.AlignSelf == AlignSelf.Auto
-            ? ConvertAlignItemsToAlignSelf(alignItems)
-            : child.AlignSelf;
-
-          if (alignSelf == AlignSelf.Stretch && !float.IsNaN(availableCrossSize))
-          {
-            childCrossSize = availableCrossSize;
-          }
-          else
-          {
-            childCrossSize = 0;
-          }
+          // Check if cross size was already set (e.g., by MeasureFunc in CalculateMainAxisSizes)
+          // Only use this as fallback when not stretching
+          float existingCrossSize = isRow ? child.Layout.Height : child.Layout.Width;
+          childCrossSize = existingCrossSize > 0 ? existingCrossSize : 0;
         }
       }
 
