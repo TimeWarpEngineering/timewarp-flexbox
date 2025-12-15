@@ -53,6 +53,25 @@ Create a complete C# implementation of the Yoga flexbox layout engine, porting f
 
 ## Notes
 
+### 2025-12-15 Implementation Progress
+
+**Completed Tasks:**
+- Task 102 (YogaEnums): Implemented `OrdinalCountAttribute`, `YogaEnums.OrdinalCount<T>()`, `BitCount<T>()`, `ToUnderlying<T>()`, and `Ordinals<T>()` iterator. 5 tests passing.
+- Task 103 (SmallValueBuffer): Ported memory-efficient 32/64-bit value storage with overflow handling. Uses C# generics with `IBufferSize` marker interface for compile-time buffer sizing. 17 tests passing.
+- Task 104 (Comparison): Implemented float comparison utilities including `IsUndefined`, `IsDefined`, `MaxOrDefined`, `MinOrDefined`, and `InexactEquals` with 0.0001f tolerance. 39 tests passing.
+- Task 106 (FloatOptional): Ported the core optional float type using NaN as undefined sentinel. Full operator overloads. 39 tests passing.
+- Task 105 (YGEnums Base): Ported all 17 Yoga enums (Align, BoxSizing, Dimension, Direction, Display, Edge, Errata, ExperimentalFeature, FlexDirection, Gutter, Justify, LogLevel, MeasureMode, NodeType, Overflow, PositionType, Unit, Wrap) with `ToCssString()` extension methods for CSS-compatible string conversion. 85 new tests (180 total).
+
+**Key Design Decisions Made:**
+1. `OrdinalCountAttribute` pattern: C++ uses template specialization; C# uses attribute on enum types
+2. `SmallValueBuffer` uses `IBufferSize` interface with static abstract members for compile-time buffer sizing
+3. `FloatOptional.Undefined` returns `new FloatOptional(float.NaN)` since C# struct default is 0 (unlike C++ which defaults to NaN)
+4. All value types use `readonly struct` for proper value semantics and zero allocation
+5. All enums consolidated into single `YGEnums.cs` file with `ToCssString()` extension methods (mirrors C++ `XxxToString()` functions)
+6. `Errata` enum uses `[Flags]` with CA2217 suppressed - intentional non-power-of-two values matching C++ Yoga
+
+**Test Count:** 180 tests total, all passing
+
 ### Test-Driven Approach
 
 Every task includes porting its corresponding C++ tests **before** or **alongside** the implementation:
