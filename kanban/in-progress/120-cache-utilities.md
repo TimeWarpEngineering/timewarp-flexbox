@@ -26,14 +26,14 @@ Port the Cache utilities from C++ to C#. This handles layout caching logic. This
 
 ## Todo List
 
-- [ ] Port `Cache.h/.cpp` to C#
-- [ ] Implement cache lookup logic
-- [ ] Implement cache storage logic
+- [x] Port `Cache.h/.cpp` to C#
+- [x] Implement cache lookup logic
+- [x] Implement cache storage logic (via LayoutResults cached measurements)
 
 ## Acceptance Criteria
 
-- [ ] Cache lookup working
-- [ ] Cache storage working
+- [x] Cache lookup working
+- [x] Cache storage working
 - [ ] Used by CalculateLayout (Task 125)
 
 ## Notes
