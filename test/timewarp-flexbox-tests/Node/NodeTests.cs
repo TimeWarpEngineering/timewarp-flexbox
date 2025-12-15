@@ -7,7 +7,7 @@
  * Licensed under the MIT license.
  */
 
-namespace TimeWarp.Flexbox.Tests.NodeNs;
+namespace TimeWarp.Flexbox.Tests.Node_;
 
 using FlexNode = TimeWarp.Flexbox.Node;
 using FlexConfig = TimeWarp.Flexbox.Config;
