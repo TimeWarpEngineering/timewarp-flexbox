@@ -61,6 +61,7 @@ Create a complete C# implementation of the Yoga flexbox layout engine, porting f
 - Task 104 (Comparison): Implemented float comparison utilities including `IsUndefined`, `IsDefined`, `MaxOrDefined`, `MinOrDefined`, and `InexactEquals` with 0.0001f tolerance. 39 tests passing.
 - Task 106 (FloatOptional): Ported the core optional float type using NaN as undefined sentinel. Full operator overloads. 39 tests passing.
 - Task 105 (YGEnums Base): Ported all 17 Yoga enums (Align, BoxSizing, Dimension, Direction, Display, Edge, Errata, ExperimentalFeature, FlexDirection, Gutter, Justify, LogLevel, MeasureMode, NodeType, Overflow, PositionType, Unit, Wrap) with `ToCssString()` extension methods for CSS-compatible string conversion. 85 new tests (180 total).
+- Task 107 (YGValue): Ported the core dimension value type with unit support (Point, Percent, Auto, Undefined, FitContent, MaxContent, Stretch). Implements C++ equality semantics where unit-only types (Auto, Undefined, etc.) compare equal regardless of float value. Includes `YGValueUtilities` with `YGUndefined` constant and `YGFloatIsUndefined()` function. 37 new tests (217 total).
 
 **Key Design Decisions Made:**
 1. `OrdinalCountAttribute` pattern: C++ uses template specialization; C# uses attribute on enum types
@@ -69,8 +70,9 @@ Create a complete C# implementation of the Yoga flexbox layout engine, porting f
 4. All value types use `readonly struct` for proper value semantics and zero allocation
 5. All enums consolidated into single `YGEnums.cs` file with `ToCssString()` extension methods (mirrors C++ `XxxToString()` functions)
 6. `Errata` enum uses `[Flags]` with CA2217 suppressed - intentional non-power-of-two values matching C++ Yoga
+7. `YGValue` equality follows C++ semantics: unit-only types (Auto, Undefined, FitContent, MaxContent, Stretch) ignore the float value in comparisons
 
-**Test Count:** 180 tests total, all passing
+**Test Count:** 217 tests total, all passing
 
 ### Test-Driven Approach
 
