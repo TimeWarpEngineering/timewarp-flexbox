@@ -73,12 +73,9 @@ public sealed class FlexLines
 
     float lineMainSize = 0;
 
-    foreach (FlexNode child in container.Children)
+    foreach (FlexNode child in container.GetLayoutChildren())
     {
-      // Skip nodes with Display.None or absolute positioning
-      if (child.Display == Display.None)
-        continue;
-
+      // Skip absolute positioning (Display.None and Contents already handled by GetLayoutChildren)
       if (child.PositionType == PositionType.Absolute)
         continue;
 

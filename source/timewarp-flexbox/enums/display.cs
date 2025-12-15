@@ -14,5 +14,12 @@ public enum Display
   /// <summary>
   /// Element generates no boxes and is not rendered.
   /// </summary>
-  None
+  None,
+
+  /// <summary>
+  /// Element generates no box itself, but its children are laid out as if they
+  /// were direct children of the element's parent. Effectively "unwraps" the element
+  /// for layout purposes while preserving the logical tree structure.
+  /// </summary>
+  Contents
 }

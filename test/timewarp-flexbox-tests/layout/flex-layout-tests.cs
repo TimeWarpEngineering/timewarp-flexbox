@@ -1662,6 +1662,82 @@ public class AlignContentSpaceAroundTests
 }
 
 /// <summary>
+/// Tests for align-content: space-evenly behavior.
+/// </summary>
+[TestTag(TestTags.Fast)]
+public class AlignContentSpaceEvenlyTests
+{
+  private readonly FlexLayoutEngine Engine = new();
+
+  public void ShouldDistributeLinesWithSpaceEvenly()
+  {
+    // Yoga test: align_content_space_evenly_wrap
+    // Container 140x120, 5 children (50x10), 2 per row = 3 lines
+    // 3 lines × 10px = 30px, freeSpace = 90px
+    // SpaceEvenly: 90 / (3+1) = 22.5px gaps
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(140),
+      Height = FlexValue.Point(120),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.SpaceEvenly
+    };
+
+    FlexNode child0 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+    FlexNode child2 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+    FlexNode child3 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+    FlexNode child4 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+
+    root.AddChild(child0);
+    root.AddChild(child1);
+    root.AddChild(child2);
+    root.AddChild(child3);
+    root.AddChild(child4);
+
+    Engine.CalculateLayout(root, 140, 120);
+
+    // Line 1: top = 22.5 (Yoga rounds to 23)
+    child0.Layout.Top.ShouldBe(22.5f);
+    child1.Layout.Top.ShouldBe(22.5f);
+    // Line 2: top = 22.5 + 10 + 22.5 = 55
+    child2.Layout.Top.ShouldBe(55);
+    child3.Layout.Top.ShouldBe(55);
+    // Line 3: top = 55 + 10 + 22.5 = 87.5
+    child4.Layout.Top.ShouldBe(87.5f);
+  }
+
+  public void ShouldCenterSingleLineWithSpaceEvenly()
+  {
+    // Yoga test: align_content_space_evenly_wrap_singleline
+    // Single line: freeSpace / (1+1) = freeSpace / 2 = same as center
+    // BUG: Single-line align-content doesn't work - see kanban task 081
+    FlexNode root = new()
+    {
+      Width = FlexValue.Point(140),
+      Height = FlexValue.Point(120),
+      FlexDirection = FlexDirection.Row,
+      FlexWrap = FlexWrap.Wrap,
+      AlignContent = AlignContent.SpaceEvenly
+    };
+
+    FlexNode child0 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+    FlexNode child1 = new() { Width = FlexValue.Point(50), Height = FlexValue.Point(10) };
+
+    root.AddChild(child0);
+    root.AddChild(child1);
+
+    Engine.CalculateLayout(root, 140, 120);
+
+    // 1 line of 10px, freeSpace = 110px
+    // SpaceEvenly: 110 / (1+1) = 55px offset
+    child0.Layout.Top.ShouldBe(55);
+    child1.Layout.Top.ShouldBe(55);
+  }
+}
+
+/// <summary>
 /// Tests for align-content: stretch behavior.
 /// </summary>
 [TestTag(TestTags.Fast)]

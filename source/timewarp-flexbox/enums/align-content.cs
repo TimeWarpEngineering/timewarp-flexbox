@@ -32,6 +32,11 @@ public enum AlignContent
   SpaceAround,
 
   /// <summary>
+  /// Lines are evenly distributed with equal space between them.
+  /// </summary>
+  SpaceEvenly,
+
+  /// <summary>
   /// Lines are stretched to fill the container (default).
   /// </summary>
   Stretch

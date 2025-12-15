@@ -9,6 +9,12 @@ public partial class FlexNode
   private readonly List<FlexNode> ChildrenInternal = [];
 
   /// <summary>
+  /// Tracks the number of direct children that have Display.Contents.
+  /// Used to optimize GetLayoutChildren() - if zero, no flattening is needed.
+  /// </summary>
+  private int ContentsChildrenCount;
+
+  /// <summary>
   /// Creates a new FlexNode instance.
   /// </summary>
   public FlexNode()
@@ -117,6 +123,12 @@ public partial class FlexNode
   public int ChildCount => ChildrenInternal.Count;
 
   /// <summary>
+  /// Gets whether any direct children have Display.Contents.
+  /// When true, GetLayoutChildren() will perform tree flattening.
+  /// </summary>
+  public bool HasContentsChildren => ContentsChildrenCount > 0;
+
+  /// <summary>
   /// Gets whether the node's layout needs to be recalculated.
   /// </summary>
   public bool IsDirty { get; private set; } = true;
@@ -136,6 +148,12 @@ public partial class FlexNode
 
     child.Parent = this;
     ChildrenInternal.Add(child);
+
+    if (child.Display == Display.Contents)
+    {
+      ContentsChildrenCount++;
+    }
+
     MarkDirty();
   }
 
@@ -158,6 +176,12 @@ public partial class FlexNode
 
     child.Parent = this;
     ChildrenInternal.Insert(index, child);
+
+    if (child.Display == Display.Contents)
+    {
+      ContentsChildrenCount++;
+    }
+
     MarkDirty();
   }
 
@@ -172,6 +196,11 @@ public partial class FlexNode
 
     if (!ChildrenInternal.Remove(child))
       return false;
+
+    if (child.Display == Display.Contents)
+    {
+      ContentsChildrenCount--;
+    }
 
     child.Parent = null;
     MarkDirty();
@@ -198,6 +227,17 @@ public partial class FlexNode
     // Remove new child from its existing parent if any
     newChild.Parent?.RemoveChild(newChild);
 
+    // Update contents children count
+    if (oldChild.Display == Display.Contents)
+    {
+      ContentsChildrenCount--;
+    }
+
+    if (newChild.Display == Display.Contents)
+    {
+      ContentsChildrenCount++;
+    }
+
     // Update parent references
     oldChild.Parent = null;
     newChild.Parent = this;
@@ -222,6 +262,7 @@ public partial class FlexNode
     }
 
     ChildrenInternal.Clear();
+    ContentsChildrenCount = 0;
     MarkDirty();
   }
 
@@ -237,6 +278,51 @@ public partial class FlexNode
     ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, ChildrenInternal.Count);
 
     return ChildrenInternal[index];
+  }
+
+  /// <summary>
+  /// Gets the layout-relevant children, flattening any children with Display.Contents.
+  /// Children with Display.None are excluded.
+  /// Children with Display.Contents are replaced by their own layout children (recursively).
+  /// </summary>
+  /// <returns>An enumerable of nodes that participate in layout.</returns>
+  public IEnumerable<FlexNode> GetLayoutChildren()
+  {
+    // Optimization: if no contents children, just filter out Display.None
+    if (!HasContentsChildren)
+    {
+      foreach (FlexNode child in ChildrenInternal)
+      {
+        if (child.Display != Display.None)
+        {
+          yield return child;
+        }
+      }
+
+      yield break;
+    }
+
+    // Has contents children - need to flatten
+    foreach (FlexNode child in ChildrenInternal)
+    {
+      if (child.Display == Display.None)
+      {
+        continue;
+      }
+
+      if (child.Display == Display.Contents)
+      {
+        // Recursively yield the contents node's layout children
+        foreach (FlexNode grandchild in child.GetLayoutChildren())
+        {
+          yield return grandchild;
+        }
+      }
+      else
+      {
+        yield return child;
+      }
+    }
   }
 
   /// <summary>

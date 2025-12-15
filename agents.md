@@ -1,10 +1,18 @@
 # TimeWarp.Flexbox Agent Guidelines
 
+## Important: Project Objective
+
+**The main objective is to port Facebook's Yoga C++ flexbox library to C#.**
+
+- Keep it as simple as possible: copy the C++ logic and change the syntax to C#
+- Do NOT skip anything, do NOT rename anything unless necessary for C# conventions
+- Match Yoga's behavior exactly - when in doubt, look at the C++ source
+
 ## Reference Implementation
 
 **Facebook Yoga Repository**: `/home/steventcramer/worktrees/github.com/facebook/yoga/main/`
 
-This project is a C# port of Facebook's Yoga layout library. When implementing features or fixing bugs, consult the Yoga source:
+This is the source of truth. When implementing features or fixing bugs, ALWAYS consult the Yoga C++ source first:
 
 - **Algorithm**: `yoga/algorithm/` - Core layout algorithms
   - `CalculateLayout.cpp` - Main layout entry point

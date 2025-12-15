@@ -55,16 +55,41 @@ public sealed class FlexLayoutEngine
     // if the input parameters match and the node hasn't changed.
     uint currentGeneration = ++GlobalGenerationCount;
 
-    // Determine measure modes based on whether dimensions are defined
-    MeasureMode widthMode = float.IsNaN(availableWidth) ? MeasureMode.Undefined : MeasureMode.Exactly;
-    MeasureMode heightMode = float.IsNaN(availableHeight) ? MeasureMode.Undefined : MeasureMode.Exactly;
+    // Resolve dimensions from the node if available dimensions are undefined
+    // This matches Yoga's behavior in calculateLayout()
+    float width = availableWidth;
+    float height = availableHeight;
+    MeasureMode widthMode = MeasureMode.Undefined;
+    MeasureMode heightMode = MeasureMode.Undefined;
+
+    // If available width is undefined but node has a definite width, use it
+    if (float.IsNaN(availableWidth) && root.Width.Unit == Unit.Point)
+    {
+      width = root.Width.Value;
+      widthMode = MeasureMode.Exactly;
+    }
+    else if (!float.IsNaN(availableWidth))
+    {
+      widthMode = MeasureMode.Exactly;
+    }
+
+    // If available height is undefined but node has a definite height, use it
+    if (float.IsNaN(availableHeight) && root.Height.Unit == Unit.Point)
+    {
+      height = root.Height.Value;
+      heightMode = MeasureMode.Exactly;
+    }
+    else if (!float.IsNaN(availableHeight))
+    {
+      heightMode = MeasureMode.Exactly;
+    }
 
     // Calculate layout recursively starting from root
     LayoutNode(
       root,
-      availableWidth,
+      width,
       widthMode,
-      availableHeight,
+      height,
       heightMode,
       direction,
       currentGeneration);
@@ -98,6 +123,11 @@ public sealed class FlexLayoutEngine
   {
     // Skip nodes with Display.None
     if (node.Display == Display.None)
+      return;
+
+    // Skip nodes with Display.Contents - they don't generate a box
+    // Their children are handled by the parent via GetLayoutChildren()
+    if (node.Display == Display.Contents)
       return;
 
     // Determine if we need to visit this node based on dirty flag and generation
@@ -206,14 +236,6 @@ public sealed class FlexLayoutEngine
     // Add cross axis gaps between lines
     int lineCount = FlexLinesCache.LineCount;
 
-    // For single-line containers, the line cross size should be the container cross size
-    // This allows proper alignment of items within the container
-    if (lineCount == 1 && !float.IsNaN(availableInnerCrossSize))
-    {
-      FlexLinesCache.Lines[0].CrossSize = Math.Max(FlexLinesCache.Lines[0].CrossSize, availableInnerCrossSize);
-      totalLineCrossSize = FlexLinesCache.Lines[0].CrossSize;
-    }
-
     if (lineCount > 1)
     {
       totalLineCrossSize += crossAxisGap * (lineCount - 1);
@@ -245,12 +267,9 @@ public sealed class FlexLayoutEngine
     // Detect overflow
     DetectOverflow(node, FlexLinesCache, availableInnerMainSize, availableInnerCrossSize, crossAxisGap);
 
-    // Recursively layout children
-    foreach (FlexNode child in node.Children)
+    // Recursively layout children (using GetLayoutChildren to flatten Display.Contents nodes)
+    foreach (FlexNode child in node.GetLayoutChildren())
     {
-      if (child.Display == Display.None)
-        continue;
-
       if (child.PositionType == PositionType.Absolute)
       {
         LayoutAbsoluteChild(node, child, direction);
@@ -799,9 +818,9 @@ public sealed class FlexLayoutEngine
         float contentWidth = 0;
         int childCount = 0;
 
-        foreach (FlexNode child in node.Children)
+        foreach (FlexNode child in node.GetLayoutChildren())
         {
-          if (child.Display == Display.None || child.PositionType == PositionType.Absolute)
+          if (child.PositionType == PositionType.Absolute)
             continue;
 
           // Get child margins (margins use availableWidth for percentage resolution)
@@ -856,9 +875,9 @@ public sealed class FlexLayoutEngine
         float contentHeight = 0;
         int childCount = 0;
 
-        foreach (FlexNode child in node.Children)
+        foreach (FlexNode child in node.GetLayoutChildren())
         {
-          if (child.Display == Display.None || child.PositionType == PositionType.Absolute)
+          if (child.PositionType == PositionType.Absolute)
             continue;
 
           // Get child margins (margins use availableWidth for percentage resolution per CSS spec)
@@ -1037,7 +1056,9 @@ public sealed class FlexLayoutEngine
         bool hasAutoTrailingCross = IsMarginAuto(child, crossTrailingEdge, isRtl);
 
         float childCrossSize = isRow ? child.Layout.Height : child.Layout.Width;
-        float crossFreeSpaceForChild = line.CrossSize - childCrossSize - crossLeadingMargin - crossTrailingMargin;
+        // Use container cross size for align-items (like Yoga's containerCrossAxis)
+        float containerCrossAxis = lineCount == 1 ? availableCrossSize : line.CrossSize;
+        float crossFreeSpaceForChild = containerCrossAxis - childCrossSize - crossLeadingMargin - crossTrailingMargin;
 
         float childCrossPosition;
 
@@ -1064,7 +1085,7 @@ public sealed class FlexLayoutEngine
             node.AlignItems,
             child.AlignSelf,
             crossPosition + crossLeadingMargin,
-            line.CrossSize - crossLeadingMargin - crossTrailingMargin,
+            containerCrossAxis - crossLeadingMargin - crossTrailingMargin,
             childCrossSize,
             lineBaseline,
             itemBaseline);
@@ -1111,6 +1132,7 @@ public sealed class FlexLayoutEngine
       AlignContent.Center => paddingStart + freeSpace / 2,
       AlignContent.SpaceBetween => paddingStart,
       AlignContent.SpaceAround => paddingStart + freeSpace / lineCount / 2,
+      AlignContent.SpaceEvenly => paddingStart + freeSpace / (lineCount + 1),
       AlignContent.Stretch => paddingStart, // Stretch is handled before this
       _ => paddingStart
     };
@@ -1131,6 +1153,7 @@ public sealed class FlexLayoutEngine
     {
       AlignContent.SpaceBetween => freeSpace / (lineCount - 1),
       AlignContent.SpaceAround => freeSpace / lineCount,
+      AlignContent.SpaceEvenly => freeSpace / (lineCount + 1),
       _ => 0
     };
   }
