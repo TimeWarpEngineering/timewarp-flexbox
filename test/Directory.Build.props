@@ -9,10 +9,11 @@
 
   <PropertyGroup Label="Analyzer Suppressions for Test Projects">
     <!-- CA1515: Test classes must be public for Fixie discovery -->
+    <!-- CA1707: Test methods may use underscores for readability (e.g., ported C++ test names) -->
     <!-- CA1822: Test methods cannot be static for Fixie -->
     <!-- CA2007: ConfigureAwait not needed in test projects -->
     <!-- CA2252: Allow preview features for testing frameworks -->
-    <NoWarn>$(NoWarn);CA1515;CA1822;CA2007;CA2252</NoWarn>
+    <NoWarn>$(NoWarn);CA1515;CA1707;CA1822;CA2007;CA2252</NoWarn>
   </PropertyGroup>
 
 </Project>

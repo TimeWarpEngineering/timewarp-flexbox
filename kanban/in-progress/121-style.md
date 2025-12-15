@@ -11,14 +11,14 @@ Port the Style class from C++ to C#. This is the largest style file containing a
 | Type       | Path                  | Lines |
 | ---------- | --------------------- | ----- |
 | C++ Header | `yoga/style/Style.h`  | 759   |
-| C++ Test   | `tests/StyleTest.cpp` | ~250  |
+| C++ Test   | `tests/StyleTest.cpp` | ~45   |
 
 ## Target Files
 
-| Type      | Path                                          |
-| --------- | --------------------------------------------- |
-| C# Source | `source/timewarp-flexbox/style/style.cs`      |
-| C# Test   | `tests/timewarp-flexbox-tests/style-tests.cs` |
+| Type      | Path                                               |
+| --------- | -------------------------------------------------- |
+| C# Source | `source/timewarp-flexbox/Style/Style.cs`           |
+| C# Test   | `test/timewarp-flexbox-tests/Style/StyleTests.cs`  |
 
 ## Dependencies
 
@@ -30,58 +30,60 @@ Port the Style class from C++ to C#. This is the largest style file containing a
 
 ## Todo List
 
-- [ ] Port `Style.h` to C#
-- [ ] Implement all style properties
-- [ ] Implement style getters/setters
-- [ ] Port `StyleTest.cpp` to xUnit tests
-- [ ] Ensure all tests pass
+- [x] Port `Style.h` to C#
+- [x] Implement all style properties
+- [x] Implement style getters/setters
+- [x] Port `StyleTest.cpp` tests
+- [x] Ensure all tests pass
 
 ## Acceptance Criteria
 
-- [ ] All ~250 lines of test logic ported
-- [ ] All flex properties working (direction, wrap, grow, shrink, basis)
-- [ ] All alignment properties working (justify, align items/self/content)
-- [ ] All dimension properties working (width, height, min/max)
-- [ ] All spacing properties working (margin, padding, border)
-- [ ] All position properties working (position type, insets)
-- [ ] All tests pass with identical behavior to C++
+- [x] All C++ test logic ported (4 tests from StyleTest.cpp)
+- [x] All flex properties working (direction, wrap, grow, shrink, basis)
+- [x] All alignment properties working (justify, align items/self/content)
+- [x] All dimension properties working (width, height, min/max)
+- [x] All spacing properties working (margin, padding, border)
+- [x] All position properties working (position type, insets)
+- [x] All tests pass with identical behavior to C++
 
 ## Notes
 
-This is a large file (~759 lines). Key properties to port:
+Implemented ~819 lines in Style.cs porting all functionality from C++ Style.h:
 
-```csharp
-public sealed class Style
-{
-    // Flex container
-    public FlexDirection FlexDirection { get; set; }
-    public Wrap FlexWrap { get; set; }
-    public Justify JustifyContent { get; set; }
-    public Align AlignItems { get; set; }
-    public Align AlignContent { get; set; }
+### Enum Properties
+- Direction, FlexDirection, JustifyContent, AlignContent, AlignItems, AlignSelf
+- PositionType, FlexWrap, Overflow, Display, BoxSizing
 
-    // Flex item
-    public Align AlignSelf { get; set; }
-    public FloatOptional FlexGrow { get; set; }
-    public FloatOptional FlexShrink { get; set; }
-    public StyleLength FlexBasis { get; set; }
+### Flex Properties
+- Flex, FlexGrow, FlexShrink, FlexBasis (using StyleValuePool)
 
-    // Dimensions
-    public StyleSizeLength Width { get; set; }
-    public StyleSizeLength Height { get; set; }
-    public StyleSizeLength MinWidth { get; set; }
-    public StyleSizeLength MinHeight { get; set; }
-    public StyleSizeLength MaxWidth { get; set; }
-    public StyleSizeLength MaxHeight { get; set; }
+### Edge Properties
+- Margin, Position, Padding, Border (per Edge)
+- Gap (per Gutter)
 
-    // Position
-    public PositionType PositionType { get; set; }
-    public StyleLength GetPosition(Edge edge);
-    public void SetPosition(Edge edge, StyleLength value);
+### Dimension Properties
+- Dimensions (Width, Height)
+- MinDimensions, MaxDimensions
+- ResolvedMinDimension/ResolvedMaxDimension (accounting for BoxSizing)
+- AspectRatio (with validation for zero/infinity)
 
-    // Spacing
-    public StyleLength GetMargin(Edge edge);
-    public StyleLength GetPadding(Edge edge);
-    public float GetBorder(Edge edge);
-}
-```
+### Compute Methods
+- ComputeFlexStart/End Position/Margin/Border/Padding
+- ComputeInlineStart/End Position/Margin/Border/Padding
+- ComputePaddingAndBorder combinations
+- ComputeGapForAxis, ComputeMarginForAxis, ComputeBorderForAxis
+
+### Query Methods
+- HorizontalInsetsDefined, VerticalInsetsDefined
+- IsFlexStart/End PositionDefined/Auto
+- IsInlineStart/End PositionDefined/Auto
+- FlexStart/End MarginIsAuto
+
+### Equality
+- Full IEquatable<Style> implementation comparing all properties
+
+## Results
+
+- Style.cs: 821 lines
+- StyleTests.cs: 26 tests (4 from C++ + 22 additional coverage tests)
+- All 454 tests pass (was 418 before)

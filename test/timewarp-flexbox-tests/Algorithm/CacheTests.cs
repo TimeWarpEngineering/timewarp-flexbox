@@ -6,6 +6,8 @@
 
 namespace TimeWarp.Flexbox.Tests.Algorithm;
 
+using Config = TimeWarp.Flexbox.Config;
+
 /// <summary>
 /// Tests for Cache utilities.
 /// </summary>
