@@ -367,6 +367,26 @@ public enum Wrap
     WrapReverse = 2
 }
 
+/// <summary>
+/// Represents the four physical edges (not logical start/end).
+/// Used for layout calculations where physical position matters.
+/// </summary>
+[OrdinalCount(4)]
+public enum PhysicalEdge
+{
+    /// <summary>Left physical edge.</summary>
+    Left = 0,
+
+    /// <summary>Top physical edge.</summary>
+    Top = 1,
+
+    /// <summary>Right physical edge.</summary>
+    Right = 2,
+
+    /// <summary>Bottom physical edge.</summary>
+    Bottom = 3
+}
+
 #endregion
 
 #region YogaEnums Utilities
@@ -668,6 +688,16 @@ public static class YogaEnumExtensions
         Wrap.NoWrap => "no-wrap",
         Wrap.Wrap => "wrap",
         Wrap.WrapReverse => "wrap-reverse",
+        _ => "unknown"
+    };
+
+    /// <summary>Converts PhysicalEdge to its string representation.</summary>
+    public static string ToCssString(this PhysicalEdge value) => value switch
+    {
+        PhysicalEdge.Left => "left",
+        PhysicalEdge.Top => "top",
+        PhysicalEdge.Right => "right",
+        PhysicalEdge.Bottom => "bottom",
         _ => "unknown"
     };
 }
