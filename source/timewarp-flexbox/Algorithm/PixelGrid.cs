@@ -83,4 +83,92 @@ public static class PixelGrid
             ? float.NaN
             : (float)(scaledValue / pointScaleFactor);
     }
+
+    /// <summary>
+    /// Rounds all layout results in the node tree to the pixel grid.
+    /// </summary>
+    /// <param name="node">The root node to process.</param>
+    /// <param name="absoluteLeft">The absolute left position of the node.</param>
+    /// <param name="absoluteTop">The absolute top position of the node.</param>
+    /// <remarks>
+    /// This method recursively processes all children, rounding positions and dimensions
+    /// to align with the physical pixel grid. Text nodes receive special treatment to
+    /// avoid unwanted truncation - fractional widths/heights are rounded up (ceil).
+    /// </remarks>
+    public static void RoundLayoutResultsToPixelGrid(
+        Node node,
+        double absoluteLeft,
+        double absoluteTop)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+
+        double pointScaleFactor = node.Config.PointScaleFactor;
+
+        double nodeLeft = node.Layout.GetPosition(PhysicalEdge.Left);
+        double nodeTop = node.Layout.GetPosition(PhysicalEdge.Top);
+
+        double nodeWidth = node.Layout.GetDimension(Dimension.Width);
+        double nodeHeight = node.Layout.GetDimension(Dimension.Height);
+
+        double absoluteNodeLeft = absoluteLeft + nodeLeft;
+        double absoluteNodeTop = absoluteTop + nodeTop;
+
+        double absoluteNodeRight = absoluteNodeLeft + nodeWidth;
+        double absoluteNodeBottom = absoluteNodeTop + nodeHeight;
+
+        if (pointScaleFactor != 0.0)
+        {
+            // If a node has a custom measure function we never want to round down its
+            // size as this could lead to unwanted text truncation.
+            bool textRounding = node.NodeType == NodeType.Text;
+
+            node.SetLayoutPosition(
+                RoundValueToPixelGrid(nodeLeft, pointScaleFactor, false, textRounding),
+                PhysicalEdge.Left);
+
+            node.SetLayoutPosition(
+                RoundValueToPixelGrid(nodeTop, pointScaleFactor, false, textRounding),
+                PhysicalEdge.Top);
+
+            // We multiply dimension by scale factor and if the result is close to the
+            // whole number, we don't have any fraction. To verify if the result is close
+            // to whole number we want to check both floor and ceil numbers.
+            double scaledNodeWidth = nodeWidth * pointScaleFactor;
+            bool hasFractionalWidth = !Comparison.InexactEquals(Math.Round(scaledNodeWidth), scaledNodeWidth);
+
+            double scaledNodeHeight = nodeHeight * pointScaleFactor;
+            bool hasFractionalHeight = !Comparison.InexactEquals(Math.Round(scaledNodeHeight), scaledNodeHeight);
+
+            node.Layout.SetDimension(
+                Dimension.Width,
+                RoundValueToPixelGrid(
+                    absoluteNodeRight,
+                    pointScaleFactor,
+                    textRounding && hasFractionalWidth,
+                    textRounding && !hasFractionalWidth) -
+                RoundValueToPixelGrid(
+                    absoluteNodeLeft,
+                    pointScaleFactor,
+                    false,
+                    textRounding));
+
+            node.Layout.SetDimension(
+                Dimension.Height,
+                RoundValueToPixelGrid(
+                    absoluteNodeBottom,
+                    pointScaleFactor,
+                    textRounding && hasFractionalHeight,
+                    textRounding && !hasFractionalHeight) -
+                RoundValueToPixelGrid(
+                    absoluteNodeTop,
+                    pointScaleFactor,
+                    false,
+                    textRounding));
+        }
+
+        foreach (Node child in node.Children)
+        {
+            RoundLayoutResultsToPixelGrid(child, absoluteNodeLeft, absoluteNodeTop);
+        }
+    }
 }
