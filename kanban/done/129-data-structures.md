@@ -16,29 +16,29 @@ Port the data structures required by the CalculateLayout algorithm: FlexLine, Fl
 | Type      | Path                                              |
 | --------- | ------------------------------------------------- |
 | C# Source | `source/timewarp-flexbox/Algorithm/FlexLine.cs`   |
-| C# Source | `source/timewarp-flexbox/Event/LayoutData.cs`     |
+| C# Source | `source/timewarp-flexbox/Event/Event.cs`          |
 
 ## Todo List
 
-- [ ] Port `FlexLineRunningLayout` struct
+- [x] Port `FlexLineRunningLayout` struct
   - totalFlexGrowFactors (float)
   - totalFlexShrinkScaledFactors (float)
   - remainingFreeSpace (float)
   - mainDim (float)
   - crossDim (float)
-- [ ] Port `FlexLine` struct
+- [x] Port `FlexLine` struct
   - itemsInFlow (List<Node>)
   - sizeConsumed (float)
   - numberOfAutoMargins (int)
   - layout (FlexLineRunningLayout)
-- [ ] Port `LayoutData` struct (metrics tracking)
+- [x] Port `LayoutData` struct (metrics tracking)
   - layouts, measures, cachedLayouts, cachedMeasures (int)
   - maxMeasureCache (uint)
   - measureCallbacks (int)
   - measureCallbackReasonsCount (array)
-- [ ] Port `LayoutPassReason` enum
-- [ ] Port `LayoutType` enum
-- [ ] Add unit tests for data structures
+- [x] Port `LayoutPassReason` enum
+- [x] Port `LayoutType` enum
+- [x] Add unit tests for data structures
 
 ## Dependencies
 
