@@ -68,21 +68,21 @@ Returns `totalOuterFlexBasis` - sum of all children's flex basis + margins.
 
 ## Todo List
 
-- [ ] Port `computeFlexBasisForChild`
-  - Handle explicit flex-basis
-  - Handle definite width/height
-  - Handle measurement fallback
-  - Handle aspect ratio
-  - Handle stretch alignment
-  - Apply constrainMaxSizeForMode
-  - Recursive calculateLayoutInternal call for measurement
-- [ ] Port `computeFlexBasisForChildren`
-  - Single flex child optimization
-  - Skip display:none and absolute children
-  - Set initial positions
-  - Accumulate totalOuterFlexBasis
-- [ ] Add unit tests
-- [ ] Test edge cases (aspect ratio, stretch, auto margins)
+- [x] Port `computeFlexBasisForChild`
+  - [x] Handle explicit flex-basis
+  - [x] Handle definite width/height
+  - [x] Handle measurement fallback
+  - [x] Handle aspect ratio
+  - [x] Handle stretch alignment
+  - [x] Apply constrainMaxSizeForMode
+  - [x] Recursive calculateLayoutInternal call for measurement (via delegate pattern)
+- [x] Port `computeFlexBasisForChildren`
+  - [x] Single flex child optimization
+  - [x] Skip display:none and absolute children
+  - [x] Set initial positions (via ProcessDimensions)
+  - [x] Accumulate totalOuterFlexBasis
+- [x] Add unit tests (25 tests)
+- [x] Test edge cases (aspect ratio, stretch, auto margins, RTL)
 
 ## Dependencies
 
@@ -141,3 +141,56 @@ if (child->getLayout().computedFlexBasisGeneration != generationCount) {
 }
 child->setLayoutComputedFlexBasisGeneration(generationCount);
 ```
+
+## Implementation Notes
+
+### Files Created
+- `source/timewarp-flexbox/Algorithm/FlexBasis.cs` - Main implementation
+- `test/timewarp-flexbox-tests/Algorithm/FlexBasisTests.cs` - 25 unit tests
+
+### Delegate Pattern for calculateLayoutInternal
+To avoid circular dependencies (FlexBasis needs calculateLayoutInternal, but calculateLayoutInternal 
+needs FlexBasis), we use a delegate pattern:
+
+```csharp
+public delegate bool CalculateLayoutInternalFunc(
+    Node node,
+    float availableWidth,
+    float availableHeight,
+    Direction ownerDirection,
+    SizingMode widthSizingMode,
+    SizingMode heightSizingMode,
+    float ownerWidth,
+    float ownerHeight,
+    bool performLayout,
+    LayoutPassReason reason,
+    LayoutData layoutMarkerData,
+    int depth,
+    uint generationCount);
+
+public static class FlexBasis
+{
+    public static CalculateLayoutInternalFunc? CalculateLayoutInternal { get; set; }
+    // ...
+}
+```
+
+The main layout algorithm will set this delegate before calling flex basis calculations.
+
+### Test Coverage
+- Null argument validation
+- Explicit flex-basis usage
+- Definite width/height for row/column directions
+- Auto flex-basis measurement
+- Generation count tracking
+- Percentage flex-basis
+- Padding and border minimum constraints
+- Total outer flex basis calculation
+- Display:none child handling
+- Absolute positioned child handling
+- Single flex child optimization
+- Multiple flex children (no optimization)
+- Margin inclusion
+- Column direction
+- RTL direction
+- Aspect ratio handling
