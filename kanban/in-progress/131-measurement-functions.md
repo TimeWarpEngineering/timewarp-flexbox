@@ -76,20 +76,20 @@ Returns `true` if measurement was handled (both dimensions fixed), `false` other
 
 ## Todo List
 
-- [ ] Port `measureNodeWithMeasureFunc`
+- [x] Port `measureNodeWithMeasureFunc`
   - Handle measure callback invocation
   - Apply padding/border calculations
   - Track metrics in LayoutData
   - Emit events (MeasureCallbackStart/End)
-- [ ] Port `measureNodeWithoutChildren`
+- [x] Port `measureNodeWithoutChildren`
   - Return padding+border as minimum size
   - Apply boundAxis constraints
-- [ ] Port `measureNodeWithFixedSize`
+- [x] Port `measureNodeWithFixedSize`
   - Check if both dimensions are fixed
   - Set measured dimensions directly
   - Return success/failure flag
-- [ ] Add unit tests for each function
-- [ ] Test edge cases (undefined dimensions, zero sizes, etc.)
+- [x] Add unit tests for each function
+- [x] Test edge cases (undefined dimensions, zero sizes, etc.)
 
 ## Dependencies
 
@@ -124,3 +124,44 @@ static bool IsFixedSize(float dim, SizingMode sizingMode) =>
     sizingMode == SizingMode.StretchFit ||
     (Yoga.IsDefined(dim) && sizingMode == SizingMode.FitContent && dim <= 0.0f);
 ```
+
+## Results
+
+### Implementation Summary
+
+Created `source/timewarp-flexbox/Algorithm/MeasureNode.cs` with three measurement functions:
+
+1. **MeasureNodeWithMeasureFunc** - Measures nodes with custom measure functions (e.g., text nodes)
+   - Calculates padding/border for both axes
+   - Passes inner dimensions (available - padding/border) to the measure callback
+   - For MaxContent sizing mode, passes undefined dimensions
+   - Converts SizingMode to MeasureMode using existing extension methods
+   - Publishes MeasureCallbackStart/End events
+   - Adds padding/border back to measured result
+   - Applies min/max bounds using BoundAxisValue
+   - Tracks metrics in LayoutData
+
+2. **MeasureNodeWithoutChildren** - Measures leaf nodes without children
+   - For StretchFit: uses available dimension
+   - For MaxContent/FitContent: uses padding+border as minimum size
+   - Applies min/max bounds
+
+3. **MeasureNodeWithFixedSize** - Fast path optimization
+   - Uses existing `LayoutHelpers.IsFixedSize()` to check if both dimensions are fixed
+   - Returns true if measurement was handled, false to indicate regular measurement needed
+   - Only sets measured dimensions when returning true
+
+### Test Coverage
+
+Created `test/timewarp-flexbox-tests/Algorithm/MeasureNodeTests.cs` with 31 test methods covering:
+
+- Basic functionality of all three measurement functions
+- Measure callback invocation and tracking
+- Padding/border calculations
+- Min/max bounds application
+- SizingMode to MeasureMode conversion
+- RTL direction handling
+- Edge cases (zero dimensions, negative dimensions, undefined dimensions)
+- Null parameter validation
+
+### All tests pass: 667 passed, 3 skipped (mock-related), 0 failed
