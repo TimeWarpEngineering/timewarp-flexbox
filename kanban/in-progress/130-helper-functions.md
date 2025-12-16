@@ -63,18 +63,19 @@ static void cleanupContentsNodesRecursively(yoga::Node* node);
 
 ## Target Files
 
-| Type      | Path                                                     |
-| --------- | -------------------------------------------------------- |
-| C# Source | `source/timewarp-flexbox/Algorithm/LayoutHelpers.cs`     |
+| Type      | Path                                                              |
+| --------- | ----------------------------------------------------------------- |
+| C# Source | `source/timewarp-flexbox/Algorithm/LayoutHelpers.cs`              |
+| C# Tests  | `test/timewarp-flexbox-tests/Algorithm/LayoutHelpersTests.cs`     |
 
 ## Todo List
 
-- [ ] Port `constrainMaxSizeForMode` - must handle in/out parameters (ref in C#)
-- [ ] Port `isFixedSize` - simple boolean check
-- [ ] Port `calculateAvailableInnerDimension` - applies min/max to available space
-- [ ] Port `zeroOutLayoutRecursively` - recursive reset for display:none
-- [ ] Port `cleanupContentsNodesRecursively` - handle display:contents
-- [ ] Add unit tests
+- [x] Port `constrainMaxSizeForMode` - must handle in/out parameters (ref in C#)
+- [x] Port `isFixedSize` - simple boolean check
+- [x] Port `calculateAvailableInnerDimension` - applies min/max to available space
+- [x] Port `zeroOutLayoutRecursively` - recursive reset for display:none
+- [x] Port `cleanupContentsNodesRecursively` - handle display:contents
+- [x] Add unit tests
 
 ## Dependencies
 
