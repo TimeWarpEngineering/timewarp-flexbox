@@ -54,9 +54,9 @@ Port the algorithm helper modules from C++ to C#. These are utilities used by th
 
 This task was too large for a single context. Remaining work has been split into:
 
-- **Task 126**: Complete PixelGrid `RoundLayoutResultsToPixelGrid` method
-- **Task 127**: Add Algorithm Helper Tests
-- **Task 128**: Verify Algorithm Helpers Against C++ Reference
+- **Task 126**: Complete PixelGrid `RoundLayoutResultsToPixelGrid` method - ✅ Done
+- **Task 127**: Add Algorithm Helper Tests - ✅ Done
+- **Task 128**: Verify Algorithm Helpers Against C++ Reference - ✅ Done
 
 ## Acceptance Criteria
 
@@ -66,9 +66,9 @@ This task was too large for a single context. Remaining work has been split into
 - [x] Alignment calculations correct
 - [x] Axis bounds correct
 - [x] Trailing positions correct
-- [ ] `RoundLayoutResultsToPixelGrid` complete (Task 126)
-- [ ] Tests added (Task 127)
-- [ ] Verified against C++ (Task 128)
+- [x] `RoundLayoutResultsToPixelGrid` complete (Task 126)
+- [x] Tests added (Task 127)
+- [x] Verified against C++ (Task 128)
 - [ ] Used correctly by CalculateLayout (Task 125)
 
 ## Notes
