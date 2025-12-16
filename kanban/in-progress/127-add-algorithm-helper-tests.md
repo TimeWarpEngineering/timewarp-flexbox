@@ -21,37 +21,37 @@ Create unit tests for all algorithm helper classes. Currently only `CacheTests.c
 
 ## Checklist
 
-- [ ] Create `PixelGridTests.cs`
-  - [ ] Test `RoundValueToPixelGrid` with various scale factors
-  - [ ] Test ceil/floor forcing
-  - [ ] Test negative values
-  - [ ] Test NaN handling
-- [ ] Create `BaselineTests.cs`
-  - [ ] Test `CalculateBaseline` with custom baseline func
-  - [ ] Test `CalculateBaseline` without baseline func
-  - [ ] Test `IsBaselineLayout` for row/column directions
-- [ ] Create `FlexLineTests.cs`
-  - [ ] Test `CalculateFlexLine` line breaking
-  - [ ] Test auto margin counting
-  - [ ] Test flex factor accumulation
-- [ ] Create `AlignUtilsTests.cs`
-  - [ ] Test `ResolveChildAlignment` with various align values
-  - [ ] Test `FallbackAlignment` for Align enum
-  - [ ] Test `FallbackAlignment` for Justify enum
-- [ ] Create `BoundAxisTests.cs`
-  - [ ] Test `PaddingAndBorderForAxis`
-  - [ ] Test `BoundAxisWithinMinAndMax` with min/max constraints
-  - [ ] Test `BoundAxisValue` padding floor
-- [ ] Create `TrailingPositionTests.cs`
-  - [ ] Test `GetPositionOfOppositeEdge`
-  - [ ] Test `SetChildTrailingPosition`
-  - [ ] Test `NeedsTrailingPosition` for reversed axes
+- [x] Create `PixelGridTests.cs`
+  - [x] Test `RoundValueToPixelGrid` with various scale factors
+  - [x] Test ceil/floor forcing
+  - [x] Test negative values
+  - [x] Test NaN handling
+- [x] Create `BaselineTests.cs`
+  - [x] Test `CalculateBaseline` with custom baseline func
+  - [x] Test `CalculateBaseline` without baseline func
+  - [x] Test `IsBaselineLayout` for row/column directions
+- [x] Create `FlexLineTests.cs`
+  - [x] Test `CalculateFlexLine` line breaking
+  - [x] Test auto margin counting
+  - [x] Test flex factor accumulation
+- [x] Create `AlignUtilsTests.cs`
+  - [x] Test `ResolveChildAlignment` with various align values
+  - [x] Test `FallbackAlignment` for Align enum
+  - [x] Test `FallbackAlignment` for Justify enum
+- [x] Create `BoundAxisTests.cs`
+  - [x] Test `PaddingAndBorderForAxis`
+  - [x] Test `BoundAxisWithinMinAndMax` with min/max constraints
+  - [x] Test `BoundAxisValue` padding floor
+- [x] Create `TrailingPositionTests.cs`
+  - [x] Test `GetPositionOfOppositeEdge`
+  - [x] Test `SetChildTrailingPosition`
+  - [x] Test `NeedsTrailingPosition` for reversed axes
 
 ## Acceptance Criteria
 
-- [ ] All tests pass
-- [ ] Each algorithm helper class has corresponding test file
-- [ ] Edge cases covered (NaN, negative values, zero scale factor)
+- [x] All tests pass
+- [x] Each algorithm helper class has corresponding test file
+- [x] Edge cases covered (NaN, negative values, zero scale factor)
 
 ## Notes
 
@@ -59,3 +59,15 @@ Follow the existing test patterns from `CacheTests.cs`:
 - Use Shouldly assertions
 - Group tests by region
 - Test both success and failure cases
+
+## Results
+
+All 6 test files created with comprehensive test coverage:
+- **AlignUtilsTests.cs**: Tests for ResolveChildAlignment and FallbackAlignment
+- **TrailingPositionTests.cs**: Tests for GetPositionOfOppositeEdge, SetChildTrailingPosition, NeedsTrailingPosition
+- **PixelGridTests.cs**: Tests for RoundValueToPixelGrid with scale factors, ceil/floor, negative values, NaN
+- **BaselineTests.cs**: Tests for IsBaselineLayout and CalculateBaseline
+- **FlexLineTests.cs**: Tests for FlexLine and FlexLineRunningLayout
+- **BoundAxisTests.cs**: Tests for PaddingAndBorderForAxis, BoundAxisWithinMinAndMax, BoundAxisValue
+
+Total: 108 new algorithm tests, all passing.
