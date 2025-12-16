@@ -101,6 +101,20 @@ public sealed class FlexLine
     public FlexLineRunningLayout Layout { get; set; }
 
     /// <summary>
+    /// The child that triggered the line break and needs to be processed in the next line.
+    /// This is null if the line ended because we ran out of children or if it's the last line.
+    /// </summary>
+    /// <remarks>
+    /// This property exists because the C# iterator pattern (MoveNext/Current) consumes items
+    /// before we can determine if they fit on the current line. Unlike C++, where the iterator
+    /// is advanced at the end of each loop iteration, C# advances at the beginning. When we
+    /// detect that a child doesn't fit, we've already consumed it from the iterator.
+    /// The calling code must check this property and process the pending child first when
+    /// calculating the next line.
+    /// </remarks>
+    public Node? PendingChild { get; init; }
+
+    /// <summary>
     /// Adds an item to the items in flow.
     /// </summary>
     internal void AddItemInFlow(Node item)
@@ -113,9 +127,17 @@ public sealed class FlexLine
     /// information about the collective children on the line.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This function assumes that all the children of node have their
     /// computedFlexBasis properly computed (To do this use
     /// computeFlexBasisForChildren function).
+    /// </para>
+    /// <para>
+    /// Due to differences between C++ and C# iterator patterns, when a child triggers
+    /// a line break, it is stored in the returned FlexLine's <see cref="PendingChild"/>
+    /// property. The caller must pass this pending child to the next call via the
+    /// <paramref name="pendingChild"/> parameter.
+    /// </para>
     /// </remarks>
     /// <param name="node">The parent node.</param>
     /// <param name="ownerDirection">The owner's direction.</param>
@@ -125,6 +147,7 @@ public sealed class FlexLine
     /// <param name="availableInnerMainDim">Available inner main dimension.</param>
     /// <param name="iterator">Iterator over layoutable children.</param>
     /// <param name="lineCount">The current line count.</param>
+    /// <param name="pendingChild">A child from the previous line that didn't fit and needs to start this line.</param>
     /// <returns>A new FlexLine with the calculated line break.</returns>
     public static FlexLine CalculateFlexLine(
         Node node,
@@ -134,16 +157,18 @@ public sealed class FlexLine
         float availableInnerWidth,
         float availableInnerMainDim,
         ref LayoutableChildren<Node>.Enumerator iterator,
-        int lineCount)
+        int lineCount,
+        Node? pendingChild = null)
     {
         ArgumentNullException.ThrowIfNull(node);
 
-        FlexLine flexLine = new();
         float sizeConsumed = 0.0f;
         float totalFlexGrowFactors = 0.0f;
         float totalFlexShrinkScaledFactors = 0.0f;
         int numberOfAutoMargins = 0;
         Node? firstElementInLine = null;
+        List<Node> itemsInFlow = [];
+        Node? childThatCausedBreak = null;
 
         float sizeConsumedIncludingMinConstraint = 0;
         Direction direction = node.ResolveDirection(ownerDirection);
@@ -151,14 +176,13 @@ public sealed class FlexLine
         bool isNodeFlexWrap = node.Style.FlexWrap != Wrap.NoWrap;
         float gap = node.Style.ComputeGapForAxis(mainAxis, availableInnerMainDim);
 
-        // Add items to the current line until it's full or we run out of items.
-        while (iterator.MoveNext())
+        // Helper function to process a single child
+        bool ProcessChild(Node child)
         {
-            Node child = iterator.Current;
             if (child.Style.Display == Display.None ||
                 child.Style.PositionType == PositionType.Absolute)
             {
-                continue;
+                return true; // Continue to next child
             }
 
             if (firstElementInLine is null)
@@ -194,12 +218,11 @@ public sealed class FlexLine
             if (sizeConsumedIncludingMinConstraint + flexBasisWithMinAndMaxConstraints +
                     childMarginMainAxis + childLeadingGapMainAxis >
                     availableInnerMainDim &&
-                isNodeFlexWrap && flexLine._itemsInFlow.Count > 0)
+                isNodeFlexWrap && itemsInFlow.Count > 0)
             {
-                // Move iterator back so this child is processed in the next line
-                // Note: In C#, we can't easily "put back" the item, so we'll need to handle this differently
-                // For now, we'll use a different approach in the calling code
-                break;
+                // Store this child to be processed in the next line
+                childThatCausedBreak = child;
+                return false; // Stop processing
             }
 
             sizeConsumedIncludingMinConstraint += flexBasisWithMinAndMaxConstraints +
@@ -217,9 +240,32 @@ public sealed class FlexLine
                     child.Layout.ComputedFlexBasis.Unwrap();
             }
 
-            flexLine._itemsInFlow.Add(child);
+            itemsInFlow.Add(child);
+            return true; // Continue to next child
         }
 
+        // First, process the pending child from the previous line if any
+        if (pendingChild is not null)
+        {
+            if (!ProcessChild(pendingChild))
+            {
+                // The pending child itself caused a break (shouldn't happen normally,
+                // but handle it for robustness)
+                goto Finalize;
+            }
+        }
+
+        // Add items to the current line until it's full or we run out of items.
+        while (iterator.MoveNext())
+        {
+            Node child = iterator.Current;
+            if (!ProcessChild(child))
+            {
+                break;
+            }
+        }
+
+    Finalize:
         // The total flex factor needs to be floored to 1.
         if (totalFlexGrowFactors > 0 && totalFlexGrowFactors < 1)
         {
@@ -232,15 +278,24 @@ public sealed class FlexLine
             totalFlexShrinkScaledFactors = 1;
         }
 
-        return new FlexLine
+        FlexLine result = new()
         {
             SizeConsumed = sizeConsumed,
             NumberOfAutoMargins = numberOfAutoMargins,
+            PendingChild = childThatCausedBreak,
             Layout = new FlexLineRunningLayout
             {
                 TotalFlexGrowFactors = totalFlexGrowFactors,
                 TotalFlexShrinkScaledFactors = totalFlexShrinkScaledFactors
             }
         };
+
+        // Copy items to the result's internal list
+        foreach (Node item in itemsInFlow)
+        {
+            result.AddItemInFlow(item);
+        }
+
+        return result;
     }
 }

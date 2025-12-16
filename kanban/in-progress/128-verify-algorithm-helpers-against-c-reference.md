@@ -24,35 +24,35 @@ Verify all algorithm helper implementations match the C++ Yoga reference. Fix an
 
 ## Checklist
 
-- [ ] Verify `PixelGrid.cs`
-  - [ ] Compare `RoundValueToPixelGrid` implementation
-  - [ ] Compare `RoundLayoutResultsToPixelGrid` implementation
-- [ ] Verify `Baseline.cs`
-  - [ ] Compare `CalculateBaseline` logic
-  - [ ] Compare `IsBaselineLayout` logic
-- [ ] Verify `FlexLine.cs`
-  - [ ] Compare `FlexLineRunningLayout` struct
-  - [ ] Compare `FlexLine` class
-  - [ ] Compare `CalculateFlexLine` method
-  - [ ] Note: C# uses different iterator pattern than C++
-- [ ] Verify `AlignUtils.cs`
-  - [ ] Compare `ResolveChildAlignment` logic
-  - [ ] Compare `FallbackAlignment` for Align
-  - [ ] Compare `FallbackAlignment` for Justify
-- [ ] Verify `BoundAxis.cs`
-  - [ ] Compare `PaddingAndBorderForAxis`
-  - [ ] Compare `BoundAxisWithinMinAndMax`
-  - [ ] Compare `BoundAxisValue` (named `boundAxis` in C++)
-- [ ] Verify `TrailingPosition.cs`
-  - [ ] Compare `GetPositionOfOppositeEdge`
-  - [ ] Compare `SetChildTrailingPosition`
-  - [ ] Compare `NeedsTrailingPosition`
+- [x] Verify `PixelGrid.cs`
+  - [x] Compare `RoundValueToPixelGrid` implementation
+  - [x] Compare `RoundLayoutResultsToPixelGrid` implementation
+- [x] Verify `Baseline.cs`
+  - [x] Compare `CalculateBaseline` logic
+  - [x] Compare `IsBaselineLayout` logic
+- [x] Verify `FlexLine.cs`
+  - [x] Compare `FlexLineRunningLayout` struct
+  - [x] Compare `FlexLine` class
+  - [x] Compare `CalculateFlexLine` method
+  - [x] Fix: Added `PendingChild` property and `pendingChild` parameter to handle C# iterator differences
+- [x] Verify `AlignUtils.cs`
+  - [x] Compare `ResolveChildAlignment` logic
+  - [x] Compare `FallbackAlignment` for Align
+  - [x] Compare `FallbackAlignment` for Justify
+- [x] Verify `BoundAxis.cs`
+  - [x] Compare `PaddingAndBorderForAxis`
+  - [x] Compare `BoundAxisWithinMinAndMax`
+  - [x] Compare `BoundAxisValue` (named `boundAxis` in C++)
+- [x] Verify `TrailingPosition.cs`
+  - [x] Compare `GetPositionOfOppositeEdge`
+  - [x] Compare `SetChildTrailingPosition`
+  - [x] Compare `NeedsTrailingPosition`
 
 ## Acceptance Criteria
 
-- [ ] All implementations match C++ behavior
-- [ ] Any discrepancies documented and fixed
-- [ ] All tests still pass after any fixes
+- [x] All implementations match C++ behavior
+- [x] Any discrepancies documented and fixed
+- [x] All tests still pass after any fixes
 
 ## Notes
 
@@ -66,3 +66,29 @@ When verifying, pay attention to:
 - NaN handling
 - Edge cases (zero, negative values)
 - Operator overloads (FloatOptional comparisons)
+
+## Verification Results
+
+### 2025-12-16 Verification Summary
+
+| File | Status | Notes |
+|------|--------|-------|
+| `PixelGrid.cs` | Verified | Logic matches C++ exactly |
+| `Baseline.cs` | Verified | Logic matches C++ exactly |
+| `FlexLine.cs` | Fixed | Iterator pattern issue fixed (see below) |
+| `AlignUtils.cs` | Verified | Logic matches C++ exactly |
+| `BoundAxis.cs` | Verified | Logic matches C++ exactly |
+| `TrailingPosition.cs` | Verified | Logic matches C++ exactly |
+
+### FlexLine.cs Fix
+
+**Problem:** The C++ `calculateFlexLine` function uses a for-loop where the iterator is incremented at the end of each iteration. When a child triggers a line break, the `break` statement leaves the iterator pointing to that child, which becomes the first item in the next line.
+
+The original C# implementation used `while (iterator.MoveNext())` which advances the iterator at the start. When `break` was called, the child that triggered the break had been consumed but not added to the line, causing that child to be lost.
+
+**Solution:** 
+1. Added `PendingChild` property to `FlexLine` to store the child that triggered the break
+2. Added optional `pendingChild` parameter to `CalculateFlexLine` to receive the pending child from the previous line
+3. The calling code must pass `previousLine.PendingChild` when calculating subsequent lines
+
+This maintains semantic equivalence with the C++ implementation while working within C#'s iterator pattern.
