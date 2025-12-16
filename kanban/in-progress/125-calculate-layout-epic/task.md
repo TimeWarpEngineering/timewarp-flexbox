@@ -32,16 +32,16 @@ The algorithm follows an 11-step process:
 
 | Task | Name | Description | Complexity |
 |------|------|-------------|------------|
-| 125a | Data Structures | FlexLine, FlexLineRunningLayout, LayoutData | Medium |
-| 125b | Helper Functions | constrainMaxSizeForMode, isFixedSize, calculateAvailableInnerDimension | Medium |
-| 125c | Measurement Functions | measureNodeWithoutChildren, measureNodeWithFixedSize, measureNodeWithMeasureFunc | Medium |
-| 125d | Flex Basis Calculation | computeFlexBasisForChild, computeFlexBasisForChildren | High |
-| 125e | Flex Line Calculation | calculateFlexLine (from FlexLine.cpp) | Medium |
-| 125f | Flex Space Distribution | distributeFreeSpaceFirstPass, distributeFreeSpaceSecondPass, resolveFlexibleLength | High |
-| 125g | Main Axis Justification | justifyMainAxis | Medium |
-| 125h | Core Algorithm | calculateLayoutImpl (Steps 1-9) | Very High |
-| 125i | Cache & Entry Point | calculateLayoutInternal, calculateLayout | High |
-| 125j | Integration & Testing | Wire everything together, comprehensive testing | High |
+| 129 | Data Structures | FlexLine, FlexLineRunningLayout, LayoutData | Medium |
+| 130 | Helper Functions | constrainMaxSizeForMode, isFixedSize, calculateAvailableInnerDimension | Medium |
+| 131 | Measurement Functions | measureNodeWithoutChildren, measureNodeWithFixedSize, measureNodeWithMeasureFunc | Medium |
+| 132 | Flex Basis Calculation | computeFlexBasisForChild, computeFlexBasisForChildren | High |
+| 133 | Flex Line Calculation | calculateFlexLine (from FlexLine.cpp) | Medium |
+| 134 | Flex Space Distribution | distributeFreeSpaceFirstPass, distributeFreeSpaceSecondPass, resolveFlexibleLength | High |
+| 135 | Main Axis Justification | justifyMainAxis | Medium |
+| 136 | Core Algorithm | calculateLayoutImpl (Steps 1-9) | Very High |
+| 137 | Cache & Entry Point | calculateLayoutInternal, calculateLayout | High |
+| 138 | Integration & Testing | Wire everything together, comprehensive testing | High |
 
 ## Dependencies
 
