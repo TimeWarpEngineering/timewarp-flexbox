@@ -373,6 +373,7 @@ public sealed class FlexBasisTests : IDisposable
                 SizingMode.StretchFit,
                 Direction.LTR,
                 FlexDirection.Row,
+                false,
                 layoutData,
                 0,
                 1));
@@ -391,6 +392,7 @@ public sealed class FlexBasisTests : IDisposable
                 SizingMode.StretchFit,
                 Direction.LTR,
                 FlexDirection.Row,
+                false,
                 null!,
                 0,
                 1));
@@ -409,6 +411,7 @@ public sealed class FlexBasisTests : IDisposable
             SizingMode.StretchFit,
             Direction.LTR,
             FlexDirection.Row,
+            false,
             layoutData,
             0,
             1);
@@ -447,6 +450,7 @@ public sealed class FlexBasisTests : IDisposable
             SizingMode.StretchFit,
             Direction.LTR,
             FlexDirection.Row,
+            false,
             layoutData,
             0,
             1);
@@ -486,6 +490,7 @@ public sealed class FlexBasisTests : IDisposable
             SizingMode.StretchFit,
             Direction.LTR,
             FlexDirection.Row,
+            false,
             layoutData,
             0,
             1);
@@ -525,6 +530,7 @@ public sealed class FlexBasisTests : IDisposable
             SizingMode.StretchFit,
             Direction.LTR,
             FlexDirection.Row,
+            false,
             layoutData,
             0,
             1);
@@ -556,6 +562,7 @@ public sealed class FlexBasisTests : IDisposable
             SizingMode.StretchFit,
             Direction.LTR,
             FlexDirection.Row,
+            false,
             layoutData,
             0,
             1);
@@ -595,6 +602,7 @@ public sealed class FlexBasisTests : IDisposable
             SizingMode.StretchFit,
             Direction.LTR,
             FlexDirection.Row,
+            false,
             layoutData,
             0,
             1);
@@ -627,6 +635,7 @@ public sealed class FlexBasisTests : IDisposable
             SizingMode.StretchFit,
             Direction.LTR,
             FlexDirection.Row,
+            false,
             layoutData,
             0,
             1);
@@ -660,6 +669,7 @@ public sealed class FlexBasisTests : IDisposable
             SizingMode.StretchFit,
             Direction.LTR,
             FlexDirection.Row,
+            false,
             layoutData,
             0,
             1);
@@ -695,6 +705,7 @@ public sealed class FlexBasisTests : IDisposable
             SizingMode.StretchFit,
             Direction.LTR,
             FlexDirection.Column, // main axis is vertical
+            false,
             layoutData,
             0,
             1);

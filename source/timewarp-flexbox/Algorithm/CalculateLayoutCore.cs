@@ -185,7 +185,7 @@ public static class CalculateLayoutCore
         float totalMainDim = FlexBasis.ComputeFlexBasisForChildren(
             node, availableInnerWidth, availableInnerHeight,
             widthSizingMode, heightSizingMode,
-            direction, mainAxis,
+            direction, mainAxis, performLayout,
             layoutMarkerData, depth, (uint)generationCount);
 
         if (childCount > 1)
@@ -707,6 +707,7 @@ public static class CalculateLayoutCore
 
     /// <summary>
     /// Wrapper that determines whether the layout request is redundant and can be skipped.
+    /// This delegates to CalculateLayout.CalculateLayoutInternal for proper caching.
     /// </summary>
     public static bool CalculateLayoutInternal(
         Node node,
@@ -723,10 +724,13 @@ public static class CalculateLayoutCore
         int depth,
         int generationCount)
     {
-        // TODO: Implement caching logic
-        Calculate(node, availableWidth, availableHeight, ownerDirection,
+        ArgumentNullException.ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(layoutMarkerData);
+
+        // Delegate to the main CalculateLayout module for proper caching
+        return CalculateLayout.CalculateLayoutInternal(
+            node, availableWidth, availableHeight, ownerDirection,
             widthSizingMode, heightSizingMode, ownerWidth, ownerHeight,
             performLayout, reason, layoutMarkerData, depth, generationCount);
-        return true;
     }
 }

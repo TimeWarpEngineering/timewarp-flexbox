@@ -284,6 +284,7 @@ public static class FlexBasis
     /// <param name="heightSizingMode">Height sizing mode.</param>
     /// <param name="direction">Resolved direction.</param>
     /// <param name="mainAxis">Main flex direction axis.</param>
+    /// <param name="performLayout">Whether to perform full layout (sets initial positions).</param>
     /// <param name="layoutMarkerData">Layout statistics tracker.</param>
     /// <param name="depth">Current recursion depth.</param>
     /// <param name="generationCount">Current generation counter.</param>
@@ -294,7 +295,7 @@ public static class FlexBasis
     /// This function:
     /// - Implements single flex child optimization
     /// - Skips display:none and absolute positioned children
-    /// - Sets initial positions for children
+    /// - Sets initial positions for children (when performLayout is true)
     /// - Accumulates totalOuterFlexBasis
     /// </remarks>
     public static float ComputeFlexBasisForChildren(
@@ -305,6 +306,7 @@ public static class FlexBasis
         SizingMode heightSizingMode,
         Direction direction,
         FlexDirection mainAxis,
+        bool performLayout,
         LayoutData layoutMarkerData,
         int depth,
         uint generationCount)
@@ -366,6 +368,13 @@ public static class FlexBasis
                 continue;
             }
 
+            // Set the initial position (relative to the owner) when performing layout
+            if (performLayout)
+            {
+                Direction childDirection = child.ResolveDirection(direction);
+                child.SetPosition(childDirection, availableInnerWidth, availableInnerHeight);
+            }
+
             if (child.Style.PositionType == PositionType.Absolute)
             {
                 continue;
@@ -381,12 +390,12 @@ public static class FlexBasis
                 ComputeFlexBasisForChild(
                     node,
                     child,
-                    isMainAxisRow ? availableInnerWidth : availableInnerHeight,
-                    isMainAxisRow ? widthSizingMode : heightSizingMode,
-                    isMainAxisRow ? availableInnerHeight : availableInnerWidth,
+                    availableInnerWidth,
+                    widthSizingMode,
+                    availableInnerHeight,
                     availableInnerWidth,
                     availableInnerHeight,
-                    isMainAxisRow ? heightSizingMode : widthSizingMode,
+                    heightSizingMode,
                     direction,
                     layoutMarkerData,
                     depth + 1,
