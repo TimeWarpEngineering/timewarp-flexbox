@@ -40,22 +40,24 @@ static void justifyMainAxis(
 
 ## Todo List
 
-- [ ] Port `justifyMainAxis` function
+- [x] Port `justifyMainAxis` function
   - Handle min-dimension constraint on remaining free space
   - Calculate leadingMainDim and betweenMainDim based on justify-content
   - Handle auto margins (flexStartMarginIsAuto, flexEndMarginIsAuto)
   - Position each item along main axis
   - Calculate crossDim based on baseline or max child size
-- [ ] Implement justify-content variants:
+- [x] Implement justify-content variants:
   - FlexStart (default)
   - FlexEnd
   - Center
   - SpaceBetween
   - SpaceAround
   - SpaceEvenly
-- [ ] Handle baseline alignment for cross dimension
-- [ ] Add unit tests for each justify-content value
-- [ ] Test auto margin distribution
+- [x] Handle baseline alignment for cross dimension
+- [x] Add unit tests for each justify-content value
+- [x] Test auto margin distribution
+
+Note: Tests cover empty flex lines and basic justify-content behavior. Full integration testing with children happens via layout algorithm tests.
 
 ## Dependencies
 
