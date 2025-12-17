@@ -82,24 +82,26 @@ static void calculateLayoutImpl(
 
 | Type      | Path                                                           |
 | --------- | -------------------------------------------------------------- |
-| C# Source | `source/timewarp-flexbox/Algorithm/CalculateLayoutImpl.cs`     |
+| C# Source | `source/timewarp-flexbox/Algorithm/CalculateLayoutCore.cs`     |
 
 ## Todo List
 
-- [ ] Set up function skeleton with all parameters
-- [ ] STEP 1: Port axis resolution and padding/border/margin setup
-- [ ] STEP 2: Port available dimension calculation
-- [ ] STEP 3: Wire up computeFlexBasisForChildren
-- [ ] STEP 4: Wire up line collection loop
-- [ ] STEP 5: Wire up resolveFlexibleLength
-- [ ] STEP 6: Wire up justifyMainAxis
-- [ ] STEP 7: Port cross-axis alignment (stretch re-layout)
-- [ ] STEP 8: Port multi-line content alignment
-- [ ] STEP 9: Port final dimension computation
-- [ ] STEP 10: Port trailing position setting
-- [ ] STEP 11: Wire up layoutAbsoluteDescendants
-- [ ] Handle wrap-reverse position flipping
-- [ ] Add integration tests
+- [x] Set up function skeleton with all parameters
+- [x] STEP 1: Port axis resolution and padding/border/margin setup
+- [x] STEP 2: Port available dimension calculation
+- [x] STEP 3: Wire up computeFlexBasisForChildren
+- [x] STEP 4: Wire up line collection loop
+- [x] STEP 5: Wire up resolveFlexibleLength
+- [x] STEP 6: Wire up justifyMainAxis
+- [x] STEP 7: Port cross-axis alignment (stretch re-layout)
+- [x] STEP 8: Port multi-line content alignment
+- [x] STEP 9: Port final dimension computation
+- [x] STEP 10: Port trailing position setting
+- [x] STEP 11: Wire up layoutAbsoluteDescendants
+- [x] Handle wrap-reverse position flipping
+- [ ] Add integration tests (deferred to task 138)
+
+Note: Class renamed to `CalculateLayoutCore` per CA1711 naming convention (avoid 'Impl' suffix).
 
 ## Dependencies
 
