@@ -93,25 +93,27 @@ static void resolveFlexibleLength(
 
 ## Todo List
 
-- [ ] Port `distributeFreeSpaceFirstPass`
+- [x] Port `distributeFreeSpaceFirstPass`
   - Handle shrink case (remainingFreeSpace < 0)
   - Handle grow case (remainingFreeSpace > 0)
   - Identify items that hit min/max bounds
   - Update totalFlexGrowFactors/totalFlexShrinkScaledFactors
-- [ ] Port `distributeFreeSpaceSecondPass`
+- [x] Port `distributeFreeSpaceSecondPass`
   - Calculate updatedMainSize for each item
   - Handle aspect ratio for cross size
   - Handle stretch alignment
   - Apply constrainMaxSizeForMode
   - Make recursive calculateLayoutInternal calls
   - Track deltaFreeSpace
-- [ ] Port `resolveFlexibleLength`
+- [x] Port `resolveFlexibleLength`
   - Call first pass
   - Call second pass
   - Update remainingFreeSpace
-- [ ] Add unit tests for flex grow
-- [ ] Add unit tests for flex shrink
-- [ ] Test min/max constraint handling
+- [x] Add unit tests for flex grow
+- [x] Add unit tests for flex shrink
+- [x] Test min/max constraint handling
+
+Note: Tests are basic structural tests. Like C++ Yoga, comprehensive testing happens via integration tests in the main layout algorithm tests (e.g., FlexWrapTests, AlignItemsTests).
 
 ## Dependencies
 
