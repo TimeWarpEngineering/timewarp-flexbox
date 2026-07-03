@@ -20,147 +20,147 @@ namespace TimeWarp.Flexbox;
 /// </remarks>
 public struct StyleValueHandle : IEquatable<StyleValueHandle>
 {
-    private const ushort HandleTypeMask = 0b0000_0000_0000_0111;
-    private const ushort HandleIndexedMask = 0b0000_0000_0000_1000;
-    private const ushort HandleValueMask = 0b1111_1111_1111_0000;
+  private const ushort HandleTypeMask = 0b0000_0000_0000_0111;
+  private const ushort HandleIndexedMask = 0b0000_0000_0000_1000;
+  private const ushort HandleValueMask = 0b1111_1111_1111_0000;
 
-    private ushort _repr;
+  private ushort _repr;
 
-    /// <summary>
-    /// The type of value stored in this handle.
-    /// </summary>
-    internal enum HandleType : byte
+  /// <summary>
+  /// The type of value stored in this handle.
+  /// </summary>
+  internal enum HandleType : byte
+  {
+    Undefined = 0,
+    Point = 1,
+    Percent = 2,
+    Number = 3,
+    Auto = 4,
+    Keyword = 5
+  }
+
+  /// <summary>
+  /// Special keyword values (not auto, which has its own type).
+  /// </summary>
+  internal enum HandleKeyword : byte
+  {
+    MaxContent = 0,
+    FitContent = 1,
+    Stretch = 2
+  }
+
+  #region Factory Methods
+
+  /// <summary>
+  /// Creates an auto handle.
+  /// </summary>
+  public static StyleValueHandle Auto
+  {
+    get
     {
-        Undefined = 0,
-        Point = 1,
-        Percent = 2,
-        Number = 3,
-        Auto = 4,
-        Keyword = 5
+      StyleValueHandle handle = new();
+      handle.SetType(HandleType.Auto);
+      return handle;
     }
+  }
 
-    /// <summary>
-    /// Special keyword values (not auto, which has its own type).
-    /// </summary>
-    internal enum HandleKeyword : byte
-    {
-        MaxContent = 0,
-        FitContent = 1,
-        Stretch = 2
-    }
+  /// <summary>
+  /// Creates an undefined handle.
+  /// </summary>
+  public static StyleValueHandle Undefined => new();
 
-    #region Factory Methods
+  #endregion
 
-    /// <summary>
-    /// Creates an auto handle.
-    /// </summary>
-    public static StyleValueHandle Auto
-    {
-        get
-        {
-            StyleValueHandle handle = new();
-            handle.SetType(HandleType.Auto);
-            return handle;
-        }
-    }
+  #region Properties
 
-    /// <summary>
-    /// Creates an undefined handle.
-    /// </summary>
-    public static StyleValueHandle Undefined => new();
+  /// <summary>
+  /// Gets whether this handle represents an undefined value.
+  /// </summary>
+  public bool IsUndefined => Type == HandleType.Undefined;
 
-    #endregion
+  /// <summary>
+  /// Gets whether this handle represents a defined value.
+  /// </summary>
+  public bool IsDefined => !IsUndefined;
 
-    #region Properties
+  /// <summary>
+  /// Gets whether this handle represents an auto value.
+  /// </summary>
+  public bool IsAuto => Type == HandleType.Auto;
 
-    /// <summary>
-    /// Gets whether this handle represents an undefined value.
-    /// </summary>
-    public bool IsUndefined => Type == HandleType.Undefined;
+  /// <summary>
+  /// Gets whether this handle's value is indexed in a pool.
+  /// </summary>
+  internal bool IsValueIndexed => (_repr & HandleIndexedMask) != 0;
 
-    /// <summary>
-    /// Gets whether this handle represents a defined value.
-    /// </summary>
-    public bool IsDefined => !IsUndefined;
+  /// <summary>
+  /// Gets the type of this handle.
+  /// </summary>
+  internal HandleType Type => (HandleType)(_repr & HandleTypeMask);
 
-    /// <summary>
-    /// Gets whether this handle represents an auto value.
-    /// </summary>
-    public bool IsAuto => Type == HandleType.Auto;
+  /// <summary>
+  /// Gets the raw value portion (top 12 bits).
+  /// </summary>
+  internal ushort Value => (ushort)(_repr >> 4);
 
-    /// <summary>
-    /// Gets whether this handle's value is indexed in a pool.
-    /// </summary>
-    internal bool IsValueIndexed => (_repr & HandleIndexedMask) != 0;
+  #endregion
 
-    /// <summary>
-    /// Gets the type of this handle.
-    /// </summary>
-    internal HandleType Type => (HandleType)(_repr & HandleTypeMask);
+  #region Internal Methods
 
-    /// <summary>
-    /// Gets the raw value portion (top 12 bits).
-    /// </summary>
-    internal ushort Value => (ushort)(_repr >> 4);
+  /// <summary>
+  /// Sets the type of this handle.
+  /// </summary>
+  internal void SetType(HandleType type)
+  {
+    _repr = (ushort)((_repr & ~HandleTypeMask) | (byte)type);
+  }
 
-    #endregion
+  /// <summary>
+  /// Sets the value portion.
+  /// </summary>
+  internal void SetValue(ushort value)
+  {
+    _repr = (ushort)((_repr & ~HandleValueMask) | (value << 4));
+  }
 
-    #region Internal Methods
+  /// <summary>
+  /// Marks this handle's value as indexed in a pool.
+  /// </summary>
+  internal void SetValueIsIndexed()
+  {
+    _repr |= HandleIndexedMask;
+  }
 
-    /// <summary>
-    /// Sets the type of this handle.
-    /// </summary>
-    internal void SetType(HandleType type)
-    {
-        _repr = (ushort)((_repr & ~HandleTypeMask) | (byte)type);
-    }
+  /// <summary>
+  /// Checks if this handle is a specific keyword.
+  /// </summary>
+  internal bool IsKeyword(HandleKeyword keyword)
+  {
+    return Type == HandleType.Keyword && Value == (ushort)keyword;
+  }
 
-    /// <summary>
-    /// Sets the value portion.
-    /// </summary>
-    internal void SetValue(ushort value)
-    {
-        _repr = (ushort)((_repr & ~HandleValueMask) | (value << 4));
-    }
+  #endregion
 
-    /// <summary>
-    /// Marks this handle's value as indexed in a pool.
-    /// </summary>
-    internal void SetValueIsIndexed()
-    {
-        _repr |= HandleIndexedMask;
-    }
+  #region Equality
 
-    /// <summary>
-    /// Checks if this handle is a specific keyword.
-    /// </summary>
-    internal bool IsKeyword(HandleKeyword keyword)
-    {
-        return Type == HandleType.Keyword && Value == (ushort)keyword;
-    }
+  /// <inheritdoc />
+  public bool Equals(StyleValueHandle other) => _repr == other._repr;
 
-    #endregion
+  /// <inheritdoc />
+  public override bool Equals(object? obj) => obj is StyleValueHandle other && Equals(other);
 
-    #region Equality
+  /// <inheritdoc />
+  public override int GetHashCode() => _repr.GetHashCode();
 
-    /// <inheritdoc />
-    public bool Equals(StyleValueHandle other) => _repr == other._repr;
+  /// <summary>
+  /// Equality operator.
+  /// </summary>
+  public static bool operator ==(StyleValueHandle left, StyleValueHandle right) => left.Equals(right);
 
-    /// <inheritdoc />
-    public override bool Equals(object? obj) => obj is StyleValueHandle other && Equals(other);
+  /// <summary>
+  /// Inequality operator.
+  /// </summary>
+  public static bool operator !=(StyleValueHandle left, StyleValueHandle right) => !left.Equals(right);
 
-    /// <inheritdoc />
-    public override int GetHashCode() => _repr.GetHashCode();
-
-    /// <summary>
-    /// Equality operator.
-    /// </summary>
-    public static bool operator ==(StyleValueHandle left, StyleValueHandle right) => left.Equals(right);
-
-    /// <summary>
-    /// Inequality operator.
-    /// </summary>
-    public static bool operator !=(StyleValueHandle left, StyleValueHandle right) => !left.Equals(right);
-
-    #endregion
+  #endregion
 }

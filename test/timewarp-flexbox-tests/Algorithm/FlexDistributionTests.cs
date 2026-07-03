@@ -13,124 +13,66 @@ using FlexNode = TimeWarp.Flexbox.Node;
 /// </summary>
 public class FlexDistributionTests
 {
-    #region DistributeFreeSpaceFirstPass - Null Argument Handling
+  #region DistributeFreeSpaceFirstPass - Null Argument Handling
 
-    public void DistributeFreeSpaceFirstPassShouldThrowOnNullFlexLine()
-    {
-        // Arrange & Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            FlexDistribution.DistributeFreeSpaceFirstPass(
-                null!,
-                Direction.LTR,
-                FlexDirection.Row,
-                100f,
-                100f,
-                100f,
-                100f));
-    }
-
-    #endregion
-
-    #region DistributeFreeSpaceFirstPass - Basic Functionality
-
-    public void DistributeFreeSpaceFirstPassShouldNotModifyEmptyFlexLine()
-    {
-        // Arrange
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 50f,
-                TotalFlexGrowFactors = 0f,
-                TotalFlexShrinkScaledFactors = 0f
-            }
-        };
-
-        // Act
+  public void DistributeFreeSpaceFirstPassShouldThrowOnNullFlexLine()
+  {
+    // Arrange & Act & Assert
+    Should.Throw<ArgumentNullException>(() =>
         FlexDistribution.DistributeFreeSpaceFirstPass(
-            flexLine,
+            null!,
             Direction.LTR,
             FlexDirection.Row,
             100f,
             100f,
             100f,
-            100f);
+            100f));
+  }
 
-        // Assert
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(50f);
-    }
+  #endregion
 
-    #endregion
+  #region DistributeFreeSpaceFirstPass - Basic Functionality
 
-    #region DistributeFreeSpaceSecondPass - Null Argument Handling
-
-    public void DistributeFreeSpaceSecondPassShouldThrowOnNullFlexLine()
+  public void DistributeFreeSpaceFirstPassShouldNotModifyEmptyFlexLine()
+  {
+    // Arrange
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 50f,
+        TotalFlexGrowFactors = 0f,
+        TotalFlexShrinkScaledFactors = 0f
+      }
+    };
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            FlexDistribution.DistributeFreeSpaceSecondPass(
-                null!,
-                node,
-                FlexDirection.Row,
-                FlexDirection.Column,
-                Direction.LTR,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                false,
-                SizingMode.StretchFit,
-                false,
-                new LayoutData(),
-                0,
-                1));
-    }
+    // Act
+    FlexDistribution.DistributeFreeSpaceFirstPass(
+        flexLine,
+        Direction.LTR,
+        FlexDirection.Row,
+        100f,
+        100f,
+        100f,
+        100f);
 
-    public void DistributeFreeSpaceSecondPassShouldThrowOnNullNode()
-    {
-        // Arrange
-        FlexLine flexLine = new();
+    // Assert
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(50f);
+  }
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            FlexDistribution.DistributeFreeSpaceSecondPass(
-                flexLine,
-                null!,
-                FlexDirection.Row,
-                FlexDirection.Column,
-                Direction.LTR,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                false,
-                SizingMode.StretchFit,
-                false,
-                new LayoutData(),
-                0,
-                1));
-    }
+  #endregion
 
-    #endregion
+  #region DistributeFreeSpaceSecondPass - Null Argument Handling
 
-    #region DistributeFreeSpaceSecondPass - Basic Functionality
+  public void DistributeFreeSpaceSecondPassShouldThrowOnNullFlexLine()
+  {
+    // Arrange
+    FlexNode node = new();
 
-    public void DistributeFreeSpaceSecondPassShouldReturnZeroDeltaForEmptyFlexLine()
-    {
-        // Arrange
-        FlexNode node = new();
-        FlexLine flexLine = new();
-
-        // Act
-        float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
-            flexLine,
+    // Act & Assert
+    Should.Throw<ArgumentNullException>(() =>
+        FlexDistribution.DistributeFreeSpaceSecondPass(
+            null!,
             node,
             FlexDirection.Row,
             FlexDirection.Column,
@@ -146,92 +88,111 @@ public class FlexDistributionTests
             false,
             new LayoutData(),
             0,
-            1);
+            1));
+  }
 
-        // Assert
-        deltaFreeSpace.ShouldBe(0f);
-    }
+  public void DistributeFreeSpaceSecondPassShouldThrowOnNullNode()
+  {
+    // Arrange
+    FlexLine flexLine = new();
 
-    #endregion
+    // Act & Assert
+    Should.Throw<ArgumentNullException>(() =>
+        FlexDistribution.DistributeFreeSpaceSecondPass(
+            flexLine,
+            null!,
+            FlexDirection.Row,
+            FlexDirection.Column,
+            Direction.LTR,
+            100f,
+            100f,
+            100f,
+            100f,
+            100f,
+            100f,
+            false,
+            SizingMode.StretchFit,
+            false,
+            new LayoutData(),
+            0,
+            1));
+  }
 
-    #region ResolveFlexibleLength - Null Argument Handling
+  #endregion
 
-    public void ResolveFlexibleLengthShouldThrowOnNullNode()
-    {
-        // Arrange
-        FlexLine flexLine = new();
+  #region DistributeFreeSpaceSecondPass - Basic Functionality
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            FlexDistribution.ResolveFlexibleLength(
-                null!,
-                flexLine,
-                FlexDirection.Row,
-                FlexDirection.Column,
-                Direction.LTR,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                false,
-                SizingMode.StretchFit,
-                false,
-                new LayoutData(),
-                0,
-                1));
-    }
+  public void DistributeFreeSpaceSecondPassShouldReturnZeroDeltaForEmptyFlexLine()
+  {
+    // Arrange
+    FlexNode node = new();
+    FlexLine flexLine = new();
 
-    public void ResolveFlexibleLengthShouldThrowOnNullFlexLine()
-    {
-        // Arrange
-        FlexNode node = new();
+    // Act
+    float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
+        flexLine,
+        node,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false,
+        SizingMode.StretchFit,
+        false,
+        new LayoutData(),
+        0,
+        1);
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            FlexDistribution.ResolveFlexibleLength(
-                node,
-                null!,
-                FlexDirection.Row,
-                FlexDirection.Column,
-                Direction.LTR,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                false,
-                SizingMode.StretchFit,
-                false,
-                new LayoutData(),
-                0,
-                1));
-    }
+    // Assert
+    deltaFreeSpace.ShouldBe(0f);
+  }
 
-    #endregion
+  #endregion
 
-    #region ResolveFlexibleLength - Basic Functionality
+  #region ResolveFlexibleLength - Null Argument Handling
 
-    public void ResolveFlexibleLengthShouldNotModifyEmptyFlexLine()
-    {
-        // Arrange
-        FlexNode node = new();
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 50f,
-                TotalFlexGrowFactors = 0f,
-                TotalFlexShrinkScaledFactors = 0f
-            }
-        };
+  public void ResolveFlexibleLengthShouldThrowOnNullNode()
+  {
+    // Arrange
+    FlexLine flexLine = new();
 
-        // Act
+    // Act & Assert
+    Should.Throw<ArgumentNullException>(() =>
+        FlexDistribution.ResolveFlexibleLength(
+            null!,
+            flexLine,
+            FlexDirection.Row,
+            FlexDirection.Column,
+            Direction.LTR,
+            100f,
+            100f,
+            100f,
+            100f,
+            100f,
+            100f,
+            false,
+            SizingMode.StretchFit,
+            false,
+            new LayoutData(),
+            0,
+            1));
+  }
+
+  public void ResolveFlexibleLengthShouldThrowOnNullFlexLine()
+  {
+    // Arrange
+    FlexNode node = new();
+
+    // Act & Assert
+    Should.Throw<ArgumentNullException>(() =>
         FlexDistribution.ResolveFlexibleLength(
             node,
-            flexLine,
+            null!,
             FlexDirection.Row,
             FlexDirection.Column,
             Direction.LTR,
@@ -246,363 +207,402 @@ public class FlexDistributionTests
             false,
             new LayoutData(),
             0,
-            1);
+            1));
+  }
 
-        // Assert - remaining free space should be preserved when no items
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(50f);
-    }
+  #endregion
 
-    #endregion
+  #region ResolveFlexibleLength - Basic Functionality
 
-    #region Direction Tests
-
-    public void DistributeFreeSpaceFirstPassShouldWorkWithRTLDirection()
+  public void ResolveFlexibleLengthShouldNotModifyEmptyFlexLine()
+  {
+    // Arrange
+    FlexNode node = new();
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f,
-                TotalFlexGrowFactors = 0f,
-                TotalFlexShrinkScaledFactors = 0f
-            }
-        };
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 50f,
+        TotalFlexGrowFactors = 0f,
+        TotalFlexShrinkScaledFactors = 0f
+      }
+    };
 
-        // Act - should not throw
-        FlexDistribution.DistributeFreeSpaceFirstPass(
-            flexLine,
-            Direction.RTL,
-            FlexDirection.Row,
-            100f,
-            100f,
-            100f,
-            100f);
+    // Act
+    FlexDistribution.ResolveFlexibleLength(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false,
+        SizingMode.StretchFit,
+        false,
+        new LayoutData(),
+        0,
+        1);
 
-        // Assert
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
-    }
+    // Assert - remaining free space should be preserved when no items
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(50f);
+  }
 
-    public void DistributeFreeSpaceFirstPassShouldWorkWithColumnDirection()
+  #endregion
+
+  #region Direction Tests
+
+  public void DistributeFreeSpaceFirstPassShouldWorkWithRTLDirection()
+  {
+    // Arrange
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f,
-                TotalFlexGrowFactors = 0f,
-                TotalFlexShrinkScaledFactors = 0f
-            }
-        };
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f,
+        TotalFlexGrowFactors = 0f,
+        TotalFlexShrinkScaledFactors = 0f
+      }
+    };
 
-        // Act - should not throw
-        FlexDistribution.DistributeFreeSpaceFirstPass(
-            flexLine,
-            Direction.LTR,
-            FlexDirection.Column,
-            100f,
-            100f,
-            100f,
-            100f);
+    // Act - should not throw
+    FlexDistribution.DistributeFreeSpaceFirstPass(
+        flexLine,
+        Direction.RTL,
+        FlexDirection.Row,
+        100f,
+        100f,
+        100f,
+        100f);
 
-        // Assert
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
-    }
+    // Assert
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
+  }
 
-    public void DistributeFreeSpaceFirstPassShouldWorkWithColumnReverseDirection()
+  public void DistributeFreeSpaceFirstPassShouldWorkWithColumnDirection()
+  {
+    // Arrange
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f,
-                TotalFlexGrowFactors = 0f,
-                TotalFlexShrinkScaledFactors = 0f
-            }
-        };
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f,
+        TotalFlexGrowFactors = 0f,
+        TotalFlexShrinkScaledFactors = 0f
+      }
+    };
 
-        // Act - should not throw
-        FlexDistribution.DistributeFreeSpaceFirstPass(
-            flexLine,
-            Direction.LTR,
-            FlexDirection.ColumnReverse,
-            100f,
-            100f,
-            100f,
-            100f);
+    // Act - should not throw
+    FlexDistribution.DistributeFreeSpaceFirstPass(
+        flexLine,
+        Direction.LTR,
+        FlexDirection.Column,
+        100f,
+        100f,
+        100f,
+        100f);
 
-        // Assert
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
-    }
+    // Assert
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
+  }
 
-    #endregion
-
-    #region Negative Free Space (Shrink Case)
-
-    public void DistributeFreeSpaceFirstPassShouldHandleNegativeRemainingFreeSpace()
+  public void DistributeFreeSpaceFirstPassShouldWorkWithColumnReverseDirection()
+  {
+    // Arrange
+    FlexLine flexLine = new()
     {
-        // Arrange - negative free space means we need to shrink
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = -50f,
-                TotalFlexGrowFactors = 0f,
-                TotalFlexShrinkScaledFactors = 0f
-            }
-        };
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f,
+        TotalFlexGrowFactors = 0f,
+        TotalFlexShrinkScaledFactors = 0f
+      }
+    };
 
-        // Act - should not throw
-        FlexDistribution.DistributeFreeSpaceFirstPass(
-            flexLine,
-            Direction.LTR,
-            FlexDirection.Row,
-            100f,
-            100f,
-            100f,
-            100f);
+    // Act - should not throw
+    FlexDistribution.DistributeFreeSpaceFirstPass(
+        flexLine,
+        Direction.LTR,
+        FlexDirection.ColumnReverse,
+        100f,
+        100f,
+        100f,
+        100f);
 
-        // Assert - no items, so space unchanged
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(-50f);
-    }
+    // Assert
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
+  }
 
-    #endregion
+  #endregion
 
-    #region Positive Free Space (Grow Case)
+  #region Negative Free Space (Shrink Case)
 
-    public void DistributeFreeSpaceFirstPassShouldHandlePositiveRemainingFreeSpace()
+  public void DistributeFreeSpaceFirstPassShouldHandleNegativeRemainingFreeSpace()
+  {
+    // Arrange - negative free space means we need to shrink
+    FlexLine flexLine = new()
     {
-        // Arrange - positive free space means we can grow
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f,
-                TotalFlexGrowFactors = 0f,
-                TotalFlexShrinkScaledFactors = 0f
-            }
-        };
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = -50f,
+        TotalFlexGrowFactors = 0f,
+        TotalFlexShrinkScaledFactors = 0f
+      }
+    };
 
-        // Act - should not throw
-        FlexDistribution.DistributeFreeSpaceFirstPass(
-            flexLine,
-            Direction.LTR,
-            FlexDirection.Row,
-            100f,
-            100f,
-            100f,
-            100f);
+    // Act - should not throw
+    FlexDistribution.DistributeFreeSpaceFirstPass(
+        flexLine,
+        Direction.LTR,
+        FlexDirection.Row,
+        100f,
+        100f,
+        100f,
+        100f);
 
-        // Assert - no items with flex grow, so space unchanged
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
-    }
+    // Assert - no items, so space unchanged
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(-50f);
+  }
 
-    #endregion
+  #endregion
 
-    #region Zero Free Space
+  #region Positive Free Space (Grow Case)
 
-    public void DistributeFreeSpaceFirstPassShouldHandleZeroRemainingFreeSpace()
+  public void DistributeFreeSpaceFirstPassShouldHandlePositiveRemainingFreeSpace()
+  {
+    // Arrange - positive free space means we can grow
+    FlexLine flexLine = new()
     {
-        // Arrange - zero free space means perfect fit
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 0f,
-                TotalFlexGrowFactors = 0f,
-                TotalFlexShrinkScaledFactors = 0f
-            }
-        };
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f,
+        TotalFlexGrowFactors = 0f,
+        TotalFlexShrinkScaledFactors = 0f
+      }
+    };
 
-        // Act - should not throw
-        FlexDistribution.DistributeFreeSpaceFirstPass(
-            flexLine,
-            Direction.LTR,
-            FlexDirection.Row,
-            100f,
-            100f,
-            100f,
-            100f);
+    // Act - should not throw
+    FlexDistribution.DistributeFreeSpaceFirstPass(
+        flexLine,
+        Direction.LTR,
+        FlexDirection.Row,
+        100f,
+        100f,
+        100f,
+        100f);
 
-        // Assert
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(0f);
-    }
+    // Assert - no items with flex grow, so space unchanged
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
+  }
 
-    #endregion
+  #endregion
 
-    #region ResolveFlexibleLength - Orchestration
+  #region Zero Free Space
 
-    public void ResolveFlexibleLengthShouldPreserveOriginalFreeSpaceCalculation()
+  public void DistributeFreeSpaceFirstPassShouldHandleZeroRemainingFreeSpace()
+  {
+    // Arrange - zero free space means perfect fit
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f,
-                TotalFlexGrowFactors = 0f,
-                TotalFlexShrinkScaledFactors = 0f
-            }
-        };
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 0f,
+        TotalFlexGrowFactors = 0f,
+        TotalFlexShrinkScaledFactors = 0f
+      }
+    };
 
-        // Act
-        FlexDistribution.ResolveFlexibleLength(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false,
-            SizingMode.StretchFit,
-            false,
-            new LayoutData(),
-            0,
-            1);
+    // Act - should not throw
+    FlexDistribution.DistributeFreeSpaceFirstPass(
+        flexLine,
+        Direction.LTR,
+        FlexDirection.Row,
+        100f,
+        100f,
+        100f,
+        100f);
 
-        // Assert - no items, so originalFreeSpace - 0 = originalFreeSpace
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
-    }
+    // Assert
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(0f);
+  }
 
-    #endregion
+  #endregion
 
-    #region SizingMode Tests
+  #region ResolveFlexibleLength - Orchestration
 
-    public void DistributeFreeSpaceSecondPassShouldWorkWithFitContentMode()
+  public void ResolveFlexibleLengthShouldPreserveOriginalFreeSpaceCalculation()
+  {
+    // Arrange
+    FlexNode node = new();
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        FlexLine flexLine = new();
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f,
+        TotalFlexGrowFactors = 0f,
+        TotalFlexShrinkScaledFactors = 0f
+      }
+    };
 
-        // Act
-        float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
-            flexLine,
-            node,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false,
-            SizingMode.FitContent,
-            false,
-            new LayoutData(),
-            0,
-            1);
+    // Act
+    FlexDistribution.ResolveFlexibleLength(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false,
+        SizingMode.StretchFit,
+        false,
+        new LayoutData(),
+        0,
+        1);
 
-        // Assert
-        deltaFreeSpace.ShouldBe(0f);
-    }
+    // Assert - no items, so originalFreeSpace - 0 = originalFreeSpace
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(100f);
+  }
 
-    public void DistributeFreeSpaceSecondPassShouldWorkWithMaxContentMode()
-    {
-        // Arrange
-        FlexNode node = new();
-        FlexLine flexLine = new();
+  #endregion
 
-        // Act
-        float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
-            flexLine,
-            node,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false,
-            SizingMode.MaxContent,
-            false,
-            new LayoutData(),
-            0,
-            1);
+  #region SizingMode Tests
 
-        // Assert
-        deltaFreeSpace.ShouldBe(0f);
-    }
+  public void DistributeFreeSpaceSecondPassShouldWorkWithFitContentMode()
+  {
+    // Arrange
+    FlexNode node = new();
+    FlexLine flexLine = new();
 
-    #endregion
+    // Act
+    float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
+        flexLine,
+        node,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false,
+        SizingMode.FitContent,
+        false,
+        new LayoutData(),
+        0,
+        1);
 
-    #region Overflow Tests
+    // Assert
+    deltaFreeSpace.ShouldBe(0f);
+  }
 
-    public void DistributeFreeSpaceSecondPassShouldHandleMainAxisOverflow()
-    {
-        // Arrange
-        FlexNode node = new();
-        FlexLine flexLine = new();
+  public void DistributeFreeSpaceSecondPassShouldWorkWithMaxContentMode()
+  {
+    // Arrange
+    FlexNode node = new();
+    FlexLine flexLine = new();
 
-        // Act
-        float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
-            flexLine,
-            node,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            true, // mainAxisOverflows = true
-            SizingMode.StretchFit,
-            false,
-            new LayoutData(),
-            0,
-            1);
+    // Act
+    float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
+        flexLine,
+        node,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false,
+        SizingMode.MaxContent,
+        false,
+        new LayoutData(),
+        0,
+        1);
 
-        // Assert
-        deltaFreeSpace.ShouldBe(0f);
-    }
+    // Assert
+    deltaFreeSpace.ShouldBe(0f);
+  }
 
-    #endregion
+  #endregion
 
-    #region Perform Layout Tests
+  #region Overflow Tests
 
-    public void DistributeFreeSpaceSecondPassShouldHandlePerformLayoutTrue()
-    {
-        // Arrange
-        FlexNode node = new();
-        FlexLine flexLine = new();
+  public void DistributeFreeSpaceSecondPassShouldHandleMainAxisOverflow()
+  {
+    // Arrange
+    FlexNode node = new();
+    FlexLine flexLine = new();
 
-        // Act
-        float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
-            flexLine,
-            node,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false,
-            SizingMode.StretchFit,
-            true, // performLayout = true
-            new LayoutData(),
-            0,
-            1);
+    // Act
+    float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
+        flexLine,
+        node,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        true, // mainAxisOverflows = true
+        SizingMode.StretchFit,
+        false,
+        new LayoutData(),
+        0,
+        1);
 
-        // Assert
-        deltaFreeSpace.ShouldBe(0f);
-    }
+    // Assert
+    deltaFreeSpace.ShouldBe(0f);
+  }
 
-    #endregion
+  #endregion
+
+  #region Perform Layout Tests
+
+  public void DistributeFreeSpaceSecondPassShouldHandlePerformLayoutTrue()
+  {
+    // Arrange
+    FlexNode node = new();
+    FlexLine flexLine = new();
+
+    // Act
+    float deltaFreeSpace = FlexDistribution.DistributeFreeSpaceSecondPass(
+        flexLine,
+        node,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false,
+        SizingMode.StretchFit,
+        true, // performLayout = true
+        new LayoutData(),
+        0,
+        1);
+
+    // Assert
+    deltaFreeSpace.ShouldBe(0f);
+  }
+
+  #endregion
 }

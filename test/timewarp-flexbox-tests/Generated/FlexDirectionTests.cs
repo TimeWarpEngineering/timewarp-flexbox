@@ -8,3987 +8,3987 @@
 
 namespace TimeWarp.Flexbox.Tests.Generated;
 
-using FlexNode = TimeWarp.Flexbox.Node;
 using FlexConfig = TimeWarp.Flexbox.Config;
+using FlexNode = TimeWarp.Flexbox.Node;
 
 public class FlexDirectionTests
 {
-    public void flex_direction_column_no_height()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(30f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(20f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(30f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(20f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-    }
-
-    public void flex_direction_row_no_width()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.Row;
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(30f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(30f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_column()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(20f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(20f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-    }
-
-    public void flex_direction_row()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.Row;
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_column_reverse()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.ColumnReverse;
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(70f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(70f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-    }
-
-    public void flex_direction_row_reverse()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_margin_left()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetMargin(Edge.Left, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_margin_start()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetMargin(Edge.Start, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_margin_right()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetMargin(Edge.Right, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_margin_end()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetMargin(Edge.End, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_column_reverse_margin_top()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.Style.SetMargin(Edge.Top, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_column_reverse_margin_bottom()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.Style.SetMargin(Edge.Bottom, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_row_reverse_padding_left()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetPadding(Edge.Left, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(110f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_padding_start()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetPadding(Edge.Start, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_padding_right()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetPadding(Edge.Right, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-10f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-20f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-30f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_padding_end()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetPadding(Edge.End, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-10f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-20f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-30f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(110f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_column_reverse_padding_top()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.Style.SetPadding(Edge.Top, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_column_reverse_padding_bottom()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.Style.SetPadding(Edge.Bottom, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_row_reverse_border_left()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetBorder(Edge.Left, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(110f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_border_start()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetBorder(Edge.Start, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_border_right()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetBorder(Edge.Right, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-10f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-20f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-30f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_border_end()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.RowReverse;
-        root.Style.SetBorder(Edge.End, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-10f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-20f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-30f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(110f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_column_reverse_border_top()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.Style.SetBorder(Edge.Top, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_column_reverse_border_bottom()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.Style.SetBorder(Edge.Bottom, StyleLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child1 = new(config);
-        root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child1, 1);
-
-        FlexNode root_child2 = new(config);
-        root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root.InsertChild(root_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_row_reverse_pos_left()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root_child0.Style.SetPosition(Edge.Left, StyleLength.Points(100f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_pos_start()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root_child0.Style.SetPosition(Edge.Start, StyleLength.Points(100f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_pos_right()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root_child0.Style.SetPosition(Edge.Right, StyleLength.Points(100f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_pos_end()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root_child0.Style.SetPosition(Edge.End, StyleLength.Points(100f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_column_reverse_pos_top()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root_child0.Style.SetPosition(Edge.Top, StyleLength.Points(100f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_column_reverse_pos_bottom()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root_child0.Style.SetPosition(Edge.Bottom, StyleLength.Points(100f));
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(-100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(-100f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_row_reverse_inner_pos_left()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPosition(Edge.Left, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_inner_pos_right()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPosition(Edge.Right, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_col_reverse_inner_pos_top()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPosition(Edge.Top, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_col_reverse_inner_pos_bottom()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPosition(Edge.Bottom, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_row_reverse_inner_margin_left()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetMargin(Edge.Left, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_inner_margin_right()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetMargin(Edge.Right, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_col_reverse_inner_margin_top()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetMargin(Edge.Top, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_col_reverse_inner_margin_bottom()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetMargin(Edge.Bottom, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_row_reverse_inner_marign_start()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetMargin(Edge.Start, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_inner_margin_end()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetMargin(Edge.End, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_inner_border_left()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetBorder(Edge.Left, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_inner_border_right()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetBorder(Edge.Right, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_col_reverse_inner_border_top()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetBorder(Edge.Top, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_col_reverse_inner_border_bottom()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetBorder(Edge.Bottom, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_row_reverse_inner_border_start()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetBorder(Edge.Start, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_inner_border_end()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetBorder(Edge.End, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_inner_padding_left()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPadding(Edge.Left, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_inner_padding_right()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPadding(Edge.Right, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_col_reverse_inner_padding_top()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPadding(Edge.Top, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_col_reverse_inner_padding_bottom()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPadding(Edge.Bottom, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
-
-    public void flex_direction_row_reverse_inner_padding_start()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPadding(Edge.Start, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_row_reverse_inner_padding_end()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
-        root_child0.Style.FlexDirection = FlexDirection.RowReverse;
-        root.InsertChild(root_child0, 0);
-
-        FlexNode root_child0_child0 = new(config);
-        root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
-        root_child0_child0.Style.PositionType = PositionType.Absolute;
-        root_child0_child0.Style.SetPadding(Edge.End, StyleLength.Points(10f));
-        root_child0.InsertChild(root_child0_child0, 0);
-
-        FlexNode root_child0_child1 = new(config);
-        root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child1, 1);
-
-        FlexNode root_child0_child2 = new(config);
-        root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
-        root_child0.InsertChild(root_child0_child2, 2);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
-
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
-        root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
-        root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
-    }
-
-    public void flex_direction_alternating_with_percent()
-    {
-        FlexConfig config = new();
-
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(300f));
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(200f));
-
-        FlexNode root_child0 = new(config);
-        root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Percent(50f));
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Percent(50f));
-        root_child0.Style.SetPosition(Edge.Left, StyleLength.Percent(10f));
-        root_child0.Style.SetPosition(Edge.Top, StyleLength.Percent(10f));
-        root_child0.Style.FlexDirection = FlexDirection.Row;
-        root.InsertChild(root_child0, 0);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(200f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(300f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(30f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(150f);
-
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
-
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(200f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(300f);
-
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(30f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(150f);
-    }
+  public void flex_direction_column_no_height()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(30f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(20f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(30f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(20f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+  }
+
+  public void flex_direction_row_no_width()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.Row;
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(30f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(30f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_column()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(20f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(20f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+  }
+
+  public void flex_direction_row()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.Row;
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_column_reverse()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.ColumnReverse;
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(70f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(70f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+  }
+
+  public void flex_direction_row_reverse()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_margin_left()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetMargin(Edge.Left, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_margin_start()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetMargin(Edge.Start, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_margin_right()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetMargin(Edge.Right, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_margin_end()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetMargin(Edge.End, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_column_reverse_margin_top()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.Style.SetMargin(Edge.Top, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_column_reverse_margin_bottom()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.Style.SetMargin(Edge.Bottom, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_row_reverse_padding_left()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetPadding(Edge.Left, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(110f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_padding_start()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetPadding(Edge.Start, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_padding_right()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetPadding(Edge.Right, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-10f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-20f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-30f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_padding_end()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetPadding(Edge.End, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-10f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-20f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-30f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(110f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_column_reverse_padding_top()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.Style.SetPadding(Edge.Top, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_column_reverse_padding_bottom()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.Style.SetPadding(Edge.Bottom, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_row_reverse_border_left()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetBorder(Edge.Left, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(110f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_border_start()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetBorder(Edge.Start, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_border_right()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetBorder(Edge.Right, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-10f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-20f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-30f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_border_end()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.RowReverse;
+    root.Style.SetBorder(Edge.End, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-10f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-20f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-30f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(110f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_column_reverse_border_top()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.Style.SetBorder(Edge.Top, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_column_reverse_border_bottom()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.Style.SetBorder(Edge.Bottom, StyleLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child1 = new(config);
+    root_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child1, 1);
+
+    FlexNode root_child2 = new(config);
+    root_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root.InsertChild(root_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_row_reverse_pos_left()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root_child0.Style.SetPosition(Edge.Left, StyleLength.Points(100f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_pos_start()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root_child0.Style.SetPosition(Edge.Start, StyleLength.Points(100f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_pos_right()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root_child0.Style.SetPosition(Edge.Right, StyleLength.Points(100f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_pos_end()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root_child0.Style.SetPosition(Edge.End, StyleLength.Points(100f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(-100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(70f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(100f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_column_reverse_pos_top()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root_child0.Style.SetPosition(Edge.Top, StyleLength.Points(100f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_column_reverse_pos_bottom()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root_child0.Style.SetPosition(Edge.Bottom, StyleLength.Points(100f));
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(-100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(-100f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_row_reverse_inner_pos_left()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPosition(Edge.Left, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_inner_pos_right()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPosition(Edge.Right, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_col_reverse_inner_pos_top()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPosition(Edge.Top, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_col_reverse_inner_pos_bottom()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPosition(Edge.Bottom, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_row_reverse_inner_margin_left()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetMargin(Edge.Left, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_inner_margin_right()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetMargin(Edge.Right, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_col_reverse_inner_margin_top()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetMargin(Edge.Top, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_col_reverse_inner_margin_bottom()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetMargin(Edge.Bottom, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(80f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_row_reverse_inner_marign_start()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetMargin(Edge.Start, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_inner_margin_end()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetMargin(Edge.End, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_inner_border_left()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetBorder(Edge.Left, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_inner_border_right()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetBorder(Edge.Right, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_col_reverse_inner_border_top()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetBorder(Edge.Top, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_col_reverse_inner_border_bottom()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetBorder(Edge.Bottom, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_row_reverse_inner_border_start()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetBorder(Edge.Start, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_inner_border_end()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetBorder(Edge.End, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_inner_padding_left()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPadding(Edge.Left, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_inner_padding_right()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPadding(Edge.Right, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_col_reverse_inner_padding_top()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPadding(Edge.Top, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_col_reverse_inner_padding_bottom()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.ColumnReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPadding(Edge.Bottom, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(90f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(100f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
+
+  public void flex_direction_row_reverse_inner_padding_start()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPadding(Edge.Start, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_row_reverse_inner_padding_end()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(100f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(100f));
+    root_child0.Style.FlexDirection = FlexDirection.RowReverse;
+    root.InsertChild(root_child0, 0);
+
+    FlexNode root_child0_child0 = new(config);
+    root_child0_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(10f));
+    root_child0_child0.Style.PositionType = PositionType.Absolute;
+    root_child0_child0.Style.SetPadding(Edge.End, StyleLength.Points(10f));
+    root_child0.InsertChild(root_child0_child0, 0);
+
+    FlexNode root_child0_child1 = new(config);
+    root_child0_child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child1, 1);
+
+    FlexNode root_child0_child2 = new(config);
+    root_child0_child2.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(10f));
+    root_child0.InsertChild(root_child0_child2, 2);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(90f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(80f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child0.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child0.Layout.GetDimension(Dimension.Height).ShouldBe(10f);
+
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0_child1.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child1.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child1.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(10f);
+    root_child0_child2.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0_child2.Layout.GetDimension(Dimension.Width).ShouldBe(10f);
+    root_child0_child2.Layout.GetDimension(Dimension.Height).ShouldBe(100f);
+  }
+
+  public void flex_direction_alternating_with_percent()
+  {
+    FlexConfig config = new();
+
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(300f));
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(200f));
+
+    FlexNode root_child0 = new(config);
+    root_child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Percent(50f));
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Percent(50f));
+    root_child0.Style.SetPosition(Edge.Left, StyleLength.Percent(10f));
+    root_child0.Style.SetPosition(Edge.Top, StyleLength.Percent(10f));
+    root_child0.Style.FlexDirection = FlexDirection.Row;
+    root.InsertChild(root_child0, 0);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(200f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(300f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(20f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(30f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(150f);
+
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(200f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(300f);
+
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(120f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(30f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(150f);
+  }
 }

@@ -8,46 +8,46 @@
 
 namespace TimeWarp.Flexbox.Tests.Generated;
 
-using FlexNode = TimeWarp.Flexbox.Node;
 using FlexConfig = TimeWarp.Flexbox.Config;
+using FlexNode = TimeWarp.Flexbox.Node;
 
 public class AspectRatioTests
 {
-    public void zero_aspect_ratio_behaves_like_auto()
-    {
-        FlexConfig config = new();
+  public void zero_aspect_ratio_behaves_like_auto()
+  {
+    FlexConfig config = new();
 
-        FlexNode root = new(config);
-        root.Style.PositionType = PositionType.Absolute;
-        root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(300f));
-        root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(300f));
+    FlexNode root = new(config);
+    root.Style.PositionType = PositionType.Absolute;
+    root.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(300f));
+    root.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(300f));
 
-        FlexNode root_child0 = new(config);
-        root_child0.Style.AspectRatio = 0f;
-        root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(50f));
-        root.InsertChild(root_child0, 0);
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
+    FlexNode root_child0 = new(config);
+    root_child0.Style.AspectRatio = 0f;
+    root_child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(50f));
+    root.InsertChild(root_child0, 0);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
 
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(300f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(300f);
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(300f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(300f);
 
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(50f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(50f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
 
-        CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
+    CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.RTL);
 
-        root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
-        root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root.Layout.GetDimension(Dimension.Width).ShouldBe(300f);
-        root.Layout.GetDimension(Dimension.Height).ShouldBe(300f);
+    root.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(0f);
+    root.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root.Layout.GetDimension(Dimension.Width).ShouldBe(300f);
+    root.Layout.GetDimension(Dimension.Height).ShouldBe(300f);
 
-        root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(250f);
-        root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
-        root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(50f);
-        root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    }
+    root_child0.Layout.GetPosition(PhysicalEdge.Left).ShouldBe(250f);
+    root_child0.Layout.GetPosition(PhysicalEdge.Top).ShouldBe(0f);
+    root_child0.Layout.GetDimension(Dimension.Width).ShouldBe(50f);
+    root_child0.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
+  }
 }
