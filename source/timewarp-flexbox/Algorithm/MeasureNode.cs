@@ -52,76 +52,102 @@ public static class MeasureNode
             node.HasMeasureFunc,
             "Expected node to have custom measure function");
 
-        // Calculate padding and border for both axes
-        float paddingAndBorderAxisRow = BoundAxis.PaddingAndBorderForAxis(
-            node, FlexDirection.Row, direction, availableWidth);
-        float paddingAndBorderAxisColumn = BoundAxis.PaddingAndBorderForAxis(
-            node, FlexDirection.Column, direction, availableWidth);
+        if (widthSizingMode == SizingMode.MaxContent)
+        {
+            availableWidth = float.NaN;
+        }
 
-        // For MaxContent sizing, the available dimension is undefined for measurement
-        // because we want to know the node's natural/intrinsic size
-        float innerWidth = widthSizingMode == SizingMode.MaxContent
-            ? float.NaN
-            : availableWidth - paddingAndBorderAxisRow;
+        if (heightSizingMode == SizingMode.MaxContent)
+        {
+            availableHeight = float.NaN;
+        }
 
-        float innerHeight = heightSizingMode == SizingMode.MaxContent
-            ? float.NaN
-            : availableHeight - paddingAndBorderAxisColumn;
+        LayoutResults layout = node.Layout;
+        float paddingAndBorderAxisRow =
+            layout.GetPadding(PhysicalEdge.Left) + layout.GetPadding(PhysicalEdge.Right) +
+            layout.GetBorder(PhysicalEdge.Left) + layout.GetBorder(PhysicalEdge.Right);
+        float paddingAndBorderAxisColumn =
+            layout.GetPadding(PhysicalEdge.Top) + layout.GetPadding(PhysicalEdge.Bottom) +
+            layout.GetBorder(PhysicalEdge.Top) + layout.GetBorder(PhysicalEdge.Bottom);
 
-        // Convert sizing modes to measure modes for the callback
-        MeasureMode widthMeasureMode = widthSizingMode.ToMeasureMode();
-        MeasureMode heightMeasureMode = heightSizingMode.ToMeasureMode();
+        // We want to make sure we don't call measure with negative size
+        float innerWidth = Comparison.IsUndefined(availableWidth)
+            ? availableWidth
+            : Comparison.MaxOrDefined(0.0f, availableWidth - paddingAndBorderAxisRow);
+        float innerHeight = Comparison.IsUndefined(availableHeight)
+            ? availableHeight
+            : Comparison.MaxOrDefined(0.0f, availableHeight - paddingAndBorderAxisColumn);
 
-        // Publish event before measure callback
-        YogaEvent.PublishMeasureCallbackStart(node);
+        if (widthSizingMode == SizingMode.StretchFit && heightSizingMode == SizingMode.StretchFit)
+        {
+            // Don't bother sizing the text if both dimensions are already defined.
+            node.SetLayoutMeasuredDimension(
+                BoundAxis.BoundAxisValue(
+                    node,
+                    FlexDirection.Row,
+                    direction,
+                    availableWidth,
+                    ownerWidth,
+                    ownerWidth),
+                Dimension.Width);
+            node.SetLayoutMeasuredDimension(
+                BoundAxis.BoundAxisValue(
+                    node,
+                    FlexDirection.Column,
+                    direction,
+                    availableHeight,
+                    ownerHeight,
+                    ownerWidth),
+                Dimension.Height);
+        }
+        else
+        {
+            YogaEvent.PublishMeasureCallbackStart(node);
 
-        // Call the measure function
-        YGSize measuredSize = node.Measure(
-            innerWidth,
-            widthMeasureMode,
-            innerHeight,
-            heightMeasureMode);
+            // Measure the text under the current constraints.
+            YGSize measuredSize = node.Measure(
+                innerWidth,
+                widthSizingMode.ToMeasureMode(),
+                innerHeight,
+                heightSizingMode.ToMeasureMode());
 
-        // Publish event after measure callback with results
-        YogaEvent.PublishMeasureCallbackEnd(
-            node,
-            innerWidth,
-            widthMeasureMode,
-            innerHeight,
-            heightMeasureMode,
-            measuredSize.Width,
-            measuredSize.Height,
-            reason);
+            layoutMarkerData.MeasureCallbacks++;
+            layoutMarkerData.IncrementMeasureCallbackReasonCount(reason);
 
-        // Update layout marker data
-        layoutMarkerData.MeasureCallbacks++;
-        layoutMarkerData.IncrementMeasureCallbackReasonCount(reason);
+            YogaEvent.PublishMeasureCallbackEnd(
+                node,
+                innerWidth,
+                widthSizingMode.ToMeasureMode(),
+                innerHeight,
+                heightSizingMode.ToMeasureMode(),
+                measuredSize.Width,
+                measuredSize.Height,
+                reason);
 
-        // Add padding and border back to the measured dimensions
-        float measuredWidth = measuredSize.Width + paddingAndBorderAxisRow;
-        float measuredHeight = measuredSize.Height + paddingAndBorderAxisColumn;
+            node.SetLayoutMeasuredDimension(
+                BoundAxis.BoundAxisValue(
+                    node,
+                    FlexDirection.Row,
+                    direction,
+                    widthSizingMode == SizingMode.MaxContent || widthSizingMode == SizingMode.FitContent
+                        ? measuredSize.Width + paddingAndBorderAxisRow
+                        : availableWidth,
+                    ownerWidth,
+                    ownerWidth),
+                Dimension.Width);
 
-        // Apply min/max bounds to width
-        float boundedWidth = BoundAxis.BoundAxisValue(
-            node,
-            FlexDirection.Row,
-            direction,
-            measuredWidth,
-            ownerWidth,
-            ownerWidth);
-
-        // Apply min/max bounds to height
-        float boundedHeight = BoundAxis.BoundAxisValue(
-            node,
-            FlexDirection.Column,
-            direction,
-            measuredHeight,
-            ownerHeight,
-            ownerWidth);
-
-        // Set the measured dimensions on the node
-        node.SetLayoutMeasuredDimension(boundedWidth, Dimension.Width);
-        node.SetLayoutMeasuredDimension(boundedHeight, Dimension.Height);
+            node.SetLayoutMeasuredDimension(
+                BoundAxis.BoundAxisValue(
+                    node,
+                    FlexDirection.Column,
+                    direction,
+                    heightSizingMode == SizingMode.MaxContent || heightSizingMode == SizingMode.FitContent
+                        ? measuredSize.Height + paddingAndBorderAxisColumn
+                        : availableHeight,
+                    ownerHeight,
+                    ownerWidth),
+                Dimension.Height);
+        }
     }
 
     /// <summary>

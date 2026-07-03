@@ -692,6 +692,7 @@ public sealed class Node : ILayoutableNode
         }
 
         _children[index] = child;
+        child._owner = this;
     }
 
     /// <summary>
@@ -716,30 +717,54 @@ public sealed class Node : ILayoutableNode
         if (index >= 0)
         {
             _children[index] = newChild;
+            newChild._owner = this;
         }
     }
 
     /// <summary>
-    /// Inserts a child at the specified index.
+    /// Inserts a child at the specified index, taking ownership of it.
     /// </summary>
+    /// <remarks>
+    /// Corresponds to YGNodeInsertChild in YGNode.cpp: inserts the child,
+    /// assigns this node as its owner, and marks the tree dirty.
+    /// </remarks>
     public void InsertChild(Node child, int index)
     {
         ArgumentNullException.ThrowIfNull(child);
+        YogaAssert.Assert(this, child._owner is null,
+            "Child already has a owner, it must be removed first.");
+        YogaAssert.Assert(this, !HasMeasureFunc,
+            "Cannot add child: Nodes with measure functions cannot have children.");
+
         if (child._style.Display == Display.Contents)
         {
             _contentsChildrenCount++;
         }
 
         _children.Insert(index, child);
+        child._owner = this;
+        MarkDirtyAndPropagate();
     }
 
     /// <summary>
     /// Removes the first occurrence of the specified child.
     /// </summary>
     /// <returns>True if the child was removed, false if not found.</returns>
+    /// <remarks>
+    /// Corresponds to YGNodeRemoveChild in YGNode.cpp. Children may be shared
+    /// between owners, indicated by a null owner; the child is only fully reset
+    /// when it is owned exclusively by this node.
+    /// </remarks>
     public bool RemoveChild(Node child)
     {
         ArgumentNullException.ThrowIfNull(child);
+        if (_children.Count == 0)
+        {
+            // This is an empty set. Nothing to remove.
+            return false;
+        }
+
+        Node? childOwner = child._owner;
         int index = _children.IndexOf(child);
         if (index >= 0)
         {
@@ -749,6 +774,22 @@ public sealed class Node : ILayoutableNode
             }
 
             _children.RemoveAt(index);
+
+            if (childOwner == this)
+            {
+                child.ResetLayoutResults(); // layout is no longer valid
+                child._owner = null;
+
+                // Mark dirty to invalidate cache, but suppress the dirtied callback
+                // since the node is being detached from the tree and should not
+                // propagate dirty signals through external callback mechanisms.
+                DirtiedFunc? dirtiedFunc = child._dirtiedFunc;
+                child._dirtiedFunc = null;
+                child.SetDirty(true);
+                child._dirtiedFunc = dirtiedFunc;
+            }
+
+            MarkDirtyAndPropagate();
             return true;
         }
 
@@ -771,10 +812,41 @@ public sealed class Node : ILayoutableNode
     /// <summary>
     /// Removes all children from this node.
     /// </summary>
+    /// <remarks>
+    /// Corresponds to YGNodeRemoveAllChildren in YGNode.cpp: when the child set
+    /// is owned by this node, each child's layout is reset and its owner cleared
+    /// before the set is cleared.
+    /// </remarks>
     public void ClearChildren()
     {
+        if (_children.Count == 0)
+        {
+            // This is an empty set already. Nothing to do.
+            return;
+        }
+
+        if (_children[0]._owner == this)
+        {
+            // If the first child has this node as its owner, we assume that this
+            // child set is unique.
+            foreach (Node oldChild in _children)
+            {
+                oldChild.ResetLayoutResults(); // layout is no longer valid
+                oldChild._owner = null;
+
+                // Mark dirty to invalidate cache, but suppress the dirtied callback
+                // since the node is being detached from the tree and should not
+                // propagate dirty signals through external callback mechanisms.
+                DirtiedFunc? dirtiedFunc = oldChild._dirtiedFunc;
+                oldChild._dirtiedFunc = null;
+                oldChild.SetDirty(true);
+                oldChild._dirtiedFunc = dirtiedFunc;
+            }
+        }
+
         _children.Clear();
         _contentsChildrenCount = 0;
+        MarkDirtyAndPropagate();
     }
 
     #endregion

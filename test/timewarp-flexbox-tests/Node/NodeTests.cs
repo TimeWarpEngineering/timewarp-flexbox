@@ -176,13 +176,11 @@ public class NodeTests
         FlexNode child0 = new();
         child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(50));
         child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(20));
-        child0.Owner = root;
         root.InsertChild(child0, 0);
 
         FlexNode child1 = new();
         child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(50));
         child1.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(20));
-        child1.Owner = root;
         root.InsertChild(child1, 1);
 
         // Clear dirty state
@@ -216,13 +214,11 @@ public class NodeTests
         FlexNode child0 = new();
         child0.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(50));
         child0.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(20));
-        child0.Owner = root;
         root.InsertChild(child0, 0);
 
         FlexNode child1 = new();
         child1.Style.SetDimension(Dimension.Width, StyleSizeLength.Points(50));
         child1.Style.SetDimension(Dimension.Height, StyleSizeLength.Points(20));
-        child1.Owner = root;
         root.InsertChild(child1, 1);
 
         // Clear dirty state

@@ -170,43 +170,26 @@ public static class FlexBasis
                 childHeightSizingMode = SizingMode.StretchFit;
             }
 
-            // The W3C spec doesn't say anything about the 'owner' affecting the flex-basis
-            // but tests require this behavior
-            // So if the owner size is defined, we use it, otherwise we use undefined
-            if (!isMainAxisRow && Comparison.IsDefined(width) && widthMode == SizingMode.StretchFit &&
-                !isRowStyleDimDefined)
+            // The W3C spec doesn't say anything about the 'overflow' property, but all
+            // major browsers appear to implement the following logic
+            if ((!isMainAxisRow && node.Style.Overflow == Overflow.Scroll) ||
+                node.Style.Overflow != Overflow.Scroll)
             {
-                childWidth = width;
-                childWidthSizingMode = SizingMode.StretchFit;
+                if (Comparison.IsUndefined(childWidth) && Comparison.IsDefined(width))
+                {
+                    childWidth = width;
+                    childWidthSizingMode = SizingMode.FitContent;
+                }
             }
 
-            if (isMainAxisRow && Comparison.IsDefined(height) && heightMode == SizingMode.StretchFit &&
-                !isColumnStyleDimDefined)
+            if ((isMainAxisRow && node.Style.Overflow == Overflow.Scroll) ||
+                node.Style.Overflow != Overflow.Scroll)
             {
-                childHeight = height;
-                childHeightSizingMode = SizingMode.StretchFit;
-            }
-
-            // Handle stretch alignment on the cross axis
-            FlexDirection crossAxis = mainAxis.ResolveCrossDirection(direction);
-            if (!isMainAxisRow && widthMode == SizingMode.StretchFit &&
-                !isRowStyleDimDefined &&
-                AlignUtils.ResolveChildAlignment(node, child) == Align.Stretch &&
-                !child.Style.FlexStartMarginIsAuto(crossAxis, direction) &&
-                !child.Style.FlexEndMarginIsAuto(crossAxis, direction))
-            {
-                childWidth = width;
-                childWidthSizingMode = SizingMode.StretchFit;
-            }
-
-            if (isMainAxisRow && heightMode == SizingMode.StretchFit &&
-                !isColumnStyleDimDefined &&
-                AlignUtils.ResolveChildAlignment(node, child) == Align.Stretch &&
-                !child.Style.FlexStartMarginIsAuto(crossAxis, direction) &&
-                !child.Style.FlexEndMarginIsAuto(crossAxis, direction))
-            {
-                childHeight = height;
-                childHeightSizingMode = SizingMode.StretchFit;
+                if (Comparison.IsUndefined(childHeight) && Comparison.IsDefined(height))
+                {
+                    childHeight = height;
+                    childHeightSizingMode = SizingMode.FitContent;
+                }
             }
 
             // Handle aspect ratio
@@ -223,6 +206,39 @@ public static class FlexBasis
                 {
                     childWidth = marginRow +
                                  (childHeight - marginColumn) * childAspectRatio.Unwrap();
+                    childWidthSizingMode = SizingMode.StretchFit;
+                }
+            }
+
+            // If child has no defined size in the cross axis and is set to stretch, set
+            // the cross axis to be measured exactly with the available inner width
+            bool hasExactWidth = Comparison.IsDefined(width) && widthMode == SizingMode.StretchFit;
+            bool childWidthStretch =
+                AlignUtils.ResolveChildAlignment(node, child) == Align.Stretch &&
+                childWidthSizingMode != SizingMode.StretchFit;
+            if (!isMainAxisRow && !isRowStyleDimDefined && hasExactWidth && childWidthStretch)
+            {
+                childWidth = width;
+                childWidthSizingMode = SizingMode.StretchFit;
+                if (childAspectRatio.IsDefined)
+                {
+                    childHeight = (childWidth - marginRow) / childAspectRatio.Unwrap();
+                    childHeightSizingMode = SizingMode.StretchFit;
+                }
+            }
+
+            bool hasExactHeight = Comparison.IsDefined(height) && heightMode == SizingMode.StretchFit;
+            bool childHeightStretch =
+                AlignUtils.ResolveChildAlignment(node, child) == Align.Stretch &&
+                childHeightSizingMode != SizingMode.StretchFit;
+            if (isMainAxisRow && !isColumnStyleDimDefined && hasExactHeight && childHeightStretch)
+            {
+                childHeight = height;
+                childHeightSizingMode = SizingMode.StretchFit;
+
+                if (childAspectRatio.IsDefined)
+                {
+                    childWidth = (childHeight - marginColumn) * childAspectRatio.Unwrap();
                     childWidthSizingMode = SizingMode.StretchFit;
                 }
             }

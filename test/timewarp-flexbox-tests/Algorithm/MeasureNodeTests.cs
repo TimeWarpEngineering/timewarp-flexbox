@@ -79,6 +79,13 @@ public class MeasureNodeTests
         FlexNode node = new();
         node.Style.SetPadding(Edge.All, StyleLength.Points(10f));
 
+        // MeasureNodeWithMeasureFunc reads resolved layout padding/border,
+        // which CalculateLayoutCore sets before dispatching (as in C++).
+        node.Layout.SetPadding(PhysicalEdge.Left, 10f);
+        node.Layout.SetPadding(PhysicalEdge.Right, 10f);
+        node.Layout.SetPadding(PhysicalEdge.Top, 10f);
+        node.Layout.SetPadding(PhysicalEdge.Bottom, 10f);
+
         float receivedWidth = 0;
         float receivedHeight = 0;
         node.SetMeasureFunc((_, width, _, height, _) =>
@@ -114,6 +121,17 @@ public class MeasureNodeTests
         FlexNode node = new();
         node.Style.SetPadding(Edge.All, StyleLength.Points(10f));
         node.Style.SetBorder(Edge.All, StyleLength.Points(5f));
+
+        // MeasureNodeWithMeasureFunc reads resolved layout padding/border,
+        // which CalculateLayoutCore sets before dispatching (as in C++).
+        node.Layout.SetPadding(PhysicalEdge.Left, 10f);
+        node.Layout.SetPadding(PhysicalEdge.Right, 10f);
+        node.Layout.SetPadding(PhysicalEdge.Top, 10f);
+        node.Layout.SetPadding(PhysicalEdge.Bottom, 10f);
+        node.Layout.SetBorder(PhysicalEdge.Left, 5f);
+        node.Layout.SetBorder(PhysicalEdge.Right, 5f);
+        node.Layout.SetBorder(PhysicalEdge.Top, 5f);
+        node.Layout.SetBorder(PhysicalEdge.Bottom, 5f);
 
         node.SetMeasureFunc((_, _, _, _, _) =>
             new YGSize(50f, 30f));
@@ -644,6 +662,12 @@ public class MeasureNodeTests
         FlexNode node = new();
         node.Style.SetPadding(Edge.Start, StyleLength.Points(10f));
         node.Style.SetPadding(Edge.End, StyleLength.Points(20f));
+
+        // MeasureNodeWithMeasureFunc reads resolved layout padding/border,
+        // which CalculateLayoutCore sets before dispatching (as in C++).
+        // In RTL, Start resolves to Right and End resolves to Left.
+        node.Layout.SetPadding(PhysicalEdge.Right, 10f);
+        node.Layout.SetPadding(PhysicalEdge.Left, 20f);
 
         float receivedWidth = 0;
         node.SetMeasureFunc((_, width, _, _, _) =>
