@@ -70,9 +70,13 @@ Wire all components together, ensure the public API works end-to-end, and port/r
 - [x] Wire up all subtasks into complete CalculateLayout (fixed 2026-07-03: debug module,
       owner semantics, flex basis FitContent, measure func fast path — see PR #7)
 - [x] Verify public API matches expected signature
-- [ ] Port high-priority unit tests first (in progress: Measure, MeasureCache, MeasureMode, Relayout)
-- [ ] Run tests and fix failures (in progress: 17 wrap/align-content/baseline conformance
-      failures under investigation)
+- [x] Port high-priority unit tests first — Measure, MeasureCache, MeasureMode, Relayout
+      ported 2026-07-03 (49 tests in test/timewarp-flexbox-tests/Algorithm/)
+- [x] Run tests and fix failures — all 20 failures the new tests exposed are fixed:
+      multi-line alignment two-pass restructure + ConstrainMaxSizeForMode rewrite
+      (CalculateLayoutCore.cs, LayoutHelpers.cs), WebFlexBasis generation check
+      (FlexBasis.cs), style-change dirtying (Style.cs/Node.cs), canSkipFlex min/max
+      clamp (JustifyContent.cs). Suite: 1046 passed / 0 failed / 3 skipped.
 - [ ] Port medium-priority tests
 - [ ] Port low-priority tests
 - [x] Port generated tests (can be automated) — automated via `runfiles/port-generated-tests.cs`;
