@@ -146,6 +146,7 @@ public static class JustifyContent
           betweenMainDim += leadingMainDim * 2;
           break;
         case Justify.FlexStart:
+        default:
           break;
       }
     }

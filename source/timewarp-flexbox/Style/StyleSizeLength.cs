@@ -25,8 +25,7 @@ namespace TimeWarp.Flexbox;
 /// </remarks>
 public readonly struct StyleSizeLength : IEquatable<StyleSizeLength>
 {
-  private readonly FloatOptional _value;
-  private readonly Unit _unit;
+  private readonly Unit Unit;
 
   /// <summary>
   /// Private constructor to prevent invalid combinations.
@@ -34,8 +33,8 @@ public readonly struct StyleSizeLength : IEquatable<StyleSizeLength>
   /// </summary>
   private StyleSizeLength(FloatOptional value, Unit unit)
   {
-    _value = value;
-    _unit = unit;
+    Value = value;
+    Unit = unit;
   }
 
   #region Factory Methods
@@ -96,32 +95,32 @@ public readonly struct StyleSizeLength : IEquatable<StyleSizeLength>
   /// <summary>
   /// Gets the numeric value (meaningful only for Point and Percent units).
   /// </summary>
-  public FloatOptional Value => _value;
+  public FloatOptional Value { get; }
 
   /// <summary>
   /// Gets whether this is an auto value.
   /// </summary>
-  public bool IsAuto => _unit == Unit.Auto;
+  public bool IsAuto => Unit == Unit.Auto;
 
   /// <summary>
   /// Gets whether this is a max-content value.
   /// </summary>
-  public bool IsMaxContent => _unit == Unit.MaxContent;
+  public bool IsMaxContent => Unit == Unit.MaxContent;
 
   /// <summary>
   /// Gets whether this is a fit-content value.
   /// </summary>
-  public bool IsFitContent => _unit == Unit.FitContent;
+  public bool IsFitContent => Unit == Unit.FitContent;
 
   /// <summary>
   /// Gets whether this is a stretch value.
   /// </summary>
-  public bool IsStretch => _unit == Unit.Stretch;
+  public bool IsStretch => Unit == Unit.Stretch;
 
   /// <summary>
   /// Gets whether this is undefined.
   /// </summary>
-  public bool IsUndefined => _unit == Unit.Undefined;
+  public bool IsUndefined => Unit == Unit.Undefined;
 
   /// <summary>
   /// Gets whether this is defined (not undefined).
@@ -131,12 +130,12 @@ public readonly struct StyleSizeLength : IEquatable<StyleSizeLength>
   /// <summary>
   /// Gets whether this is a point value.
   /// </summary>
-  public bool IsPoints => _unit == Unit.Point;
+  public bool IsPoints => Unit == Unit.Point;
 
   /// <summary>
   /// Gets whether this is a percentage value.
   /// </summary>
-  public bool IsPercent => _unit == Unit.Percent;
+  public bool IsPercent => Unit == Unit.Percent;
 
   #endregion
 
@@ -153,10 +152,11 @@ public readonly struct StyleSizeLength : IEquatable<StyleSizeLength>
   /// </returns>
   public FloatOptional Resolve(float referenceLength)
   {
-    return _unit switch
+    return Unit switch
     {
-      Unit.Point => _value,
-      Unit.Percent => new FloatOptional(_value.Unwrap() * referenceLength * 0.01f),
+      Unit.Point => Value,
+      Unit.Percent => new FloatOptional(Value.Unwrap() * referenceLength * 0.01f),
+      Unit.Undefined or Unit.Auto or Unit.MaxContent or Unit.FitContent or Unit.Stretch => FloatOptional.Undefined,
       _ => FloatOptional.Undefined
     };
   }
@@ -164,7 +164,7 @@ public readonly struct StyleSizeLength : IEquatable<StyleSizeLength>
   /// <summary>
   /// Converts to a YGValue.
   /// </summary>
-  public YGValue ToYGValue() => new(_value.Unwrap(), _unit);
+  public YGValue ToYGValue() => new(Value.Unwrap(), Unit);
 
   /// <summary>
   /// Explicit conversion to YGValue.
@@ -178,7 +178,7 @@ public readonly struct StyleSizeLength : IEquatable<StyleSizeLength>
   /// <inheritdoc />
   public bool Equals(StyleSizeLength other)
   {
-    return _value == other._value && _unit == other._unit;
+    return Value == other.Value && Unit == other.Unit;
   }
 
   /// <summary>
@@ -186,14 +186,14 @@ public readonly struct StyleSizeLength : IEquatable<StyleSizeLength>
   /// </summary>
   public bool InexactEquals(StyleSizeLength other)
   {
-    return _unit == other._unit && FloatOptionalExtensions.InexactEquals(_value, other._value);
+    return Unit == other.Unit && FloatOptionalExtensions.InexactEquals(Value, other.Value);
   }
 
   /// <inheritdoc />
   public override bool Equals(object? obj) => obj is StyleSizeLength other && Equals(other);
 
   /// <inheritdoc />
-  public override int GetHashCode() => HashCode.Combine(_value, _unit);
+  public override int GetHashCode() => HashCode.Combine(Value, Unit);
 
   /// <summary>
   /// Equality operator.
@@ -212,16 +212,16 @@ public readonly struct StyleSizeLength : IEquatable<StyleSizeLength>
   /// <inheritdoc />
   public override string ToString()
   {
-    return _unit switch
+    return Unit switch
     {
       Unit.Undefined => "undefined",
       Unit.Auto => "auto",
       Unit.MaxContent => "max-content",
       Unit.FitContent => "fit-content",
       Unit.Stretch => "stretch",
-      Unit.Point => $"{_value.Unwrap()}pt",
-      Unit.Percent => $"{_value.Unwrap()}%",
-      _ => $"{_value} ({_unit})"
+      Unit.Point => $"{Value.Unwrap()}pt",
+      Unit.Percent => $"{Value.Unwrap()}%",
+      _ => $"{Value} ({Unit})"
     };
   }
 

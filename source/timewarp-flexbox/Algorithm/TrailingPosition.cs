@@ -67,7 +67,6 @@ public static class TrailingPosition
   /// <returns>True if the axis is reversed (RowReverse or ColumnReverse).</returns>
   public static bool NeedsTrailingPosition(FlexDirection axis)
   {
-    return axis == FlexDirection.RowReverse ||
-           axis == FlexDirection.ColumnReverse;
+    return axis is FlexDirection.RowReverse or FlexDirection.ColumnReverse;
   }
 }

@@ -129,7 +129,7 @@ public static class MeasureNode
               node,
               FlexDirection.Row,
               direction,
-              widthSizingMode == SizingMode.MaxContent || widthSizingMode == SizingMode.FitContent
+              widthSizingMode is SizingMode.MaxContent or SizingMode.FitContent
                   ? measuredSize.Width + paddingAndBorderAxisRow
                   : availableWidth,
               ownerWidth,
@@ -141,7 +141,7 @@ public static class MeasureNode
               node,
               FlexDirection.Column,
               direction,
-              heightSizingMode == SizingMode.MaxContent || heightSizingMode == SizingMode.FitContent
+              heightSizingMode is SizingMode.MaxContent or SizingMode.FitContent
                   ? measuredSize.Height + paddingAndBorderAxisColumn
                   : availableHeight,
               ownerHeight,

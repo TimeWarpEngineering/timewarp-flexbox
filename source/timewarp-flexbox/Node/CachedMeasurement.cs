@@ -90,7 +90,7 @@ public struct CachedMeasurement : IEquatable<CachedMeasurement>
   }
 
   /// <inheritdoc />
-  public override bool Equals(object? obj) => obj is CachedMeasurement other && Equals(other);
+  public override readonly bool Equals(object? obj) => obj is CachedMeasurement other && Equals(other);
 
   /// <inheritdoc />
   public override readonly int GetHashCode() =>

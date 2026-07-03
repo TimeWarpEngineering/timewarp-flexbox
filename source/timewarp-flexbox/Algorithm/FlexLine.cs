@@ -73,14 +73,14 @@ public struct FlexLineRunningLayout : IEquatable<FlexLineRunningLayout>
 /// </summary>
 public sealed class FlexLine
 {
-  private readonly List<Node> _itemsInFlow = [];
+  private readonly List<Node> InFlowItems = [];
 
   /// <summary>
   /// List of children which are part of the line flow. This means they are not
   /// positioned absolutely, or with `display: "none"`, and do not overflow the
   /// available dimensions.
   /// </summary>
-  public ReadOnlyCollection<Node> ItemsInFlow => _itemsInFlow.AsReadOnly();
+  public ReadOnlyCollection<Node> ItemsInFlow => InFlowItems.AsReadOnly();
 
   /// <summary>
   /// Accumulation of the dimensions and margin of all the children on the
@@ -119,7 +119,7 @@ public sealed class FlexLine
   /// </summary>
   internal void AddItemInFlow(Node item)
   {
-    _itemsInFlow.Add(item);
+    InFlowItems.Add(item);
   }
 
   /// <summary>
@@ -267,13 +267,13 @@ public sealed class FlexLine
 
   Finalize:
     // The total flex factor needs to be floored to 1.
-    if (totalFlexGrowFactors > 0 && totalFlexGrowFactors < 1)
+    if (totalFlexGrowFactors is > 0 and < 1)
     {
       totalFlexGrowFactors = 1;
     }
 
     // The total flex shrink factor needs to be floored to 1.
-    if (totalFlexShrinkScaledFactors > 0 && totalFlexShrinkScaledFactors < 1)
+    if (totalFlexShrinkScaledFactors is > 0 and < 1)
     {
       totalFlexShrinkScaledFactors = 1;
     }

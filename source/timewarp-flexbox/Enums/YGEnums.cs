@@ -428,7 +428,11 @@ public static class YogaEnums
   public static int BitCount<TEnum>() where TEnum : struct, Enum
   {
     int count = OrdinalCount<TEnum>();
-    if (count <= 1) return 0;
+    if (count <= 1)
+    {
+      return 0;
+    }
+
     return BitWidth((uint)(count - 1));
   }
 
@@ -467,7 +471,11 @@ public static class YogaEnums
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static int BitWidth(uint value)
   {
-    if (value == 0) return 0;
+    if (value == 0)
+    {
+      return 0;
+    }
+
     return 32 - System.Numerics.BitOperations.LeadingZeroCount(value);
   }
 }

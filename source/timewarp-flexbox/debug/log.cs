@@ -58,6 +58,7 @@ public static class YogaLog
   /// <param name="level">The severity of the message.</param>
   /// <param name="message">The log message.</param>
   /// <remarks>Corresponds to getDefaultLogger in Log.cpp (non-Android branch).</remarks>
+#pragma warning disable RS0030 // Console is the default logger sink; the library takes no dependency on TimeWarp.Terminal
   public static void DefaultLog(object? context, LogLevel level, string message)
   {
     _ = context;
@@ -76,6 +77,7 @@ public static class YogaLog
         break;
     }
   }
+#pragma warning restore RS0030
 
   /// <remarks>Corresponds to the anonymous vlog helper in Log.cpp.</remarks>
   private static void VLog(Config? config, Node? node, LogLevel level, string message)

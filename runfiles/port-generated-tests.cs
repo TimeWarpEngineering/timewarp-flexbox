@@ -1,4 +1,6 @@
 #!/usr/bin/env -S dotnet --
+#:property TreatWarningsAsErrors=false
+#:property CodeAnalysisTreatWarningsAsErrors=false
 #:property EnablePreviewFeatures=true
 #:property NoWarn=CA1303;CA2007
 

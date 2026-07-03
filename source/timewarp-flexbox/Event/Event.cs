@@ -127,20 +127,20 @@ public sealed class LayoutData
   /// </summary>
   public int MeasureCallbacks { get; set; }
 
-  private readonly int[] _measureCallbackReasonsCount = new int[YogaEnums.OrdinalCount<LayoutPassReason>()];
+  private readonly int[] MeasureCallbackReasonsCount = new int[YogaEnums.OrdinalCount<LayoutPassReason>()];
 
   /// <summary>
   /// Gets the count of measure callbacks for a specific reason.
   /// </summary>
   /// <param name="reason">The layout pass reason.</param>
   /// <returns>The count of measure callbacks for the specified reason.</returns>
-  public int GetMeasureCallbackReasonCount(LayoutPassReason reason) => _measureCallbackReasonsCount[(int)reason];
+  public int GetMeasureCallbackReasonCount(LayoutPassReason reason) => MeasureCallbackReasonsCount[(int)reason];
 
   /// <summary>
   /// Increments the count of measure callbacks for a specific reason.
   /// </summary>
   /// <param name="reason">The layout pass reason.</param>
-  public void IncrementMeasureCallbackReasonCount(LayoutPassReason reason) => _measureCallbackReasonsCount[(int)reason]++;
+  public void IncrementMeasureCallbackReasonCount(LayoutPassReason reason) => MeasureCallbackReasonsCount[(int)reason]++;
 
   /// <summary>
   /// Creates a copy of this LayoutData.
@@ -157,7 +157,7 @@ public sealed class LayoutData
       CachedMeasures = CachedMeasures,
       MeasureCallbacks = MeasureCallbacks
     };
-    Array.Copy(_measureCallbackReasonsCount, copy._measureCallbackReasonsCount, _measureCallbackReasonsCount.Length);
+    Array.Copy(MeasureCallbackReasonsCount, copy.MeasureCallbackReasonsCount, MeasureCallbackReasonsCount.Length);
     return copy;
   }
 }
@@ -349,8 +349,8 @@ public static class YogaEvent
     }
   }
 
-  private static SubscriberNode? s_subscribers;
-  private static readonly Lock s_lock = new();
+  private static SubscriberNode? Subscribers;
+  private static readonly Lock SubscribersLock = new();
 
   /// <summary>
   /// Subscribes to all events.
@@ -367,9 +367,9 @@ public static class YogaEvent
   /// </summary>
   public static void Reset()
   {
-    lock (s_lock)
+    lock (SubscribersLock)
     {
-      s_subscribers = null;
+      Subscribers = null;
     }
   }
 
@@ -484,9 +484,9 @@ public static class YogaEvent
   public static void Publish(object? node, EventType eventType, IEventData eventData)
   {
     SubscriberNode? current;
-    lock (s_lock)
+    lock (SubscribersLock)
     {
-      current = s_subscribers;
+      current = Subscribers;
     }
 
     while (current is not null)
@@ -498,10 +498,10 @@ public static class YogaEvent
 
   private static void Push(SubscriberNode newNode)
   {
-    lock (s_lock)
+    lock (SubscribersLock)
     {
-      newNode.Next = s_subscribers;
-      s_subscribers = newNode;
+      newNode.Next = Subscribers;
+      Subscribers = newNode;
     }
   }
 
@@ -513,9 +513,9 @@ public static class YogaEvent
     get
     {
       int count = 0;
-      lock (s_lock)
+      lock (SubscribersLock)
       {
-        SubscriberNode? current = s_subscribers;
+        SubscriberNode? current = Subscribers;
         while (current is not null)
         {
           count++;

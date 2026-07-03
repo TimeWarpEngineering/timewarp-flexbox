@@ -87,34 +87,15 @@ public sealed class Node : ILayoutableNode
 {
   #region Private Fields
 
-  // State flags
-  private bool _hasNewLayout = true;
-  private bool _isReferenceBaseline;
-  private bool _isDirty = true;
-  private bool _alwaysFormsContainingBlock;
-  private NodeType _nodeType = NodeType.Default;
-
-  // Context for user data
-  private object? _context;
-
-  // Callbacks
-  private MeasureFunc? _measureFunc;
-  private BaselineFunc? _baselineFunc;
-  private DirtiedFunc? _dirtiedFunc;
-
-  // Style and layout
-  private readonly Style _style = new();
-  private readonly LayoutResults _layout = new();
+  // Measure callback (no public property; exposed via HasMeasureFunc/SetMeasureFunc)
+  private MeasureFunc? MeasureFunc;
 
   // Tree structure
-  private int _lineIndex;
-  private int _contentsChildrenCount;
-  private Node? _owner;
-  private readonly List<Node> _children = [];
-  private Config _config;
+  private int ContentsChildrenCount;
+  private readonly List<Node> ChildrenInternal = [];
 
   // Processed dimensions cache
-  private readonly StyleSizeLength[] _processedDimensions =
+  private readonly StyleSizeLength[] ProcessedDimensions =
   [
       StyleSizeLength.Undefined,
         StyleSizeLength.Undefined
@@ -139,17 +120,17 @@ public sealed class Node : ILayoutableNode
   public Node(Config config)
   {
     YogaAssert.Assert(config is not null, "Attempting to construct Node with null config");
-    _config = config!;
+    Config = config;
 
-    if (_config.UseWebDefaults)
+    if (Config.UseWebDefaults)
     {
       UseWebDefaults();
     }
 
     // Attach after initialization so constructing a node never dirties it.
-    _style.OwnerNode = this;
+    Style.OwnerNode = this;
 
-    YogaEvent.PublishNodeAllocation(this, _config);
+    YogaEvent.PublishNodeAllocation(this, Config);
   }
 
   /// <summary>
@@ -162,36 +143,36 @@ public sealed class Node : ILayoutableNode
   /// <param name="other">The node to copy from.</param>
   private Node(Node other)
   {
-    _hasNewLayout = other._hasNewLayout;
-    _isReferenceBaseline = other._isReferenceBaseline;
-    _isDirty = other._isDirty;
-    _alwaysFormsContainingBlock = other._alwaysFormsContainingBlock;
-    _nodeType = other._nodeType;
-    _context = other._context;
-    _measureFunc = other._measureFunc;
-    _baselineFunc = other._baselineFunc;
-    _dirtiedFunc = other._dirtiedFunc;
-    _lineIndex = other._lineIndex;
-    _contentsChildrenCount = other._contentsChildrenCount;
-    _owner = other._owner;
-    _config = other._config;
+    HasNewLayout = other.HasNewLayout;
+    IsReferenceBaseline = other.IsReferenceBaseline;
+    IsDirty = other.IsDirty;
+    AlwaysFormsContainingBlock = other.AlwaysFormsContainingBlock;
+    NodeType = other.NodeType;
+    Context = other.Context;
+    MeasureFunc = other.MeasureFunc;
+    BaselineFunc = other.BaselineFunc;
+    DirtiedFunc = other.DirtiedFunc;
+    LineIndex = other.LineIndex;
+    ContentsChildrenCount = other.ContentsChildrenCount;
+    Owner = other.Owner;
+    Config = other.Config;
 
     // Copy style properties
-    CopyStyleFrom(other._style);
+    CopyStyleFrom(other.Style);
 
     // Copy layout results
-    CopyLayoutFrom(other._layout);
+    CopyLayoutFrom(other.Layout);
 
     // Copy processed dimensions
-    Array.Copy(other._processedDimensions, _processedDimensions, 2);
+    Array.Copy(other.ProcessedDimensions, ProcessedDimensions, 2);
 
     // Shallow copy children list
-    _children.AddRange(other._children);
+    ChildrenInternal.AddRange(other.ChildrenInternal);
 
     // Attach after copying so cloning never dirties the clone.
-    _style.OwnerNode = this;
+    Style.OwnerNode = this;
 
-    YogaEvent.PublishNodeAllocation(this, _config);
+    YogaEvent.PublishNodeAllocation(this, Config);
   }
 
   #endregion
@@ -199,13 +180,13 @@ public sealed class Node : ILayoutableNode
   #region ILayoutableNode Implementation
 
   /// <inheritdoc />
-  public ILayoutableNode GetChild(int index) => _children[index];
+  public ILayoutableNode GetChild(int index) => ChildrenInternal[index];
 
   /// <inheritdoc />
-  public int GetChildCount() => _children.Count;
+  public int GetChildCount() => ChildrenInternal.Count;
 
   /// <inheritdoc />
-  public Display GetDisplay() => _style.Display;
+  public Display GetDisplay() => Style.Display;
 
   #endregion
 
@@ -214,96 +195,68 @@ public sealed class Node : ILayoutableNode
   /// <summary>
   /// Gets or sets the user context object.
   /// </summary>
-  public object? Context
-  {
-    get => _context;
-    set => _context = value;
-  }
+  public object? Context { get; set; }
 
   /// <summary>
   /// Gets or sets whether this node always forms a containing block for
   /// absolutely positioned descendants.
   /// </summary>
-  public bool AlwaysFormsContainingBlock
-  {
-    get => _alwaysFormsContainingBlock;
-    set => _alwaysFormsContainingBlock = value;
-  }
+  public bool AlwaysFormsContainingBlock { get; set; }
 
   /// <summary>
   /// Gets whether this node has new layout results that haven't been read yet.
   /// </summary>
-  public bool HasNewLayout
-  {
-    get => _hasNewLayout;
-    set => _hasNewLayout = value;
-  }
+  public bool HasNewLayout { get; set; } = true;
 
   /// <summary>
   /// Gets or sets the node type.
   /// </summary>
-  public NodeType NodeType
-  {
-    get => _nodeType;
-    set => _nodeType = value;
-  }
+  public NodeType NodeType { get; set; } = NodeType.Default;
 
   /// <summary>
   /// Gets whether this node has a measure function.
   /// </summary>
-  public bool HasMeasureFunc => _measureFunc is not null;
+  public bool HasMeasureFunc => MeasureFunc is not null;
 
   /// <summary>
   /// Gets whether this node has a baseline function.
   /// </summary>
-  public bool HasBaselineFunc => _baselineFunc is not null;
+  public bool HasBaselineFunc => BaselineFunc is not null;
 
   /// <summary>
   /// Gets whether this node has the specified errata enabled.
   /// </summary>
-  public bool HasErrata(Errata errata) => _config.HasErrata(errata);
+  public bool HasErrata(Errata errata) => Config.HasErrata(errata);
 
   /// <summary>
   /// Gets whether this node has any display:contents children.
   /// </summary>
-  public bool HasContentsChildren => _contentsChildrenCount != 0;
+  public bool HasContentsChildren => ContentsChildrenCount != 0;
 
   /// <summary>
   /// Gets or sets the dirtied callback function.
   /// </summary>
-  public DirtiedFunc? DirtiedFunc
-  {
-    get => _dirtiedFunc;
-    set => _dirtiedFunc = value;
-  }
+  public DirtiedFunc? DirtiedFunc { get; set; }
 
   /// <summary>
   /// Gets the style for this node.
   /// </summary>
-  public Style Style => _style;
+  public Style Style { get; } = new();
 
   /// <summary>
   /// Gets the layout results for this node.
   /// </summary>
-  public LayoutResults Layout => _layout;
+  public LayoutResults Layout { get; } = new();
 
   /// <summary>
   /// Gets or sets the line index (for flex wrapping).
   /// </summary>
-  public int LineIndex
-  {
-    get => _lineIndex;
-    set => _lineIndex = value;
-  }
+  public int LineIndex { get; set; }
 
   /// <summary>
   /// Gets or sets whether this node is the reference baseline for its siblings.
   /// </summary>
-  public bool IsReferenceBaseline
-  {
-    get => _isReferenceBaseline;
-    set => _isReferenceBaseline = value;
-  }
+  public bool IsReferenceBaseline { get; set; }
 
   /// <summary>
   /// Gets the owner node (the node that owns this one in the tree).
@@ -313,21 +266,17 @@ public sealed class Node : ILayoutableNode
   /// This method will return the parent of the Node when a Node only belongs
   /// to one YogaTree or null when the Node is shared between two or more YogaTrees.
   /// </remarks>
-  public Node? Owner
-  {
-    get => _owner;
-    set => _owner = value;
-  }
+  public Node? Owner { get; set; }
 
   /// <summary>
   /// Gets the read-only list of children.
   /// </summary>
-  public IReadOnlyList<Node> Children => _children;
+  public IReadOnlyList<Node> Children => ChildrenInternal;
 
   /// <summary>
   /// Gets the child at the specified index.
   /// </summary>
-  public Node GetChildNode(int index) => _children[index];
+  public Node GetChildNode(int index) => ChildrenInternal[index];
 
   // Note: ChildCount property removed to avoid CA1721 conflict with GetChildCount() from ILayoutableNode
 
@@ -343,9 +292,9 @@ public sealed class Node : ILayoutableNode
   {
     get
     {
-      if (_contentsChildrenCount == 0)
+      if (ContentsChildrenCount == 0)
       {
-        return _children.Count;
+        return ChildrenInternal.Count;
       }
 
       int count = 0;
@@ -361,18 +310,18 @@ public sealed class Node : ILayoutableNode
   /// <summary>
   /// Gets the configuration for this node.
   /// </summary>
-  public Config Config => _config;
+  public Config Config { get; private set; }
 
   /// <summary>
   /// Gets whether this node is dirty and needs layout recalculation.
   /// </summary>
-  public bool IsDirty => _isDirty;
+  public bool IsDirty { get; private set; } = true;
 
   /// <summary>
   /// Gets the processed dimension for the specified axis.
   /// </summary>
   public StyleSizeLength GetProcessedDimension(Dimension dimension) =>
-      _processedDimensions[YogaEnums.ToUnderlying(dimension)];
+      ProcessedDimensions[YogaEnums.ToUnderlying(dimension)];
 
   /// <summary>
   /// Gets the resolved dimension, accounting for box-sizing.
@@ -384,13 +333,13 @@ public sealed class Node : ILayoutableNode
       float ownerWidth)
   {
     FloatOptional value = GetProcessedDimension(dimension).Resolve(referenceLength);
-    if (_style.BoxSizing == BoxSizing.BorderBox)
+    if (Style.BoxSizing == BoxSizing.BorderBox)
     {
       return value;
     }
 
     FloatOptional dimensionPaddingAndBorder = new(
-        _style.ComputePaddingAndBorderForDimension(direction, dimension, ownerWidth));
+        Style.ComputePaddingAndBorderForDimension(direction, dimension, ownerWidth));
 
     return value + (dimensionPaddingAndBorder.IsDefined ? dimensionPaddingAndBorder : new FloatOptional(0.0f));
   }
@@ -413,7 +362,7 @@ public sealed class Node : ILayoutableNode
       float availableHeight,
       MeasureMode heightMode)
   {
-    YGSize size = _measureFunc!(this, availableWidth, widthMode, availableHeight, heightMode);
+    YGSize size = MeasureFunc!(this, availableWidth, widthMode, availableHeight, heightMode);
 
     if (Comparison.IsUndefined(size.Height) || size.Height < 0 ||
         Comparison.IsUndefined(size.Width) || size.Width < 0)
@@ -438,7 +387,7 @@ public sealed class Node : ILayoutableNode
   /// <returns>The baseline offset from the top.</returns>
   public float Baseline(float width, float height)
   {
-    return _baselineFunc!(this, width, height);
+    return BaselineFunc!(this, width, height);
   }
 
   /// <summary>
@@ -446,8 +395,8 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public float DimensionWithMargin(FlexDirection axis, float widthSize)
   {
-    return _layout.GetMeasuredDimension(axis.GetDimension()) +
-           _style.ComputeMarginForAxis(axis, widthSize);
+    return Layout.GetMeasuredDimension(axis.GetDimension()) +
+           Style.ComputeMarginForAxis(axis, widthSize);
   }
 
   /// <summary>
@@ -455,7 +404,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public bool IsLayoutDimensionDefined(FlexDirection axis)
   {
-    float value = _layout.GetMeasuredDimension(axis.GetDimension());
+    float value = Layout.GetMeasuredDimension(axis.GetDimension());
     return Comparison.IsDefined(value) && value >= 0.0f;
   }
 
@@ -487,26 +436,22 @@ public sealed class Node : ILayoutableNode
   {
     if (measureFunc is null)
     {
-      _nodeType = NodeType.Default;
+      NodeType = NodeType.Default;
     }
     else
     {
-      YogaAssert.Assert(this, _children.Count == 0,
+      YogaAssert.Assert(this, ChildrenInternal.Count == 0,
           "Cannot set measure function: Nodes with measure functions cannot have children.");
-      _nodeType = NodeType.Text;
+      NodeType = NodeType.Text;
     }
 
-    _measureFunc = measureFunc;
+    MeasureFunc = measureFunc;
   }
 
   /// <summary>
   /// Gets or sets the baseline function.
   /// </summary>
-  public BaselineFunc? BaselineFunc
-  {
-    get => _baselineFunc;
-    set => _baselineFunc = value;
-  }
+  public BaselineFunc? BaselineFunc { get; set; }
 
   /// <summary>
   /// Sets the style from another style instance.
@@ -533,22 +478,22 @@ public sealed class Node : ILayoutableNode
   public void SetConfig(Config config)
   {
     ArgumentNullException.ThrowIfNull(config);
-    YogaAssert.Assert(_config, config.UseWebDefaults == _config.UseWebDefaults,
+    YogaAssert.Assert(Config, config.UseWebDefaults == Config.UseWebDefaults,
         "UseWebDefaults may not be changed after constructing a Node");
 
-    if (Config.ConfigUpdateInvalidatesLayout(_config, config))
+    if (Config.ConfigUpdateInvalidatesLayout(Config, config))
     {
       MarkDirtyAndPropagate();
-      _layout.ConfigVersion = 0;
+      Layout.ConfigVersion = 0;
     }
     else
     {
       // If the config is functionally the same, then align the configVersion so
       // that we can reuse the layout cache
-      _layout.ConfigVersion = config.Version;
+      Layout.ConfigVersion = config.Version;
     }
 
-    _config = config;
+    Config = config;
   }
 
   /// <summary>
@@ -556,15 +501,15 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetDirty(bool isDirty)
   {
-    if (isDirty == _isDirty)
+    if (isDirty == IsDirty)
     {
       return;
     }
 
-    _isDirty = isDirty;
-    if (isDirty && _dirtiedFunc is not null)
+    IsDirty = isDirty;
+    if (isDirty && DirtiedFunc is not null)
     {
-      _dirtiedFunc(this);
+      DirtiedFunc(this);
     }
   }
 
@@ -573,15 +518,15 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetChildren(IEnumerable<Node> children)
   {
-    _children.Clear();
-    _children.AddRange(children);
+    ChildrenInternal.Clear();
+    ChildrenInternal.AddRange(children);
 
-    _contentsChildrenCount = 0;
-    foreach (Node child in _children)
+    ContentsChildrenCount = 0;
+    foreach (Node child in ChildrenInternal)
     {
-      if (child._style.Display == Display.Contents)
+      if (child.Style.Display == Display.Contents)
       {
-        _contentsChildrenCount++;
+        ContentsChildrenCount++;
       }
     }
   }
@@ -591,7 +536,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutLastOwnerDirection(Direction direction)
   {
-    _layout.LastOwnerDirection = direction;
+    Layout.LastOwnerDirection = direction;
   }
 
   /// <summary>
@@ -599,7 +544,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutComputedFlexBasis(FloatOptional computedFlexBasis)
   {
-    _layout.ComputedFlexBasis = computedFlexBasis;
+    Layout.ComputedFlexBasis = computedFlexBasis;
   }
 
   /// <summary>
@@ -607,7 +552,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutComputedFlexBasisGeneration(uint generation)
   {
-    _layout.ComputedFlexBasisGeneration = generation;
+    Layout.ComputedFlexBasisGeneration = generation;
   }
 
   /// <summary>
@@ -615,7 +560,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutMeasuredDimension(float measuredDimension, Dimension dimension)
   {
-    _layout.SetMeasuredDimension(dimension, measuredDimension);
+    Layout.SetMeasuredDimension(dimension, measuredDimension);
   }
 
   /// <summary>
@@ -623,7 +568,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutHadOverflow(bool hadOverflow)
   {
-    _layout.SetHadOverflow(hadOverflow);
+    Layout.SetHadOverflow(hadOverflow);
   }
 
   /// <summary>
@@ -631,8 +576,8 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutDimension(float lengthValue, Dimension dimension)
   {
-    _layout.SetDimension(dimension, lengthValue);
-    _layout.SetRawDimension(dimension, lengthValue);
+    Layout.SetDimension(dimension, lengthValue);
+    Layout.SetRawDimension(dimension, lengthValue);
   }
 
   /// <summary>
@@ -640,7 +585,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutDirection(Direction direction)
   {
-    _layout.SetDirection(direction);
+    Layout.SetDirection(direction);
   }
 
   /// <summary>
@@ -648,7 +593,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutMargin(float margin, PhysicalEdge edge)
   {
-    _layout.SetMargin(edge, margin);
+    Layout.SetMargin(edge, margin);
   }
 
   /// <summary>
@@ -656,7 +601,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutBorder(float border, PhysicalEdge edge)
   {
-    _layout.SetBorder(edge, border);
+    Layout.SetBorder(edge, border);
   }
 
   /// <summary>
@@ -664,7 +609,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutPadding(float padding, PhysicalEdge edge)
   {
-    _layout.SetPadding(edge, padding);
+    Layout.SetPadding(edge, padding);
   }
 
   /// <summary>
@@ -672,7 +617,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void SetLayoutPosition(float position, PhysicalEdge edge)
   {
-    _layout.SetPosition(edge, position);
+    Layout.SetPosition(edge, position);
   }
 
   #endregion
@@ -685,20 +630,20 @@ public sealed class Node : ILayoutableNode
   public void ReplaceChild(Node child, int index)
   {
     ArgumentNullException.ThrowIfNull(child);
-    Node previousChild = _children[index];
-    if (previousChild._style.Display == Display.Contents &&
-        child._style.Display != Display.Contents)
+    Node previousChild = ChildrenInternal[index];
+    if (previousChild.Style.Display == Display.Contents &&
+        child.Style.Display != Display.Contents)
     {
-      _contentsChildrenCount--;
+      ContentsChildrenCount--;
     }
-    else if (previousChild._style.Display != Display.Contents &&
-             child._style.Display == Display.Contents)
+    else if (previousChild.Style.Display != Display.Contents &&
+             child.Style.Display == Display.Contents)
     {
-      _contentsChildrenCount++;
+      ContentsChildrenCount++;
     }
 
-    _children[index] = child;
-    child._owner = this;
+    ChildrenInternal[index] = child;
+    child.Owner = this;
   }
 
   /// <summary>
@@ -708,22 +653,22 @@ public sealed class Node : ILayoutableNode
   {
     ArgumentNullException.ThrowIfNull(oldChild);
     ArgumentNullException.ThrowIfNull(newChild);
-    if (oldChild._style.Display == Display.Contents &&
-        newChild._style.Display != Display.Contents)
+    if (oldChild.Style.Display == Display.Contents &&
+        newChild.Style.Display != Display.Contents)
     {
-      _contentsChildrenCount--;
+      ContentsChildrenCount--;
     }
-    else if (oldChild._style.Display != Display.Contents &&
-             newChild._style.Display == Display.Contents)
+    else if (oldChild.Style.Display != Display.Contents &&
+             newChild.Style.Display == Display.Contents)
     {
-      _contentsChildrenCount++;
+      ContentsChildrenCount++;
     }
 
-    int index = _children.IndexOf(oldChild);
+    int index = ChildrenInternal.IndexOf(oldChild);
     if (index >= 0)
     {
-      _children[index] = newChild;
-      newChild._owner = this;
+      ChildrenInternal[index] = newChild;
+      newChild.Owner = this;
     }
   }
 
@@ -737,18 +682,18 @@ public sealed class Node : ILayoutableNode
   public void InsertChild(Node child, int index)
   {
     ArgumentNullException.ThrowIfNull(child);
-    YogaAssert.Assert(this, child._owner is null,
+    YogaAssert.Assert(this, child.Owner is null,
         "Child already has a owner, it must be removed first.");
     YogaAssert.Assert(this, !HasMeasureFunc,
         "Cannot add child: Nodes with measure functions cannot have children.");
 
-    if (child._style.Display == Display.Contents)
+    if (child.Style.Display == Display.Contents)
     {
-      _contentsChildrenCount++;
+      ContentsChildrenCount++;
     }
 
-    _children.Insert(index, child);
-    child._owner = this;
+    ChildrenInternal.Insert(index, child);
+    child.Owner = this;
     MarkDirtyAndPropagate();
   }
 
@@ -764,35 +709,35 @@ public sealed class Node : ILayoutableNode
   public bool RemoveChild(Node child)
   {
     ArgumentNullException.ThrowIfNull(child);
-    if (_children.Count == 0)
+    if (ChildrenInternal.Count == 0)
     {
       // This is an empty set. Nothing to remove.
       return false;
     }
 
-    Node? childOwner = child._owner;
-    int index = _children.IndexOf(child);
+    Node? childOwner = child.Owner;
+    int index = ChildrenInternal.IndexOf(child);
     if (index >= 0)
     {
-      if (child._style.Display == Display.Contents)
+      if (child.Style.Display == Display.Contents)
       {
-        _contentsChildrenCount--;
+        ContentsChildrenCount--;
       }
 
-      _children.RemoveAt(index);
+      ChildrenInternal.RemoveAt(index);
 
       if (childOwner == this)
       {
         child.ResetLayoutResults(); // layout is no longer valid
-        child._owner = null;
+        child.Owner = null;
 
         // Mark dirty to invalidate cache, but suppress the dirtied callback
         // since the node is being detached from the tree and should not
         // propagate dirty signals through external callback mechanisms.
-        DirtiedFunc? dirtiedFunc = child._dirtiedFunc;
-        child._dirtiedFunc = null;
+        DirtiedFunc? dirtiedFunc = child.DirtiedFunc;
+        child.DirtiedFunc = null;
         child.SetDirty(true);
-        child._dirtiedFunc = dirtiedFunc;
+        child.DirtiedFunc = dirtiedFunc;
       }
 
       MarkDirtyAndPropagate();
@@ -807,12 +752,12 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void RemoveChild(int index)
   {
-    if (_children[index]._style.Display == Display.Contents)
+    if (ChildrenInternal[index].Style.Display == Display.Contents)
     {
-      _contentsChildrenCount--;
+      ContentsChildrenCount--;
     }
 
-    _children.RemoveAt(index);
+    ChildrenInternal.RemoveAt(index);
   }
 
   /// <summary>
@@ -825,33 +770,33 @@ public sealed class Node : ILayoutableNode
   /// </remarks>
   public void ClearChildren()
   {
-    if (_children.Count == 0)
+    if (ChildrenInternal.Count == 0)
     {
       // This is an empty set already. Nothing to do.
       return;
     }
 
-    if (_children[0]._owner == this)
+    if (ChildrenInternal[0].Owner == this)
     {
       // If the first child has this node as its owner, we assume that this
       // child set is unique.
-      foreach (Node oldChild in _children)
+      foreach (Node oldChild in ChildrenInternal)
       {
         oldChild.ResetLayoutResults(); // layout is no longer valid
-        oldChild._owner = null;
+        oldChild.Owner = null;
 
         // Mark dirty to invalidate cache, but suppress the dirtied callback
         // since the node is being detached from the tree and should not
         // propagate dirty signals through external callback mechanisms.
-        DirtiedFunc? dirtiedFunc = oldChild._dirtiedFunc;
-        oldChild._dirtiedFunc = null;
+        DirtiedFunc? dirtiedFunc = oldChild.DirtiedFunc;
+        oldChild.DirtiedFunc = null;
         oldChild.SetDirty(true);
-        oldChild._dirtiedFunc = dirtiedFunc;
+        oldChild.DirtiedFunc = dirtiedFunc;
       }
     }
 
-    _children.Clear();
-    _contentsChildrenCount = 0;
+    ChildrenInternal.Clear();
+    ContentsChildrenCount = 0;
     MarkDirtyAndPropagate();
   }
 
@@ -865,8 +810,8 @@ public sealed class Node : ILayoutableNode
   public void SetPosition(Direction direction, float ownerWidth, float ownerHeight)
   {
     // Root nodes should be always laid out as LTR, so we don't return negative values.
-    Direction directionRespectingRoot = _owner is not null ? direction : Direction.LTR;
-    FlexDirection mainAxis = _style.FlexDirection.ResolveDirection(directionRespectingRoot);
+    Direction directionRespectingRoot = Owner is not null ? direction : Direction.LTR;
+    FlexDirection mainAxis = Style.FlexDirection.ResolveDirection(directionRespectingRoot);
     FlexDirection crossAxis = mainAxis.ResolveCrossDirection(directionRespectingRoot);
 
     // In the case of position static these are just 0. See:
@@ -886,16 +831,16 @@ public sealed class Node : ILayoutableNode
     PhysicalEdge crossAxisTrailingEdge = crossAxis.InlineEndEdge(direction);
 
     SetLayoutPosition(
-        _style.ComputeInlineStartMargin(mainAxis, direction, ownerWidth) + relativePositionMain,
+        Style.ComputeInlineStartMargin(mainAxis, direction, ownerWidth) + relativePositionMain,
         mainAxisLeadingEdge);
     SetLayoutPosition(
-        _style.ComputeInlineEndMargin(mainAxis, direction, ownerWidth) + relativePositionMain,
+        Style.ComputeInlineEndMargin(mainAxis, direction, ownerWidth) + relativePositionMain,
         mainAxisTrailingEdge);
     SetLayoutPosition(
-        _style.ComputeInlineStartMargin(crossAxis, direction, ownerWidth) + relativePositionCross,
+        Style.ComputeInlineStartMargin(crossAxis, direction, ownerWidth) + relativePositionCross,
         crossAxisLeadingEdge);
     SetLayoutPosition(
-        _style.ComputeInlineEndMargin(crossAxis, direction, ownerWidth) + relativePositionCross,
+        Style.ComputeInlineEndMargin(crossAxis, direction, ownerWidth) + relativePositionCross,
         crossAxisTrailingEdge);
   }
 
@@ -904,18 +849,18 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   private float RelativePosition(FlexDirection axis, Direction direction, float axisSize)
   {
-    if (_style.PositionType == PositionType.Static)
+    if (Style.PositionType == PositionType.Static)
     {
       return 0;
     }
 
-    if (_style.IsInlineStartPositionDefined(axis, direction) &&
-        !_style.IsInlineStartPositionAuto(axis, direction))
+    if (Style.IsInlineStartPositionDefined(axis, direction) &&
+        !Style.IsInlineStartPositionAuto(axis, direction))
     {
-      return _style.ComputeInlineStartPosition(axis, direction, axisSize);
+      return Style.ComputeInlineStartPosition(axis, direction, axisSize);
     }
 
-    return -1 * _style.ComputeInlineEndPosition(axis, direction, axisSize);
+    return -1 * Style.ComputeInlineEndPosition(axis, direction, axisSize);
   }
 
   #endregion
@@ -927,15 +872,15 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public StyleSizeLength ProcessFlexBasis()
   {
-    StyleSizeLength flexBasis = _style.FlexBasis;
+    StyleSizeLength flexBasis = Style.FlexBasis;
     if (!flexBasis.IsAuto && !flexBasis.IsUndefined)
     {
       return flexBasis;
     }
 
-    if (_style.Flex.IsDefined && _style.Flex.Unwrap() > 0.0f)
+    if (Style.Flex.IsDefined && Style.Flex.Unwrap() > 0.0f)
     {
-      return _config.UseWebDefaults
+      return Config.UseWebDefaults
           ? StyleSizeLength.Auto
           : StyleSizeLength.Points(0);
     }
@@ -953,14 +898,14 @@ public sealed class Node : ILayoutableNode
       float ownerWidth)
   {
     FloatOptional value = ProcessFlexBasis().Resolve(referenceLength);
-    if (_style.BoxSizing == BoxSizing.BorderBox)
+    if (Style.BoxSizing == BoxSizing.BorderBox)
     {
       return value;
     }
 
     Dimension dim = flexDirection.GetDimension();
     FloatOptional dimensionPaddingAndBorder = new(
-        _style.ComputePaddingAndBorderForDimension(direction, dim, ownerWidth));
+        Style.ComputePaddingAndBorderForDimension(direction, dim, ownerWidth));
 
     return value + (dimensionPaddingAndBorder.IsDefined ? dimensionPaddingAndBorder : new FloatOptional(0.0f));
   }
@@ -972,16 +917,16 @@ public sealed class Node : ILayoutableNode
   {
     foreach (Dimension dim in new[] { Dimension.Width, Dimension.Height })
     {
-      StyleSizeLength maxDim = _style.GetMaxDimension(dim);
-      StyleSizeLength minDim = _style.GetMinDimension(dim);
+      StyleSizeLength maxDim = Style.GetMaxDimension(dim);
+      StyleSizeLength minDim = Style.GetMinDimension(dim);
 
       if (maxDim.IsDefined && minDim.InexactEquals(maxDim))
       {
-        _processedDimensions[YogaEnums.ToUnderlying(dim)] = maxDim;
+        ProcessedDimensions[YogaEnums.ToUnderlying(dim)] = maxDim;
       }
       else
       {
-        _processedDimensions[YogaEnums.ToUnderlying(dim)] = _style.GetDimension(dim);
+        ProcessedDimensions[YogaEnums.ToUnderlying(dim)] = Style.GetDimension(dim);
       }
     }
   }
@@ -995,12 +940,12 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public Direction ResolveDirection(Direction ownerDirection)
   {
-    if (_style.Direction == Direction.Inherit)
+    if (Style.Direction == Direction.Inherit)
     {
       return ownerDirection != Direction.Inherit ? ownerDirection : Direction.LTR;
     }
 
-    return _style.Direction;
+    return Style.Direction;
   }
 
   #endregion
@@ -1012,11 +957,11 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void MarkDirtyAndPropagate()
   {
-    if (!_isDirty)
+    if (!IsDirty)
     {
       SetDirty(true);
       SetLayoutComputedFlexBasis(FloatOptional.Undefined);
-      _owner?.MarkDirtyAndPropagate();
+      Owner?.MarkDirtyAndPropagate();
     }
   }
 
@@ -1030,19 +975,19 @@ public sealed class Node : ILayoutableNode
   public float ResolveFlexGrow()
   {
     // Root nodes flexGrow should always be 0
-    if (_owner is null)
+    if (Owner is null)
     {
       return 0.0f;
     }
 
-    if (_style.FlexGrow.IsDefined)
+    if (Style.FlexGrow.IsDefined)
     {
-      return _style.FlexGrow.Unwrap();
+      return Style.FlexGrow.Unwrap();
     }
 
-    if (_style.Flex.IsDefined && _style.Flex.Unwrap() > 0.0f)
+    if (Style.Flex.IsDefined && Style.Flex.Unwrap() > 0.0f)
     {
-      return _style.Flex.Unwrap();
+      return Style.Flex.Unwrap();
     }
 
     return Style.DefaultFlexGrow;
@@ -1053,22 +998,22 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public float ResolveFlexShrink()
   {
-    if (_owner is null)
+    if (Owner is null)
     {
       return 0.0f;
     }
 
-    if (_style.FlexShrink.IsDefined)
+    if (Style.FlexShrink.IsDefined)
     {
-      return _style.FlexShrink.Unwrap();
+      return Style.FlexShrink.Unwrap();
     }
 
-    if (!_config.UseWebDefaults && _style.Flex.IsDefined && _style.Flex.Unwrap() < 0.0f)
+    if (!Config.UseWebDefaults && Style.Flex.IsDefined && Style.Flex.Unwrap() < 0.0f)
     {
-      return -_style.Flex.Unwrap();
+      return -Style.Flex.Unwrap();
     }
 
-    return _config.UseWebDefaults ? Style.WebDefaultFlexShrink : Style.DefaultFlexShrink;
+    return Config.UseWebDefaults ? Style.WebDefaultFlexShrink : Style.DefaultFlexShrink;
   }
 
   /// <summary>
@@ -1076,7 +1021,7 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public bool IsNodeFlexible()
   {
-    return _style.PositionType != PositionType.Absolute &&
+    return Style.PositionType != PositionType.Absolute &&
            (ResolveFlexGrow() != 0 || ResolveFlexShrink() != 0);
   }
 
@@ -1089,12 +1034,12 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void CloneChildrenIfNeeded()
   {
-    for (int i = 0; i < _children.Count; i++)
+    for (int i = 0; i < ChildrenInternal.Count; i++)
     {
-      Node child = _children[i];
+      Node child = ChildrenInternal[i];
       if (child.Owner != this)
       {
-        Node? clonedChild = _config.CloneNode(child, this, i) as Node;
+        Node? clonedChild = Config.CloneNode(child, this, i) as Node;
         clonedChild ??= child.Clone();
         clonedChild.Owner = this;
 
@@ -1103,7 +1048,7 @@ public sealed class Node : ILayoutableNode
           clonedChild.CloneContentsChildrenIfNeeded();
         }
 
-        _children[i] = clonedChild;
+        ChildrenInternal[i] = clonedChild;
       }
     }
   }
@@ -1113,17 +1058,17 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public void CloneContentsChildrenIfNeeded()
   {
-    for (int i = 0; i < _children.Count; i++)
+    for (int i = 0; i < ChildrenInternal.Count; i++)
     {
-      Node child = _children[i];
-      if (child._style.Display == Display.Contents && child.Owner != this)
+      Node child = ChildrenInternal[i];
+      if (child.Style.Display == Display.Contents && child.Owner != this)
       {
-        Node? clonedChild = _config.CloneNode(child, this, i) as Node;
+        Node? clonedChild = Config.CloneNode(child, this, i) as Node;
         clonedChild ??= child.Clone();
         clonedChild.Owner = this;
         clonedChild.CloneChildrenIfNeeded();
 
-        _children[i] = clonedChild;
+        ChildrenInternal[i] = clonedChild;
       }
     }
   }
@@ -1142,28 +1087,28 @@ public sealed class Node : ILayoutableNode
   /// <exception cref="YogaAssertException">Thrown if the node has children or an owner.</exception>
   public void Reset()
   {
-    YogaAssert.Assert(this, _children.Count == 0,
+    YogaAssert.Assert(this, ChildrenInternal.Count == 0,
         "Cannot reset a node which still has children attached");
-    YogaAssert.Assert(this, _owner is null,
+    YogaAssert.Assert(this, Owner is null,
         "Cannot reset a node still attached to an owner");
 
     // Reset to default state with current config
-    Config currentConfig = _config;
+    Config currentConfig = Config;
 
-    _hasNewLayout = true;
-    _isReferenceBaseline = false;
-    _isDirty = true;
-    _alwaysFormsContainingBlock = false;
-    _nodeType = NodeType.Default;
-    _context = null;
-    _measureFunc = null;
-    _baselineFunc = null;
-    _dirtiedFunc = null;
-    _lineIndex = 0;
-    _contentsChildrenCount = 0;
-    _owner = null;
-    _children.Clear();
-    _config = currentConfig;
+    HasNewLayout = true;
+    IsReferenceBaseline = false;
+    IsDirty = true;
+    AlwaysFormsContainingBlock = false;
+    NodeType = NodeType.Default;
+    Context = null;
+    MeasureFunc = null;
+    BaselineFunc = null;
+    DirtiedFunc = null;
+    LineIndex = 0;
+    ContentsChildrenCount = 0;
+    Owner = null;
+    ChildrenInternal.Clear();
+    Config = currentConfig;
 
     // Reset style to default
     ResetStyleToDefault();
@@ -1172,10 +1117,10 @@ public sealed class Node : ILayoutableNode
     ResetLayoutResults();
 
     // Reset processed dimensions
-    _processedDimensions[0] = StyleSizeLength.Undefined;
-    _processedDimensions[1] = StyleSizeLength.Undefined;
+    ProcessedDimensions[0] = StyleSizeLength.Undefined;
+    ProcessedDimensions[1] = StyleSizeLength.Undefined;
 
-    if (_config.UseWebDefaults)
+    if (Config.UseWebDefaults)
     {
       UseWebDefaults();
     }
@@ -1190,8 +1135,8 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   private void UseWebDefaults()
   {
-    _style.FlexDirection = FlexDirection.Row;
-    _style.AlignContent = Align.Stretch;
+    Style.FlexDirection = FlexDirection.Row;
+    Style.AlignContent = Align.Stretch;
   }
 
   /// <summary>
@@ -1199,44 +1144,44 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   private void CopyStyleFrom(Style other)
   {
-    _style.Direction = other.Direction;
-    _style.FlexDirection = other.FlexDirection;
-    _style.JustifyContent = other.JustifyContent;
-    _style.AlignContent = other.AlignContent;
-    _style.AlignItems = other.AlignItems;
-    _style.AlignSelf = other.AlignSelf;
-    _style.PositionType = other.PositionType;
-    _style.FlexWrap = other.FlexWrap;
-    _style.Overflow = other.Overflow;
-    _style.Display = other.Display;
-    _style.BoxSizing = other.BoxSizing;
-    _style.Flex = other.Flex;
-    _style.FlexGrow = other.FlexGrow;
-    _style.FlexShrink = other.FlexShrink;
-    _style.FlexBasis = other.FlexBasis;
-    _style.AspectRatio = other.AspectRatio;
+    Style.Direction = other.Direction;
+    Style.FlexDirection = other.FlexDirection;
+    Style.JustifyContent = other.JustifyContent;
+    Style.AlignContent = other.AlignContent;
+    Style.AlignItems = other.AlignItems;
+    Style.AlignSelf = other.AlignSelf;
+    Style.PositionType = other.PositionType;
+    Style.FlexWrap = other.FlexWrap;
+    Style.Overflow = other.Overflow;
+    Style.Display = other.Display;
+    Style.BoxSizing = other.BoxSizing;
+    Style.Flex = other.Flex;
+    Style.FlexGrow = other.FlexGrow;
+    Style.FlexShrink = other.FlexShrink;
+    Style.FlexBasis = other.FlexBasis;
+    Style.AspectRatio = other.AspectRatio;
 
     // Copy edge values
     foreach (Edge edge in YogaEnums.Ordinals<Edge>())
     {
-      _style.SetMargin(edge, other.GetMargin(edge));
-      _style.SetPosition(edge, other.GetPosition(edge));
-      _style.SetPadding(edge, other.GetPadding(edge));
-      _style.SetBorder(edge, other.GetBorder(edge));
+      Style.SetMargin(edge, other.GetMargin(edge));
+      Style.SetPosition(edge, other.GetPosition(edge));
+      Style.SetPadding(edge, other.GetPadding(edge));
+      Style.SetBorder(edge, other.GetBorder(edge));
     }
 
     // Copy gutter values
     foreach (Gutter gutter in YogaEnums.Ordinals<Gutter>())
     {
-      _style.SetGap(gutter, other.GetGap(gutter));
+      Style.SetGap(gutter, other.GetGap(gutter));
     }
 
     // Copy dimension values
     foreach (Dimension dim in YogaEnums.Ordinals<Dimension>())
     {
-      _style.SetDimension(dim, other.GetDimension(dim));
-      _style.SetMinDimension(dim, other.GetMinDimension(dim));
-      _style.SetMaxDimension(dim, other.GetMaxDimension(dim));
+      Style.SetDimension(dim, other.GetDimension(dim));
+      Style.SetMinDimension(dim, other.GetMinDimension(dim));
+      Style.SetMaxDimension(dim, other.GetMaxDimension(dim));
     }
   }
 
@@ -1245,34 +1190,34 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   private void CopyLayoutFrom(LayoutResults other)
   {
-    _layout.SetDirection(other.Direction);
-    _layout.SetHadOverflow(other.HadOverflow);
-    _layout.LastOwnerDirection = other.LastOwnerDirection;
-    _layout.ConfigVersion = other.ConfigVersion;
-    _layout.ComputedFlexBasis = other.ComputedFlexBasis;
-    _layout.ComputedFlexBasisGeneration = other.ComputedFlexBasisGeneration;
-    _layout.GenerationCount = other.GenerationCount;
-    _layout.NextCachedMeasurementsIndex = other.NextCachedMeasurementsIndex;
-    _layout.CachedLayout = other.CachedLayout;
+    Layout.SetDirection(other.Direction);
+    Layout.SetHadOverflow(other.HadOverflow);
+    Layout.LastOwnerDirection = other.LastOwnerDirection;
+    Layout.ConfigVersion = other.ConfigVersion;
+    Layout.ComputedFlexBasis = other.ComputedFlexBasis;
+    Layout.ComputedFlexBasisGeneration = other.ComputedFlexBasisGeneration;
+    Layout.GenerationCount = other.GenerationCount;
+    Layout.NextCachedMeasurementsIndex = other.NextCachedMeasurementsIndex;
+    Layout.CachedLayout = other.CachedLayout;
 
     foreach (PhysicalEdge edge in YogaEnums.Ordinals<PhysicalEdge>())
     {
-      _layout.SetPosition(edge, other.GetPosition(edge));
-      _layout.SetMargin(edge, other.GetMargin(edge));
-      _layout.SetBorder(edge, other.GetBorder(edge));
-      _layout.SetPadding(edge, other.GetPadding(edge));
+      Layout.SetPosition(edge, other.GetPosition(edge));
+      Layout.SetMargin(edge, other.GetMargin(edge));
+      Layout.SetBorder(edge, other.GetBorder(edge));
+      Layout.SetPadding(edge, other.GetPadding(edge));
     }
 
     foreach (Dimension dim in YogaEnums.Ordinals<Dimension>())
     {
-      _layout.SetDimension(dim, other.GetDimension(dim));
-      _layout.SetMeasuredDimension(dim, other.GetMeasuredDimension(dim));
-      _layout.SetRawDimension(dim, other.GetRawDimension(dim));
+      Layout.SetDimension(dim, other.GetDimension(dim));
+      Layout.SetMeasuredDimension(dim, other.GetMeasuredDimension(dim));
+      Layout.SetRawDimension(dim, other.GetRawDimension(dim));
     }
 
     for (int i = 0; i < LayoutResults.MaxCachedMeasurements; i++)
     {
-      _layout.SetCachedMeasurement(i, other.GetCachedMeasurement(i));
+      Layout.SetCachedMeasurement(i, other.GetCachedMeasurement(i));
     }
   }
 
@@ -1281,41 +1226,41 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   private void ResetStyleToDefault()
   {
-    _style.Direction = Direction.Inherit;
-    _style.FlexDirection = FlexDirection.Column;
-    _style.JustifyContent = Justify.FlexStart;
-    _style.AlignContent = Align.FlexStart;
-    _style.AlignItems = Align.Stretch;
-    _style.AlignSelf = Align.Auto;
-    _style.PositionType = PositionType.Relative;
-    _style.FlexWrap = Wrap.NoWrap;
-    _style.Overflow = Overflow.Visible;
-    _style.Display = Display.Flex;
-    _style.BoxSizing = BoxSizing.BorderBox;
-    _style.Flex = FloatOptional.Undefined;
-    _style.FlexGrow = FloatOptional.Undefined;
-    _style.FlexShrink = FloatOptional.Undefined;
-    _style.FlexBasis = StyleSizeLength.Auto;
-    _style.AspectRatio = FloatOptional.Undefined;
+    Style.Direction = Direction.Inherit;
+    Style.FlexDirection = FlexDirection.Column;
+    Style.JustifyContent = Justify.FlexStart;
+    Style.AlignContent = Align.FlexStart;
+    Style.AlignItems = Align.Stretch;
+    Style.AlignSelf = Align.Auto;
+    Style.PositionType = PositionType.Relative;
+    Style.FlexWrap = Wrap.NoWrap;
+    Style.Overflow = Overflow.Visible;
+    Style.Display = Display.Flex;
+    Style.BoxSizing = BoxSizing.BorderBox;
+    Style.Flex = FloatOptional.Undefined;
+    Style.FlexGrow = FloatOptional.Undefined;
+    Style.FlexShrink = FloatOptional.Undefined;
+    Style.FlexBasis = StyleSizeLength.Auto;
+    Style.AspectRatio = FloatOptional.Undefined;
 
     foreach (Edge edge in YogaEnums.Ordinals<Edge>())
     {
-      _style.SetMargin(edge, StyleLength.Undefined);
-      _style.SetPosition(edge, StyleLength.Undefined);
-      _style.SetPadding(edge, StyleLength.Undefined);
-      _style.SetBorder(edge, StyleLength.Undefined);
+      Style.SetMargin(edge, StyleLength.Undefined);
+      Style.SetPosition(edge, StyleLength.Undefined);
+      Style.SetPadding(edge, StyleLength.Undefined);
+      Style.SetBorder(edge, StyleLength.Undefined);
     }
 
     foreach (Gutter gutter in YogaEnums.Ordinals<Gutter>())
     {
-      _style.SetGap(gutter, StyleLength.Undefined);
+      Style.SetGap(gutter, StyleLength.Undefined);
     }
 
     foreach (Dimension dim in YogaEnums.Ordinals<Dimension>())
     {
-      _style.SetDimension(dim, StyleSizeLength.Auto);
-      _style.SetMinDimension(dim, StyleSizeLength.Undefined);
-      _style.SetMaxDimension(dim, StyleSizeLength.Undefined);
+      Style.SetDimension(dim, StyleSizeLength.Auto);
+      Style.SetMinDimension(dim, StyleSizeLength.Undefined);
+      Style.SetMaxDimension(dim, StyleSizeLength.Undefined);
     }
   }
 
@@ -1324,34 +1269,34 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   private void ResetLayoutResults()
   {
-    _layout.SetDirection(Direction.Inherit);
-    _layout.SetHadOverflow(false);
-    _layout.LastOwnerDirection = Direction.Inherit;
-    _layout.ConfigVersion = 0;
-    _layout.ComputedFlexBasis = FloatOptional.Undefined;
-    _layout.ComputedFlexBasisGeneration = 0;
-    _layout.GenerationCount = 0;
-    _layout.NextCachedMeasurementsIndex = 0;
-    _layout.CachedLayout = default;
+    Layout.SetDirection(Direction.Inherit);
+    Layout.SetHadOverflow(false);
+    Layout.LastOwnerDirection = Direction.Inherit;
+    Layout.ConfigVersion = 0;
+    Layout.ComputedFlexBasis = FloatOptional.Undefined;
+    Layout.ComputedFlexBasisGeneration = 0;
+    Layout.GenerationCount = 0;
+    Layout.NextCachedMeasurementsIndex = 0;
+    Layout.CachedLayout = default;
 
     foreach (PhysicalEdge edge in YogaEnums.Ordinals<PhysicalEdge>())
     {
-      _layout.SetPosition(edge, 0);
-      _layout.SetMargin(edge, 0);
-      _layout.SetBorder(edge, 0);
-      _layout.SetPadding(edge, 0);
+      Layout.SetPosition(edge, 0);
+      Layout.SetMargin(edge, 0);
+      Layout.SetBorder(edge, 0);
+      Layout.SetPadding(edge, 0);
     }
 
     foreach (Dimension dim in YogaEnums.Ordinals<Dimension>())
     {
-      _layout.SetDimension(dim, float.NaN);
-      _layout.SetMeasuredDimension(dim, float.NaN);
-      _layout.SetRawDimension(dim, float.NaN);
+      Layout.SetDimension(dim, float.NaN);
+      Layout.SetMeasuredDimension(dim, float.NaN);
+      Layout.SetRawDimension(dim, float.NaN);
     }
 
     for (int i = 0; i < LayoutResults.MaxCachedMeasurements; i++)
     {
-      _layout.SetCachedMeasurement(i, default);
+      Layout.SetCachedMeasurement(i, default);
     }
   }
 

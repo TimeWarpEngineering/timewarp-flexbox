@@ -23,19 +23,19 @@ public delegate object? CloneNodeFunc(object oldNode, object? owner, int childIn
 /// </summary>
 public readonly struct ExperimentalFeatureSet : IEquatable<ExperimentalFeatureSet>
 {
-  private readonly int _bits;
+  private readonly int Bits;
 
   /// <summary>
   /// Initializes a new instance of the <see cref="ExperimentalFeatureSet"/> struct.
   /// </summary>
   public ExperimentalFeatureSet()
   {
-    _bits = 0;
+    Bits = 0;
   }
 
   private ExperimentalFeatureSet(int bits)
   {
-    _bits = bits;
+    Bits = bits;
   }
 
   /// <summary>
@@ -45,7 +45,7 @@ public readonly struct ExperimentalFeatureSet : IEquatable<ExperimentalFeatureSe
   /// <returns>True if the feature is enabled.</returns>
   public bool Test(ExperimentalFeature feature)
   {
-    return (_bits & (1 << (int)feature)) != 0;
+    return (Bits & (1 << (int)feature)) != 0;
   }
 
   /// <summary>
@@ -58,22 +58,22 @@ public readonly struct ExperimentalFeatureSet : IEquatable<ExperimentalFeatureSe
   {
     if (value)
     {
-      return new ExperimentalFeatureSet(_bits | (1 << (int)feature));
+      return new ExperimentalFeatureSet(Bits | (1 << (int)feature));
     }
     else
     {
-      return new ExperimentalFeatureSet(_bits & ~(1 << (int)feature));
+      return new ExperimentalFeatureSet(Bits & ~(1 << (int)feature));
     }
   }
 
   /// <inheritdoc />
-  public bool Equals(ExperimentalFeatureSet other) => _bits == other._bits;
+  public bool Equals(ExperimentalFeatureSet other) => Bits == other.Bits;
 
   /// <inheritdoc />
   public override bool Equals(object? obj) => obj is ExperimentalFeatureSet other && Equals(other);
 
   /// <inheritdoc />
-  public override int GetHashCode() => _bits.GetHashCode();
+  public override int GetHashCode() => Bits.GetHashCode();
 
   /// <summary>
   /// Equality operator.
@@ -98,14 +98,8 @@ public readonly struct ExperimentalFeatureSet : IEquatable<ExperimentalFeatureSe
 /// </remarks>
 public sealed class Config
 {
-  private CloneNodeFunc? _cloneNodeCallback;
-  private YogaLogHandler? _logger;
-  private bool _useWebDefaults;
-  private uint _version;
-  private ExperimentalFeatureSet _experimentalFeatures;
-  private Errata _errata = Errata.None;
-  private float _pointScaleFactor = 1.0f;
-  private object? _context;
+  private CloneNodeFunc? CloneNodeCallback;
+  private YogaLogHandler? Logger;
 
   /// <summary>
   /// Gets the default configuration instance.
@@ -117,7 +111,7 @@ public sealed class Config
   /// </summary>
   public Config()
   {
-    _logger = null;
+    Logger = null;
   }
 
   /// <summary>
@@ -126,7 +120,7 @@ public sealed class Config
   /// <param name="logger">The custom log handler.</param>
   public Config(YogaLogHandler? logger)
   {
-    _logger = logger;
+    Logger = logger;
   }
 
   #region UseWebDefaults
@@ -139,11 +133,7 @@ public sealed class Config
   /// on web (e.g. FlexDirection.Column and PositionType.Relative).
   /// UseWebDefaults instructs Yoga to instead use a default style consistent with the web.
   /// </remarks>
-  public bool UseWebDefaults
-  {
-    get => _useWebDefaults;
-    set => _useWebDefaults = value;
-  }
+  public bool UseWebDefaults { get; set; }
 
   #endregion
 
@@ -158,8 +148,8 @@ public sealed class Config
   {
     if (IsExperimentalFeatureEnabled(feature) != enabled)
     {
-      _experimentalFeatures = _experimentalFeatures.Set(feature, enabled);
-      _version++;
+      EnabledExperiments = EnabledExperiments.Set(feature, enabled);
+      Version++;
     }
   }
 
@@ -170,13 +160,13 @@ public sealed class Config
   /// <returns>True if the feature is enabled.</returns>
   public bool IsExperimentalFeatureEnabled(ExperimentalFeature feature)
   {
-    return _experimentalFeatures.Test(feature);
+    return EnabledExperiments.Test(feature);
   }
 
   /// <summary>
   /// Gets the set of enabled experimental features.
   /// </summary>
-  public ExperimentalFeatureSet EnabledExperiments => _experimentalFeatures;
+  public ExperimentalFeatureSet EnabledExperiments { get; private set; }
 
   #endregion
 
@@ -197,10 +187,10 @@ public sealed class Config
   /// <param name="errata">The errata flags to set.</param>
   public void SetErrata(Errata errata)
   {
-    if (_errata != errata)
+    if (Errata != errata)
     {
-      _errata = errata;
-      _version++;
+      Errata = errata;
+      Version++;
     }
   }
 
@@ -212,8 +202,8 @@ public sealed class Config
   {
     if (!HasErrata(errata))
     {
-      _errata |= errata;
-      _version++;
+      Errata |= errata;
+      Version++;
     }
   }
 
@@ -225,15 +215,15 @@ public sealed class Config
   {
     if (HasErrata(errata))
     {
-      _errata &= ~errata;
-      _version++;
+      Errata &= ~errata;
+      Version++;
     }
   }
 
   /// <summary>
   /// Gets the current errata flags.
   /// </summary>
-  public Errata Errata => _errata;
+  public Errata Errata { get; private set; } = Errata.None;
 
   /// <summary>
   /// Gets whether the specified errata flags are set.
@@ -242,7 +232,7 @@ public sealed class Config
   /// <returns>True if the flags are set.</returns>
   public bool HasErrata(Errata errata)
   {
-    return (_errata & errata) != Errata.None;
+    return (Errata & errata) != Errata.None;
   }
 
   #endregion
@@ -262,18 +252,18 @@ public sealed class Config
   /// <exception cref="ArgumentOutOfRangeException">Thrown if value is less than zero.</exception>
   public float PointScaleFactor
   {
-    get => _pointScaleFactor;
+    get;
     set
     {
       YogaAssert.Assert(this, value >= 0.0f, "Scale factor should not be less than zero");
 
-      if (!_pointScaleFactor.Equals(value))
+      if (!field.Equals(value))
       {
-        _pointScaleFactor = value;
-        _version++;
+        field = value;
+        Version++;
       }
     }
-  }
+  } = 1.0f;
 
   #endregion
 
@@ -282,11 +272,7 @@ public sealed class Config
   /// <summary>
   /// Gets or sets an arbitrary context object on the config which may be read from during callbacks.
   /// </summary>
-  public object? Context
-  {
-    get => _context;
-    set => _context = value;
-  }
+  public object? Context { get; set; }
 
   #endregion
 
@@ -300,7 +286,7 @@ public sealed class Config
   /// layout is changed. This is used to determine whether moving a node from
   /// one config to another should dirty previously calculated layout results.
   /// </remarks>
-  public uint Version => _version;
+  public uint Version { get; private set; }
 
   #endregion
 
@@ -312,7 +298,7 @@ public sealed class Config
   /// <param name="logger">The custom log handler, or null to use the default.</param>
   public void SetLogger(YogaLogHandler? logger)
   {
-    _logger = logger;
+    Logger = logger;
   }
 
   /// <summary>
@@ -323,9 +309,9 @@ public sealed class Config
   /// <param name="message">The message to log.</param>
   public void Log(object? node, LogLevel level, string message)
   {
-    if (_logger is not null)
+    if (Logger is not null)
     {
-      _logger(node ?? this, level, message);
+      Logger(node ?? this, level, message);
     }
     else
     {
@@ -344,7 +330,7 @@ public sealed class Config
   /// <param name="cloneNode">The clone node callback.</param>
   public void SetCloneNodeCallback(CloneNodeFunc? cloneNode)
   {
-    _cloneNodeCallback = cloneNode;
+    CloneNodeCallback = cloneNode;
   }
 
   /// <summary>
@@ -357,9 +343,9 @@ public sealed class Config
   public object? CloneNode(object node, object? owner, int childIndex)
   {
     object? clone = null;
-    if (_cloneNodeCallback is not null)
+    if (CloneNodeCallback is not null)
     {
-      clone = _cloneNodeCallback(node, owner, childIndex);
+      clone = CloneNodeCallback(node, owner, childIndex);
     }
     // Note: Default cloning (YGNodeClone equivalent) will be implemented when Node is ported.
     // For now, we return the callback result or null.
