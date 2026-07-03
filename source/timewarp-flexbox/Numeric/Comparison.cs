@@ -21,200 +21,200 @@ namespace TimeWarp.Flexbox;
 /// </remarks>
 public static class Comparison
 {
-    /// <summary>
-    /// The tolerance used for inexact floating-point comparisons.
-    /// Matches the C++ hardcoded epsilon of 0.0001f.
-    /// </summary>
-    public const float Tolerance = 0.0001f;
+  /// <summary>
+  /// The tolerance used for inexact floating-point comparisons.
+  /// Matches the C++ hardcoded epsilon of 0.0001f.
+  /// </summary>
+  public const float Tolerance = 0.0001f;
 
-    /// <summary>
-    /// Checks if a float value is undefined (NaN).
-    /// </summary>
-    /// <param name="value">The value to check.</param>
-    /// <returns>True if the value is NaN, false otherwise.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsUndefined(float value) => float.IsNaN(value);
+  /// <summary>
+  /// Checks if a float value is undefined (NaN).
+  /// </summary>
+  /// <param name="value">The value to check.</param>
+  /// <returns>True if the value is NaN, false otherwise.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool IsUndefined(float value) => float.IsNaN(value);
 
-    /// <summary>
-    /// Checks if a double value is undefined (NaN).
-    /// </summary>
-    /// <param name="value">The value to check.</param>
-    /// <returns>True if the value is NaN, false otherwise.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsUndefined(double value) => double.IsNaN(value);
+  /// <summary>
+  /// Checks if a double value is undefined (NaN).
+  /// </summary>
+  /// <param name="value">The value to check.</param>
+  /// <returns>True if the value is NaN, false otherwise.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool IsUndefined(double value) => double.IsNaN(value);
 
-    /// <summary>
-    /// Checks if a float value is defined (not NaN).
-    /// </summary>
-    /// <param name="value">The value to check.</param>
-    /// <returns>True if the value is not NaN, false otherwise.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsDefined(float value) => !float.IsNaN(value);
+  /// <summary>
+  /// Checks if a float value is defined (not NaN).
+  /// </summary>
+  /// <param name="value">The value to check.</param>
+  /// <returns>True if the value is not NaN, false otherwise.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool IsDefined(float value) => !float.IsNaN(value);
 
-    /// <summary>
-    /// Checks if a double value is defined (not NaN).
-    /// </summary>
-    /// <param name="value">The value to check.</param>
-    /// <returns>True if the value is not NaN, false otherwise.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsDefined(double value) => !double.IsNaN(value);
+  /// <summary>
+  /// Checks if a double value is defined (not NaN).
+  /// </summary>
+  /// <param name="value">The value to check.</param>
+  /// <returns>True if the value is not NaN, false otherwise.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool IsDefined(double value) => !double.IsNaN(value);
 
-    /// <summary>
-    /// Checks if a float value is infinite (positive or negative).
-    /// </summary>
-    /// <param name="value">The value to check.</param>
-    /// <returns>True if the value is infinite, false otherwise.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsInfinity(float value) => float.IsInfinity(value);
+  /// <summary>
+  /// Checks if a float value is infinite (positive or negative).
+  /// </summary>
+  /// <param name="value">The value to check.</param>
+  /// <returns>True if the value is infinite, false otherwise.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool IsInfinity(float value) => float.IsInfinity(value);
 
-    /// <summary>
-    /// Checks if a double value is infinite (positive or negative).
-    /// </summary>
-    /// <param name="value">The value to check.</param>
-    /// <returns>True if the value is infinite, false otherwise.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsInfinity(double value) => double.IsInfinity(value);
+  /// <summary>
+  /// Checks if a double value is infinite (positive or negative).
+  /// </summary>
+  /// <param name="value">The value to check.</param>
+  /// <returns>True if the value is infinite, false otherwise.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool IsInfinity(double value) => double.IsInfinity(value);
 
-    /// <summary>
-    /// Returns the maximum of two float values, treating undefined values specially.
-    /// If one value is undefined (NaN), returns the other value.
-    /// </summary>
-    /// <param name="a">First value.</param>
-    /// <param name="b">Second value.</param>
-    /// <returns>The maximum defined value, or NaN if both are undefined.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float MaxOrDefined(float a, float b)
+  /// <summary>
+  /// Returns the maximum of two float values, treating undefined values specially.
+  /// If one value is undefined (NaN), returns the other value.
+  /// </summary>
+  /// <param name="a">First value.</param>
+  /// <param name="b">Second value.</param>
+  /// <returns>The maximum defined value, or NaN if both are undefined.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static float MaxOrDefined(float a, float b)
+  {
+    if (IsDefined(a) && IsDefined(b))
     {
-        if (IsDefined(a) && IsDefined(b))
-        {
-            return MathF.Max(a, b);
-        }
-
-        return IsUndefined(a) ? b : a;
+      return MathF.Max(a, b);
     }
 
-    /// <summary>
-    /// Returns the maximum of two double values, treating undefined values specially.
-    /// If one value is undefined (NaN), returns the other value.
-    /// </summary>
-    /// <param name="a">First value.</param>
-    /// <param name="b">Second value.</param>
-    /// <returns>The maximum defined value, or NaN if both are undefined.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static double MaxOrDefined(double a, double b)
-    {
-        if (IsDefined(a) && IsDefined(b))
-        {
-            return Math.Max(a, b);
-        }
+    return IsUndefined(a) ? b : a;
+  }
 
-        return IsUndefined(a) ? b : a;
+  /// <summary>
+  /// Returns the maximum of two double values, treating undefined values specially.
+  /// If one value is undefined (NaN), returns the other value.
+  /// </summary>
+  /// <param name="a">First value.</param>
+  /// <param name="b">Second value.</param>
+  /// <returns>The maximum defined value, or NaN if both are undefined.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static double MaxOrDefined(double a, double b)
+  {
+    if (IsDefined(a) && IsDefined(b))
+    {
+      return Math.Max(a, b);
     }
 
-    /// <summary>
-    /// Returns the minimum of two float values, treating undefined values specially.
-    /// If one value is undefined (NaN), returns the other value.
-    /// </summary>
-    /// <param name="a">First value.</param>
-    /// <param name="b">Second value.</param>
-    /// <returns>The minimum defined value, or NaN if both are undefined.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float MinOrDefined(float a, float b)
-    {
-        if (IsDefined(a) && IsDefined(b))
-        {
-            return MathF.Min(a, b);
-        }
+    return IsUndefined(a) ? b : a;
+  }
 
-        return IsUndefined(a) ? b : a;
+  /// <summary>
+  /// Returns the minimum of two float values, treating undefined values specially.
+  /// If one value is undefined (NaN), returns the other value.
+  /// </summary>
+  /// <param name="a">First value.</param>
+  /// <param name="b">Second value.</param>
+  /// <returns>The minimum defined value, or NaN if both are undefined.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static float MinOrDefined(float a, float b)
+  {
+    if (IsDefined(a) && IsDefined(b))
+    {
+      return MathF.Min(a, b);
     }
 
-    /// <summary>
-    /// Returns the minimum of two double values, treating undefined values specially.
-    /// If one value is undefined (NaN), returns the other value.
-    /// </summary>
-    /// <param name="a">First value.</param>
-    /// <param name="b">Second value.</param>
-    /// <returns>The minimum defined value, or NaN if both are undefined.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static double MinOrDefined(double a, double b)
-    {
-        if (IsDefined(a) && IsDefined(b))
-        {
-            return Math.Min(a, b);
-        }
+    return IsUndefined(a) ? b : a;
+  }
 
-        return IsUndefined(a) ? b : a;
+  /// <summary>
+  /// Returns the minimum of two double values, treating undefined values specially.
+  /// If one value is undefined (NaN), returns the other value.
+  /// </summary>
+  /// <param name="a">First value.</param>
+  /// <param name="b">Second value.</param>
+  /// <returns>The minimum defined value, or NaN if both are undefined.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static double MinOrDefined(double a, double b)
+  {
+    if (IsDefined(a) && IsDefined(b))
+    {
+      return Math.Min(a, b);
     }
 
-    /// <summary>
-    /// Compares two float values for approximate equality using a tolerance of 0.0001f.
-    /// Returns true if both values are undefined (NaN).
-    /// </summary>
-    /// <param name="a">First value.</param>
-    /// <param name="b">Second value.</param>
-    /// <returns>True if the values are approximately equal or both undefined.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InexactEquals(float a, float b)
-    {
-        if (IsDefined(a) && IsDefined(b))
-        {
-            return MathF.Abs(a - b) < Tolerance;
-        }
+    return IsUndefined(a) ? b : a;
+  }
 
-        return IsUndefined(a) && IsUndefined(b);
+  /// <summary>
+  /// Compares two float values for approximate equality using a tolerance of 0.0001f.
+  /// Returns true if both values are undefined (NaN).
+  /// </summary>
+  /// <param name="a">First value.</param>
+  /// <param name="b">Second value.</param>
+  /// <returns>True if the values are approximately equal or both undefined.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool InexactEquals(float a, float b)
+  {
+    if (IsDefined(a) && IsDefined(b))
+    {
+      return MathF.Abs(a - b) < Tolerance;
     }
 
-    /// <summary>
-    /// Compares two double values for approximate equality using a tolerance of 0.0001.
-    /// Returns true if both values are undefined (NaN).
-    /// </summary>
-    /// <param name="a">First value.</param>
-    /// <param name="b">Second value.</param>
-    /// <returns>True if the values are approximately equal or both undefined.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InexactEquals(double a, double b)
-    {
-        if (IsDefined(a) && IsDefined(b))
-        {
-            return Math.Abs(a - b) < Tolerance;
-        }
+    return IsUndefined(a) && IsUndefined(b);
+  }
 
-        return IsUndefined(a) && IsUndefined(b);
+  /// <summary>
+  /// Compares two double values for approximate equality using a tolerance of 0.0001.
+  /// Returns true if both values are undefined (NaN).
+  /// </summary>
+  /// <param name="a">First value.</param>
+  /// <param name="b">Second value.</param>
+  /// <returns>True if the values are approximately equal or both undefined.</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool InexactEquals(double a, double b)
+  {
+    if (IsDefined(a) && IsDefined(b))
+    {
+      return Math.Abs(a - b) < Tolerance;
     }
 
-    /// <summary>
-    /// Compares two spans of float values for approximate element-wise equality.
-    /// </summary>
-    /// <param name="span1">First span.</param>
-    /// <param name="span2">Second span.</param>
-    /// <returns>True if all corresponding elements are approximately equal.</returns>
-    public static bool InexactEquals(ReadOnlySpan<float> span1, ReadOnlySpan<float> span2)
+    return IsUndefined(a) && IsUndefined(b);
+  }
+
+  /// <summary>
+  /// Compares two spans of float values for approximate element-wise equality.
+  /// </summary>
+  /// <param name="span1">First span.</param>
+  /// <param name="span2">Second span.</param>
+  /// <returns>True if all corresponding elements are approximately equal.</returns>
+  public static bool InexactEquals(ReadOnlySpan<float> span1, ReadOnlySpan<float> span2)
+  {
+    if (span1.Length != span2.Length)
     {
-        if (span1.Length != span2.Length)
-        {
-            return false;
-        }
-
-        for (int i = 0; i < span1.Length; i++)
-        {
-            if (!InexactEquals(span1[i], span2[i]))
-            {
-                return false;
-            }
-        }
-
-        return true;
+      return false;
     }
 
-    /// <summary>
-    /// Compares two float arrays for approximate element-wise equality.
-    /// </summary>
-    /// <param name="array1">First array.</param>
-    /// <param name="array2">Second array.</param>
-    /// <returns>True if all corresponding elements are approximately equal.</returns>
-    public static bool InexactEquals(float[] array1, float[] array2)
+    for (int i = 0; i < span1.Length; i++)
     {
-        return InexactEquals(array1.AsSpan(), array2.AsSpan());
+      if (!InexactEquals(span1[i], span2[i]))
+      {
+        return false;
+      }
     }
+
+    return true;
+  }
+
+  /// <summary>
+  /// Compares two float arrays for approximate element-wise equality.
+  /// </summary>
+  /// <param name="array1">First array.</param>
+  /// <param name="array2">Second array.</param>
+  /// <returns>True if all corresponding elements are approximately equal.</returns>
+  public static bool InexactEquals(float[] array1, float[] array2)
+  {
+    return InexactEquals(array1.AsSpan(), array2.AsSpan());
+  }
 }

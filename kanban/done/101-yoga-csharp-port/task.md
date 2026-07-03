@@ -108,3 +108,14 @@ See `dependency-map.md` in this folder for the complete C++ file dependency anal
 ## Results
 
 (Add after completion)
+
+## Results (2026-07-03)
+
+Port complete and functional. All dependency levels ported (enums, numerics,
+style storage, node, config, events, debug utilities, algorithm modules,
+public CalculateLayout entry point with caching). Verified against Yoga's own
+test suites: 530 generated conformance tests plus hand-ported measure/relayout
+unit tests — 1335 passed / 0 failed / 3 skipped. Merged to master via PR #7.
+
+Follow-ups tracked separately: task 139 (naming/style gate re-enablement),
+remaining low-priority unit tests and benchmarks (see task 138 results).

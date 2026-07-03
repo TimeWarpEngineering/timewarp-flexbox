@@ -13,76 +13,17 @@ using FlexNode = TimeWarp.Flexbox.Node;
 /// </summary>
 public class JustifyContentTests
 {
-    #region Null Argument Handling
+  #region Null Argument Handling
 
-    public void JustifyMainAxisShouldThrowOnNullNode()
-    {
-        // Arrange
-        FlexLine flexLine = new();
+  public void JustifyMainAxisShouldThrowOnNullNode()
+  {
+    // Arrange
+    FlexLine flexLine = new();
 
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            JustifyContent.JustifyMainAxis(
-                null!,
-                flexLine,
-                FlexDirection.Row,
-                FlexDirection.Column,
-                Direction.LTR,
-                SizingMode.StretchFit,
-                SizingMode.StretchFit,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                false));
-    }
-
-    public void JustifyMainAxisShouldThrowOnNullFlexLine()
-    {
-        // Arrange
-        FlexNode node = new();
-
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() =>
-            JustifyContent.JustifyMainAxis(
-                node,
-                null!,
-                FlexDirection.Row,
-                FlexDirection.Column,
-                Direction.LTR,
-                SizingMode.StretchFit,
-                SizingMode.StretchFit,
-                100f,
-                100f,
-                100f,
-                100f,
-                100f,
-                false));
-    }
-
-    #endregion
-
-    #region Basic Functionality - Empty FlexLine
-
-    public void JustifyMainAxisShouldSetMainDimToLeadingPaddingAndBorderForEmptyLine()
-    {
-        // Arrange
-        FlexNode node = new();
-        node.Style.SetPadding(Edge.Left, StyleLength.Points(10f));
-        node.Style.SetBorder(Edge.Left, StyleLength.Points(5f));
-
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 0f
-            }
-        };
-
-        // Act
+    // Act & Assert
+    Should.Throw<ArgumentNullException>(() =>
         JustifyContent.JustifyMainAxis(
-            node,
+            null!,
             flexLine,
             FlexDirection.Row,
             FlexDirection.Column,
@@ -94,29 +35,19 @@ public class JustifyContentTests
             100f,
             100f,
             100f,
-            false);
+            false));
+  }
 
-        // Assert - mainDim should include leading padding and border
-        flexLine.Layout.MainDim.ShouldBe(15f);
-    }
+  public void JustifyMainAxisShouldThrowOnNullFlexLine()
+  {
+    // Arrange
+    FlexNode node = new();
 
-    public void JustifyMainAxisShouldSetCrossDimToZeroForEmptyLine()
-    {
-        // Arrange
-        FlexNode node = new();
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 0f,
-                CrossDim = 50f // Set to non-zero to verify it gets reset
-            }
-        };
-
-        // Act
+    // Act & Assert
+    Should.Throw<ArgumentNullException>(() =>
         JustifyContent.JustifyMainAxis(
             node,
-            flexLine,
+            null!,
             FlexDirection.Row,
             FlexDirection.Column,
             Direction.LTR,
@@ -127,487 +58,556 @@ public class JustifyContentTests
             100f,
             100f,
             100f,
-            false);
+            false));
+  }
 
-        // Assert
-        flexLine.Layout.CrossDim.ShouldBe(0f);
-    }
+  #endregion
 
-    #endregion
+  #region Basic Functionality - Empty FlexLine
 
-    #region Justify Content - FlexStart
+  public void JustifyMainAxisShouldSetMainDimToLeadingPaddingAndBorderForEmptyLine()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.SetPadding(Edge.Left, StyleLength.Points(10f));
+    node.Style.SetBorder(Edge.Left, StyleLength.Points(5f));
 
-    public void JustifyMainAxisShouldNotAddLeadingSpaceForFlexStart()
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.FlexStart;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 0f
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert - mainDim should include leading padding and border
+    flexLine.Layout.MainDim.ShouldBe(15f);
+  }
 
-        // Assert - mainDim should be 0 (no leading padding/border set, no leading space)
-        flexLine.Layout.MainDim.ShouldBe(0f);
-    }
-
-    #endregion
-
-    #region Justify Content - FlexEnd
-
-    public void JustifyMainAxisShouldAddAllFreeSpaceAsLeadingForFlexEnd()
+  public void JustifyMainAxisShouldSetCrossDimToZeroForEmptyLine()
+  {
+    // Arrange
+    FlexNode node = new();
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.FlexEnd;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 0f,
+        CrossDim = 50f // Set to non-zero to verify it gets reset
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert
+    flexLine.Layout.CrossDim.ShouldBe(0f);
+  }
 
-        // Assert - all free space should be leading
-        flexLine.Layout.MainDim.ShouldBe(100f);
-    }
+  #endregion
 
-    #endregion
+  #region Justify Content - FlexStart
 
-    #region Justify Content - Center
+  public void JustifyMainAxisShouldNotAddLeadingSpaceForFlexStart()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.FlexStart;
 
-    public void JustifyMainAxisShouldAddHalfFreeSpaceAsLeadingForCenter()
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.Center;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert - mainDim should be 0 (no leading padding/border set, no leading space)
+    flexLine.Layout.MainDim.ShouldBe(0f);
+  }
 
-        // Assert - half free space should be leading
-        flexLine.Layout.MainDim.ShouldBe(50f);
-    }
+  #endregion
 
-    #endregion
+  #region Justify Content - FlexEnd
 
-    #region Direction Tests
+  public void JustifyMainAxisShouldAddAllFreeSpaceAsLeadingForFlexEnd()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.FlexEnd;
 
-    public void JustifyMainAxisShouldWorkWithRTLDirection()
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.Center;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act - should not throw
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.RTL,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert - all free space should be leading
+    flexLine.Layout.MainDim.ShouldBe(100f);
+  }
 
-        // Assert
-        flexLine.Layout.MainDim.ShouldBe(50f);
-    }
+  #endregion
 
-    public void JustifyMainAxisShouldWorkWithColumnDirection()
+  #region Justify Content - Center
+
+  public void JustifyMainAxisShouldAddHalfFreeSpaceAsLeadingForCenter()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.Center;
+
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.FlexEnd;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 80f
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Column,
-            FlexDirection.Row,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert - half free space should be leading
+    flexLine.Layout.MainDim.ShouldBe(50f);
+  }
 
-        // Assert
-        flexLine.Layout.MainDim.ShouldBe(80f);
-    }
+  #endregion
 
-    #endregion
+  #region Direction Tests
 
-    #region Negative Free Space (Overflow Fallback)
+  public void JustifyMainAxisShouldWorkWithRTLDirection()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.Center;
 
-    public void JustifyMainAxisShouldFallbackToFlexStartOnOverflowForSpaceBetween()
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.SpaceBetween;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = -50f // Negative = overflow
-            }
-        };
+    // Act - should not throw
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.RTL,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert
+    flexLine.Layout.MainDim.ShouldBe(50f);
+  }
 
-        // Assert - should fallback to flex-start (no leading space)
-        flexLine.Layout.MainDim.ShouldBe(0f);
-    }
+  public void JustifyMainAxisShouldWorkWithColumnDirection()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.FlexEnd;
 
-    public void JustifyMainAxisShouldFallbackToFlexStartOnOverflowForSpaceAround()
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.SpaceAround;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 80f
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = -50f // Negative = overflow
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Column,
+        FlexDirection.Row,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert
+    flexLine.Layout.MainDim.ShouldBe(80f);
+  }
 
-        // Assert - should fallback to flex-start (no leading space)
-        flexLine.Layout.MainDim.ShouldBe(0f);
-    }
+  #endregion
 
-    public void JustifyMainAxisShouldFallbackToFlexStartOnOverflowForSpaceEvenly()
+  #region Negative Free Space (Overflow Fallback)
+
+  public void JustifyMainAxisShouldFallbackToFlexStartOnOverflowForSpaceBetween()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.SpaceBetween;
+
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.SpaceEvenly;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = -50f // Negative = overflow
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = -50f // Negative = overflow
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert - should fallback to flex-start (no leading space)
+    flexLine.Layout.MainDim.ShouldBe(0f);
+  }
 
-        // Assert - should fallback to flex-start (no leading space)
-        flexLine.Layout.MainDim.ShouldBe(0f);
-    }
+  public void JustifyMainAxisShouldFallbackToFlexStartOnOverflowForSpaceAround()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.SpaceAround;
 
-    public void JustifyMainAxisShouldNotFallbackForCenterOnOverflow()
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.Center;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = -50f // Negative = overflow
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = -50f // Negative = overflow
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert - should fallback to flex-start (no leading space)
+    flexLine.Layout.MainDim.ShouldBe(0f);
+  }
 
-        // Assert - center doesn't fallback, so leading = -50/2 = -25
-        flexLine.Layout.MainDim.ShouldBe(-25f);
-    }
+  public void JustifyMainAxisShouldFallbackToFlexStartOnOverflowForSpaceEvenly()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.SpaceEvenly;
 
-    #endregion
-
-    #region FitContent SizingMode Tests
-
-    public void JustifyMainAxisShouldSetRemainingFreeSpaceToZeroForFitContentWithNoMinDim()
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        // No min dimension set
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = -50f // Negative = overflow
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 100f
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.FitContent, // Using FitContent mode
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert - should fallback to flex-start (no leading space)
+    flexLine.Layout.MainDim.ShouldBe(0f);
+  }
 
-        // Assert - remaining free space should be set to 0
-        flexLine.Layout.RemainingFreeSpace.ShouldBe(0f);
-    }
+  public void JustifyMainAxisShouldNotFallbackForCenterOnOverflow()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.Center;
 
-    #endregion
-
-    #region PerformLayout Flag Tests
-
-    public void JustifyMainAxisShouldNotSetChildPositionsWhenPerformLayoutIsFalse()
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 0f
-            }
-        };
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = -50f // Negative = overflow
+      }
+    };
 
-        // Act - with performLayout = false
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false); // performLayout = false
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Assert - should complete without error (no children to position anyway)
-        flexLine.Layout.MainDim.ShouldBeGreaterThanOrEqualTo(0f);
-    }
+    // Assert - center doesn't fallback, so leading = -50/2 = -25
+    flexLine.Layout.MainDim.ShouldBe(-25f);
+  }
 
-    #endregion
+  #endregion
 
-    #region Zero Free Space Tests
+  #region FitContent SizingMode Tests
 
-    public void JustifyMainAxisShouldHandleZeroFreeSpaceCorrectly()
+  public void JustifyMainAxisShouldSetRemainingFreeSpaceToZeroForFitContentWithNoMinDim()
+  {
+    // Arrange
+    FlexNode node = new();
+    // No min dimension set
+
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.JustifyContent = Justify.Center;
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 100f
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 0f
-            }
-        };
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.FitContent, // Using FitContent mode
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
 
-        // Act
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert - remaining free space should be set to 0
+    flexLine.Layout.RemainingFreeSpace.ShouldBe(0f);
+  }
 
-        // Assert - 0/2 = 0
-        flexLine.Layout.MainDim.ShouldBe(0f);
-    }
+  #endregion
 
-    #endregion
+  #region PerformLayout Flag Tests
 
-    #region Gap Tests
-
-    public void JustifyMainAxisShouldIncludeGapInBetweenMainDim()
+  public void JustifyMainAxisShouldNotSetChildPositionsWhenPerformLayoutIsFalse()
+  {
+    // Arrange
+    FlexNode node = new();
+    FlexLine flexLine = new()
     {
-        // Arrange
-        FlexNode node = new();
-        node.Style.SetGap(Gutter.Column, StyleLength.Points(10f)); // Gap for row direction
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 0f
+      }
+    };
 
-        FlexLine flexLine = new()
-        {
-            Layout = new FlexLineRunningLayout
-            {
-                RemainingFreeSpace = 0f
-            }
-        };
+    // Act - with performLayout = false
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false); // performLayout = false
 
-        // Act - gap is used internally but we can't easily verify without children
-        JustifyContent.JustifyMainAxis(
-            node,
-            flexLine,
-            FlexDirection.Row,
-            FlexDirection.Column,
-            Direction.LTR,
-            SizingMode.StretchFit,
-            SizingMode.StretchFit,
-            100f,
-            100f,
-            100f,
-            100f,
-            100f,
-            false);
+    // Assert - should complete without error (no children to position anyway)
+    flexLine.Layout.MainDim.ShouldBeGreaterThanOrEqualTo(0f);
+  }
 
-        // Assert - should complete without error
-        flexLine.Layout.MainDim.ShouldBeGreaterThanOrEqualTo(0f);
-    }
+  #endregion
 
-    #endregion
+  #region Zero Free Space Tests
+
+  public void JustifyMainAxisShouldHandleZeroFreeSpaceCorrectly()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.JustifyContent = Justify.Center;
+
+    FlexLine flexLine = new()
+    {
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 0f
+      }
+    };
+
+    // Act
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
+
+    // Assert - 0/2 = 0
+    flexLine.Layout.MainDim.ShouldBe(0f);
+  }
+
+  #endregion
+
+  #region Gap Tests
+
+  public void JustifyMainAxisShouldIncludeGapInBetweenMainDim()
+  {
+    // Arrange
+    FlexNode node = new();
+    node.Style.SetGap(Gutter.Column, StyleLength.Points(10f)); // Gap for row direction
+
+    FlexLine flexLine = new()
+    {
+      Layout = new FlexLineRunningLayout
+      {
+        RemainingFreeSpace = 0f
+      }
+    };
+
+    // Act - gap is used internally but we can't easily verify without children
+    JustifyContent.JustifyMainAxis(
+        node,
+        flexLine,
+        FlexDirection.Row,
+        FlexDirection.Column,
+        Direction.LTR,
+        SizingMode.StretchFit,
+        SizingMode.StretchFit,
+        100f,
+        100f,
+        100f,
+        100f,
+        100f,
+        false);
+
+    // Assert - should complete without error
+    flexLine.Layout.MainDim.ShouldBeGreaterThanOrEqualTo(0f);
+  }
+
+  #endregion
 }

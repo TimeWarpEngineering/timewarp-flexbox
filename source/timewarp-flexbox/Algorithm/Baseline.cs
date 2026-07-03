@@ -13,96 +13,96 @@ namespace TimeWarp.Flexbox;
 /// </summary>
 public static class Baseline
 {
-    /// <summary>
-    /// Calculates the baseline represented as an offset from the top edge of the node.
-    /// </summary>
-    /// <param name="node">The node to calculate the baseline for.</param>
-    /// <returns>The baseline offset from the top of the node.</returns>
-    public static float CalculateBaseline(Node node)
+  /// <summary>
+  /// Calculates the baseline represented as an offset from the top edge of the node.
+  /// </summary>
+  /// <param name="node">The node to calculate the baseline for.</param>
+  /// <returns>The baseline offset from the top of the node.</returns>
+  public static float CalculateBaseline(Node node)
+  {
+    ArgumentNullException.ThrowIfNull(node);
+
+    if (node.HasBaselineFunc)
     {
-        ArgumentNullException.ThrowIfNull(node);
+      YogaEvent.PublishNodeBaselineStart(node);
 
-        if (node.HasBaselineFunc)
-        {
-            YogaEvent.PublishNodeBaselineStart(node);
+      float baseline = node.Baseline(
+          node.Layout.GetMeasuredDimension(Dimension.Width),
+          node.Layout.GetMeasuredDimension(Dimension.Height));
 
-            float baseline = node.Baseline(
-                node.Layout.GetMeasuredDimension(Dimension.Width),
-                node.Layout.GetMeasuredDimension(Dimension.Height));
+      YogaEvent.PublishNodeBaselineEnd(node);
 
-            YogaEvent.PublishNodeBaselineEnd(node);
+      YogaAssert.Assert(
+          node,
+          !float.IsNaN(baseline),
+          "Expect custom baseline function to not return NaN");
 
-            YogaAssert.Assert(
-                node,
-                !float.IsNaN(baseline),
-                "Expect custom baseline function to not return NaN");
-
-            return baseline;
-        }
-
-        Node? baselineChild = null;
-        foreach (Node child in node.LayoutChildren)
-        {
-            if (child.LineIndex > 0)
-            {
-                break;
-            }
-
-            if (child.Style.PositionType == PositionType.Absolute)
-            {
-                continue;
-            }
-
-            if (AlignUtils.ResolveChildAlignment(node, child) == Align.Baseline ||
-                child.IsReferenceBaseline)
-            {
-                baselineChild = child;
-                break;
-            }
-
-            if (baselineChild is null)
-            {
-                baselineChild = child;
-            }
-        }
-
-        if (baselineChild is null)
-        {
-            return node.Layout.GetMeasuredDimension(Dimension.Height);
-        }
-
-        float childBaseline = CalculateBaseline(baselineChild);
-        return childBaseline + baselineChild.Layout.GetPosition(PhysicalEdge.Top);
+      return baseline;
     }
 
-    /// <summary>
-    /// Determines whether any of the children of this node participate in baseline alignment.
-    /// </summary>
-    /// <param name="node">The node to check.</param>
-    /// <returns>True if any children participate in baseline alignment.</returns>
-    public static bool IsBaselineLayout(Node node)
+    Node? baselineChild = null;
+    foreach (Node child in node.LayoutChildren)
     {
-        ArgumentNullException.ThrowIfNull(node);
+      if (child.LineIndex > 0)
+      {
+        break;
+      }
 
-        if (node.Style.FlexDirection.IsColumn())
-        {
-            return false;
-        }
+      if (child.Style.PositionType == PositionType.Absolute)
+      {
+        continue;
+      }
 
-        if (node.Style.AlignItems == Align.Baseline)
-        {
-            return true;
-        }
+      if (AlignUtils.ResolveChildAlignment(node, child) == Align.Baseline ||
+          child.IsReferenceBaseline)
+      {
+        baselineChild = child;
+        break;
+      }
 
-        foreach (Node child in node.LayoutChildren)
-        {
-            if (child.Style.PositionType != PositionType.Absolute &&
-                child.Style.AlignSelf == Align.Baseline)
-            {
-                return true;
-            }
-        }
-
-        return false;
+      if (baselineChild is null)
+      {
+        baselineChild = child;
+      }
     }
+
+    if (baselineChild is null)
+    {
+      return node.Layout.GetMeasuredDimension(Dimension.Height);
+    }
+
+    float childBaseline = CalculateBaseline(baselineChild);
+    return childBaseline + baselineChild.Layout.GetPosition(PhysicalEdge.Top);
+  }
+
+  /// <summary>
+  /// Determines whether any of the children of this node participate in baseline alignment.
+  /// </summary>
+  /// <param name="node">The node to check.</param>
+  /// <returns>True if any children participate in baseline alignment.</returns>
+  public static bool IsBaselineLayout(Node node)
+  {
+    ArgumentNullException.ThrowIfNull(node);
+
+    if (node.Style.FlexDirection.IsColumn())
+    {
+      return false;
+    }
+
+    if (node.Style.AlignItems == Align.Baseline)
+    {
+      return true;
+    }
+
+    foreach (Node child in node.LayoutChildren)
+    {
+      if (child.Style.PositionType != PositionType.Absolute &&
+          child.Style.AlignSelf == Align.Baseline)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }

@@ -19,22 +19,22 @@ namespace TimeWarp.Flexbox;
 /// </remarks>
 public interface ILayoutableNode
 {
-    /// <summary>
-    /// Gets the child at the specified index.
-    /// </summary>
-    /// <param name="index">The zero-based index of the child.</param>
-    /// <returns>The child node at the specified index.</returns>
-    ILayoutableNode GetChild(int index);
+  /// <summary>
+  /// Gets the child at the specified index.
+  /// </summary>
+  /// <param name="index">The zero-based index of the child.</param>
+  /// <returns>The child node at the specified index.</returns>
+  ILayoutableNode GetChild(int index);
 
-    /// <summary>
-    /// Gets the number of children this node has.
-    /// </summary>
-    /// <returns>The count of child nodes.</returns>
-    int GetChildCount();
+  /// <summary>
+  /// Gets the number of children this node has.
+  /// </summary>
+  /// <returns>The count of child nodes.</returns>
+  int GetChildCount();
 
-    /// <summary>
-    /// Gets the display style property for this node.
-    /// </summary>
-    /// <returns>The Display enum value.</returns>
-    Display GetDisplay();
+  /// <summary>
+  /// Gets the display style property for this node.
+  /// </summary>
+  /// <returns>The Display enum value.</returns>
+  Display GetDisplay();
 }
