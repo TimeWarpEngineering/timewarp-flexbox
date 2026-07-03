@@ -96,3 +96,12 @@ public static class AlignUtils
     public static float GetAlignmentOffset(Align align, float remaining, int itemCount, float gap);
 }
 ```
+
+## Results (2026-07-03)
+
+All helper modules ported and in production use: PixelGrid.cs, Baseline.cs,
+FlexLine.cs, AlignUtils.cs, BoundAxis.cs, plus supporting utilities. Verified
+by unit tests and by the full Yoga generated conformance suite (530 tests, all
+passing). Notable post-port fix: ConstrainMaxSizeForMode in LayoutHelpers.cs
+was rewritten 2026-07-03 to match C++ (mode preservation, margin in maxSize,
+MaxContent handling).

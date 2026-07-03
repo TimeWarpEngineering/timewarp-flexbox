@@ -98,3 +98,12 @@ Bottom-up approach:
 
 ### Generated Tests (~29,000 lines)
 - 25 test files covering all layout scenarios
+
+## Results (2026-07-03)
+
+Epic complete. All subtasks (126-137) done; the assembled algorithm was then
+hardened by fixing eight mistranslations found via end-to-end verification and
+Yoga's conformance suite (owner semantics in child management, debug module,
+FlexBasis FitContent fallback + WebFlexBasis check, MeasureNodeWithMeasureFunc
+fast path, multi-line alignment two-pass structure, ConstrainMaxSizeForMode,
+style-change dirtying, canSkipFlex min/max clamp). Suite: 1335/0/3.

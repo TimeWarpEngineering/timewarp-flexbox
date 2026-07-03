@@ -95,3 +95,9 @@ The following private helper methods were implemented:
 The implementation handles the following errata:
 - `Errata.AbsolutePositionWithoutInsetsExcludesPadding`
 - `Errata.AbsolutePercentAgainstInnerSize`
+
+## Results (2026-07-03)
+
+AbsoluteLayout.cs ported and verified: all 34 generated AbsolutePosition
+conformance tests and all 62 StaticPosition conformance tests pass, LTR and
+RTL passes included.

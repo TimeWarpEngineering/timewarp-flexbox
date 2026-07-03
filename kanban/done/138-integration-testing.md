@@ -167,3 +167,21 @@ Critical test: consecutive layouts with no changes should:
 - Negative margins
 - Percentage dimensions with undefined parent
 - Circular aspect ratio dependencies
+
+## Results (2026-07-03)
+
+Complete. Public API works end-to-end; suite is 1335 passed / 0 failed /
+3 skipped.
+
+- All 25 Yoga generated test files converted via runfiles/port-generated-tests.cs
+  (530 conformance tests, all passing). Upstream GTEST_SKIP tests excluded.
+- Hand-ported YGMeasureTest, YGMeasureCacheTest, YGMeasureModeTest,
+  YGRelayoutTest (49 tests).
+- Six algorithm mistranslations found and fixed along the way (multi-line
+  alignment two-pass structure, ConstrainMaxSizeForMode, WebFlexBasis
+  generation check, style-change dirtying, canSkipFlex min/max clamp).
+
+Deferred (pick up as future tasks if desired): remaining low-priority
+hand-written unit tests (Baseline, AspectRatio, Edge, HadOverflow, Dirtied,
+Persistence, FlexGap, ...), a text-measurement helper to unlock the skipped
+IntrinsicSize tests, performance benchmarking and memory profiling.
