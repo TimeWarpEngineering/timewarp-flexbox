@@ -5,4 +5,7 @@
   <Folder Name="/test/">
     <Project Path="test/timewarp-flexbox-tests/timewarp-flexbox-tests.csproj" />
   </Folder>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/timewarp-flexbox-benchmarks/TimeWarp.Flexbox.Benchmarks.csproj" />
+  </Folder>
 </Solution>
