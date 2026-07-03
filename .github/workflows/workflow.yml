@@ -44,7 +44,13 @@ jobs:
       
       - name: Test
         run: dotnet test --configuration Release --no-build
-      
+
+      - name: AOT smoke test
+        run: |
+          dotnet publish tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj \
+            --configuration Release -r linux-x64 -o artifacts/aot-smoke
+          ./artifacts/aot-smoke/TimeWarp.Flexbox.AotSmoke
+
       - name: Publish to GitHub Packages
         if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         run: |

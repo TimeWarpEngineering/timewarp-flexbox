@@ -8,4 +8,7 @@
   <Folder Name="/benchmarks/">
     <Project Path="benchmarks/timewarp-flexbox-benchmarks/TimeWarp.Flexbox.Benchmarks.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj" />
+  </Folder>
 </Solution>
