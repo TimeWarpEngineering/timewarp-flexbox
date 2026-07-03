@@ -11,7 +11,7 @@ verified: dll + readme + logo, MIT license, version 1.0.0-beta.3.
 
 ## Todo List
 
-- [ ] Merge dev to master via PR (green CI)
+- [x] Merge dev to master via PR (green CI) — PR #9 merged 2026-07-03 (1dfad96)
 - [ ] Create GitHub release `v1.0.0-beta.3` — the release event triggers the
       workflow's publish step to GitHub Packages
 - [ ] Release notes must state clearly: the API is entirely new; beta.2 and earlier
