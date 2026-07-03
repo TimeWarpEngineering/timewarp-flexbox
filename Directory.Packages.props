@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <!-- MSBuild and NuGet behavior configuration -->
   <PropertyGroup Label="MSBuild/NuGet Configuration">
@@ -6,7 +7,7 @@
 
   <ItemGroup Label="Runfiles">
     <PackageVersion Include="TimeWarp.Amuru" Version="1.0.0-beta.5" />
-  </ItemGroup>
+  <PackageVersion Include="TimeWarp.Build.Tasks" Version="1.0.0" /><PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0"><PrivateAssets>all</PrivateAssets><IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets></PackageVersion><PackageVersion Include="TimeWarp.Nuru" Version="3.0.0-beta.71" /><PackageVersion Include="TimeWarp.Nuru.DevCli" Version="3.0.0-beta.71" /></ItemGroup>
 
   <ItemGroup Label="Testing">
     <PackageVersion Include="TimeWarp.Fixie" Version="3.1.0" />
@@ -21,10 +22,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Code Analyzers">
-    <PackageVersion Include="GlobalUsingsAnalyzer" Version="1.4.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageVersion>
+    
     <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
     <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.14.1" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.14.1" />
