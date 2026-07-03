@@ -207,7 +207,13 @@ public static class JustifyContent
                 runningLayout = flexLine.Layout;
                 runningLayout.MainDim +=
                     child.Style.ComputeMarginForAxis(mainAxis, availableInnerWidth) +
-                    childLayout.ComputedFlexBasis.Unwrap();
+                    BoundAxis.BoundAxisWithinMinAndMax(
+                        child,
+                        direction,
+                        mainAxis,
+                        childLayout.ComputedFlexBasis,
+                        mainAxisOwnerSize,
+                        ownerWidth).Unwrap();
                 runningLayout.CrossDim = availableInnerCrossDim;
                 flexLine.Layout = runningLayout;
             }
