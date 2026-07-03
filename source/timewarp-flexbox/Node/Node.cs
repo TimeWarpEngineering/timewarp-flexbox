@@ -146,6 +146,9 @@ public sealed class Node : ILayoutableNode
             UseWebDefaults();
         }
 
+        // Attach after initialization so constructing a node never dirties it.
+        _style.OwnerNode = this;
+
         YogaEvent.PublishNodeAllocation(this, _config);
     }
 
@@ -184,6 +187,9 @@ public sealed class Node : ILayoutableNode
 
         // Shallow copy children list
         _children.AddRange(other._children);
+
+        // Attach after copying so cloning never dirties the clone.
+        _style.OwnerNode = this;
 
         YogaEvent.PublishNodeAllocation(this, _config);
     }

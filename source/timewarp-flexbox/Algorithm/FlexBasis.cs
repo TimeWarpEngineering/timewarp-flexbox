@@ -117,7 +117,7 @@ public static class FlexBasis
         if (resolvedFlexBasis.IsDefined && Comparison.IsDefined(mainAxisSize))
         {
             if (!child.Layout.ComputedFlexBasis.IsDefined ||
-                (child.Config.HasErrata(Errata.None) &&
+                (child.Config.IsExperimentalFeatureEnabled(ExperimentalFeature.WebFlexBasis) &&
                  child.Layout.ComputedFlexBasisGeneration != generationCount))
             {
                 FloatOptional paddingAndBorder = new(

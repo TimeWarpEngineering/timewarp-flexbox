@@ -73,6 +73,13 @@ public sealed class Style : IEquatable<Style>
     // The value pool for storing non-inlinable values
     private readonly StyleValuePool _pool = new();
 
+    // The node owning this style, marked dirty when a style value changes.
+    // In C++ Yoga, mutation goes through YGNodeStyleSet* -> updateStyle, which
+    // compares the new value to the old one and calls markDirtyAndPropagate
+    // only on change. The C# port exposes Style directly, so the same
+    // compare-and-dirty behavior lives in the setters themselves.
+    internal Node? OwnerNode;
+
     #endregion
 
     #region Enum Properties
@@ -81,77 +88,77 @@ public sealed class Style : IEquatable<Style>
     public Direction Direction
     {
         get => _direction;
-        set => _direction = value;
+        set => SetField(ref _direction, value);
     }
 
     /// <summary>Gets or sets the flex direction.</summary>
     public FlexDirection FlexDirection
     {
         get => _flexDirection;
-        set => _flexDirection = value;
+        set => SetField(ref _flexDirection, value);
     }
 
     /// <summary>Gets or sets how content is justified along the main axis.</summary>
     public Justify JustifyContent
     {
         get => _justifyContent;
-        set => _justifyContent = value;
+        set => SetField(ref _justifyContent, value);
     }
 
     /// <summary>Gets or sets how lines are aligned along the cross axis.</summary>
     public Align AlignContent
     {
         get => _alignContent;
-        set => _alignContent = value;
+        set => SetField(ref _alignContent, value);
     }
 
     /// <summary>Gets or sets how items are aligned along the cross axis.</summary>
     public Align AlignItems
     {
         get => _alignItems;
-        set => _alignItems = value;
+        set => SetField(ref _alignItems, value);
     }
 
     /// <summary>Gets or sets how this item is aligned (overrides parent's align-items).</summary>
     public Align AlignSelf
     {
         get => _alignSelf;
-        set => _alignSelf = value;
+        set => SetField(ref _alignSelf, value);
     }
 
     /// <summary>Gets or sets the position type (static, relative, absolute).</summary>
     public PositionType PositionType
     {
         get => _positionType;
-        set => _positionType = value;
+        set => SetField(ref _positionType, value);
     }
 
     /// <summary>Gets or sets the flex wrap behavior.</summary>
     public Wrap FlexWrap
     {
         get => _flexWrap;
-        set => _flexWrap = value;
+        set => SetField(ref _flexWrap, value);
     }
 
     /// <summary>Gets or sets the overflow behavior.</summary>
     public Overflow Overflow
     {
         get => _overflow;
-        set => _overflow = value;
+        set => SetField(ref _overflow, value);
     }
 
     /// <summary>Gets or sets the display type.</summary>
     public Display Display
     {
         get => _display;
-        set => _display = value;
+        set => SetField(ref _display, value);
     }
 
     /// <summary>Gets or sets the box-sizing mode.</summary>
     public BoxSizing BoxSizing
     {
         get => _boxSizing;
-        set => _boxSizing = value;
+        set => SetField(ref _boxSizing, value);
     }
 
     #endregion
@@ -162,28 +169,28 @@ public sealed class Style : IEquatable<Style>
     public FloatOptional Flex
     {
         get => _pool.GetNumber(_flex);
-        set => _pool.Store(ref _flex, value);
+        set => StoreNumber(ref _flex, value);
     }
 
     /// <summary>Gets or sets the flex-grow value.</summary>
     public FloatOptional FlexGrow
     {
         get => _pool.GetNumber(_flexGrow);
-        set => _pool.Store(ref _flexGrow, value);
+        set => StoreNumber(ref _flexGrow, value);
     }
 
     /// <summary>Gets or sets the flex-shrink value.</summary>
     public FloatOptional FlexShrink
     {
         get => _pool.GetNumber(_flexShrink);
-        set => _pool.Store(ref _flexShrink, value);
+        set => StoreNumber(ref _flexShrink, value);
     }
 
     /// <summary>Gets or sets the flex-basis value.</summary>
     public StyleSizeLength FlexBasis
     {
         get => _pool.GetSize(_flexBasis);
-        set => _pool.Store(ref _flexBasis, value);
+        set => StoreSize(ref _flexBasis, value);
     }
 
     #endregion
@@ -194,31 +201,31 @@ public sealed class Style : IEquatable<Style>
     public StyleLength GetMargin(Edge edge) => _pool.GetLength(_margin[YogaEnums.ToUnderlying(edge)]);
 
     /// <summary>Sets the margin for the specified edge.</summary>
-    public void SetMargin(Edge edge, StyleLength value) => _pool.Store(ref _margin[YogaEnums.ToUnderlying(edge)], value);
+    public void SetMargin(Edge edge, StyleLength value) => StoreLength(ref _margin[YogaEnums.ToUnderlying(edge)], value);
 
     /// <summary>Gets the position for the specified edge.</summary>
     public StyleLength GetPosition(Edge edge) => _pool.GetLength(_position[YogaEnums.ToUnderlying(edge)]);
 
     /// <summary>Sets the position for the specified edge.</summary>
-    public void SetPosition(Edge edge, StyleLength value) => _pool.Store(ref _position[YogaEnums.ToUnderlying(edge)], value);
+    public void SetPosition(Edge edge, StyleLength value) => StoreLength(ref _position[YogaEnums.ToUnderlying(edge)], value);
 
     /// <summary>Gets the padding for the specified edge.</summary>
     public StyleLength GetPadding(Edge edge) => _pool.GetLength(_padding[YogaEnums.ToUnderlying(edge)]);
 
     /// <summary>Sets the padding for the specified edge.</summary>
-    public void SetPadding(Edge edge, StyleLength value) => _pool.Store(ref _padding[YogaEnums.ToUnderlying(edge)], value);
+    public void SetPadding(Edge edge, StyleLength value) => StoreLength(ref _padding[YogaEnums.ToUnderlying(edge)], value);
 
     /// <summary>Gets the border for the specified edge.</summary>
     public StyleLength GetBorder(Edge edge) => _pool.GetLength(_border[YogaEnums.ToUnderlying(edge)]);
 
     /// <summary>Sets the border for the specified edge.</summary>
-    public void SetBorder(Edge edge, StyleLength value) => _pool.Store(ref _border[YogaEnums.ToUnderlying(edge)], value);
+    public void SetBorder(Edge edge, StyleLength value) => StoreLength(ref _border[YogaEnums.ToUnderlying(edge)], value);
 
     /// <summary>Gets the gap for the specified gutter.</summary>
     public StyleLength GetGap(Gutter gutter) => _pool.GetLength(_gap[YogaEnums.ToUnderlying(gutter)]);
 
     /// <summary>Sets the gap for the specified gutter.</summary>
-    public void SetGap(Gutter gutter, StyleLength value) => _pool.Store(ref _gap[YogaEnums.ToUnderlying(gutter)], value);
+    public void SetGap(Gutter gutter, StyleLength value) => StoreLength(ref _gap[YogaEnums.ToUnderlying(gutter)], value);
 
     #endregion
 
@@ -228,19 +235,19 @@ public sealed class Style : IEquatable<Style>
     public StyleSizeLength GetDimension(Dimension axis) => _pool.GetSize(_dimensions[YogaEnums.ToUnderlying(axis)]);
 
     /// <summary>Sets the dimension (width or height) for the specified axis.</summary>
-    public void SetDimension(Dimension axis, StyleSizeLength value) => _pool.Store(ref _dimensions[YogaEnums.ToUnderlying(axis)], value);
+    public void SetDimension(Dimension axis, StyleSizeLength value) => StoreSize(ref _dimensions[YogaEnums.ToUnderlying(axis)], value);
 
     /// <summary>Gets the minimum dimension for the specified axis.</summary>
     public StyleSizeLength GetMinDimension(Dimension axis) => _pool.GetSize(_minDimensions[YogaEnums.ToUnderlying(axis)]);
 
     /// <summary>Sets the minimum dimension for the specified axis.</summary>
-    public void SetMinDimension(Dimension axis, StyleSizeLength value) => _pool.Store(ref _minDimensions[YogaEnums.ToUnderlying(axis)], value);
+    public void SetMinDimension(Dimension axis, StyleSizeLength value) => StoreSize(ref _minDimensions[YogaEnums.ToUnderlying(axis)], value);
 
     /// <summary>Gets the maximum dimension for the specified axis.</summary>
     public StyleSizeLength GetMaxDimension(Dimension axis) => _pool.GetSize(_maxDimensions[YogaEnums.ToUnderlying(axis)]);
 
     /// <summary>Sets the maximum dimension for the specified axis.</summary>
-    public void SetMaxDimension(Dimension axis, StyleSizeLength value) => _pool.Store(ref _maxDimensions[YogaEnums.ToUnderlying(axis)], value);
+    public void SetMaxDimension(Dimension axis, StyleSizeLength value) => StoreSize(ref _maxDimensions[YogaEnums.ToUnderlying(axis)], value);
 
     /// <summary>
     /// Gets the resolved minimum dimension, accounting for box-sizing.
@@ -280,14 +287,50 @@ public sealed class Style : IEquatable<Style>
         {
             // Degenerate aspect ratios act as auto.
             // See https://drafts.csswg.org/css-sizing-4/#valdef-aspect-ratio-ratio
-            if (value == 0.0f || float.IsInfinity(value.Unwrap()))
-            {
-                _pool.Store(ref _aspectRatio, FloatOptional.Undefined);
-            }
-            else
-            {
-                _pool.Store(ref _aspectRatio, value);
-            }
+            FloatOptional normalized = value == 0.0f || float.IsInfinity(value.Unwrap())
+                ? FloatOptional.Undefined
+                : value;
+            StoreNumber(ref _aspectRatio, normalized);
+        }
+    }
+
+    #endregion
+
+    #region Owner Dirtying
+
+    private void SetField<T>(ref T field, T value) where T : struct
+    {
+        if (!EqualityComparer<T>.Default.Equals(field, value))
+        {
+            field = value;
+            OwnerNode?.MarkDirtyAndPropagate();
+        }
+    }
+
+    private void StoreNumber(ref StyleValueHandle handle, FloatOptional value)
+    {
+        if (_pool.GetNumber(handle) != value)
+        {
+            _pool.Store(ref handle, value);
+            OwnerNode?.MarkDirtyAndPropagate();
+        }
+    }
+
+    private void StoreLength(ref StyleValueHandle handle, StyleLength value)
+    {
+        if (_pool.GetLength(handle) != value)
+        {
+            _pool.Store(ref handle, value);
+            OwnerNode?.MarkDirtyAndPropagate();
+        }
+    }
+
+    private void StoreSize(ref StyleValueHandle handle, StyleSizeLength value)
+    {
+        if (_pool.GetSize(handle) != value)
+        {
+            _pool.Store(ref handle, value);
+            OwnerNode?.MarkDirtyAndPropagate();
         }
     }
 
