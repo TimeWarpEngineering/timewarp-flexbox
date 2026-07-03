@@ -350,7 +350,7 @@ public static class YogaEvent
   }
 
   private static SubscriberNode? s_subscribers;
-  private static readonly object s_lock = new();
+  private static readonly Lock s_lock = new();
 
   /// <summary>
   /// Subscribes to all events.

@@ -10,12 +10,20 @@ code is written with 4-space indentation while `.editorconfig` mandates 2-space,
 
 ## Todo List
 
-- [ ] Decide the indentation standard: either update `.editorconfig` to 4-space (matches the
-      ported code and Yoga C++ style) or keep 2-space and reformat the code
-- [ ] Run `dotnet format` across the solution and commit the result as a standalone
-      formatting-only commit (no logic changes mixed in)
-- [ ] Fix or explicitly suppress remaining analyzer diagnostics (IDE1006 naming,
-      CA/RCS rules) with justification comments where suppressed
+- [x] Decide the indentation standard — kept 2-space per .editorconfig
+- [x] Run `dotnet format` across the solution and commit the result as a standalone
+      formatting-only commit (no logic changes mixed in) — commit eb29f1a, 88 files,
+      ~15.5k IDE0055 errors eliminated; suite verified unchanged (1335/0/3)
+- [ ] Fix or explicitly suppress remaining analyzer diagnostics. Remaining with gates on
+      (~120 unique errors as of 2026-07-03):
+      - **IDE1006 (~83, DECISION NEEDED):** ported code uses `_camelCase` private fields
+        paired with PascalCase properties (`_direction`/`Direction`); .editorconfig forbids
+        the `_` prefix and PascalCase field names would collide with the properties.
+        Either add a naming rule allowing `_camelCase` (+ `s_` for static) private fields,
+        or restructure field/property pairs (invasive).
+      - **IDE0078/0072/0010/0011/0251/0370/0004 (~37):** pattern matching, switch
+        exhaustiveness, braces, readonly members — no batch fixer; hand-fix per file
+        (`dotnet format style --diagnostics ...` only resolved 4 files)
 - [ ] Re-enable `TreatWarningsAsErrors`, `CodeAnalysisTreatWarningsAsErrors`, and
       `EnforceCodeStyleInBuild` in `Directory.Build.props` (remove the temporary relaxation
       block referencing this task)

@@ -91,17 +91,17 @@ public struct StyleValueHandle : IEquatable<StyleValueHandle>
   /// <summary>
   /// Gets whether this handle's value is indexed in a pool.
   /// </summary>
-  internal bool IsValueIndexed => (_repr & HandleIndexedMask) != 0;
+  internal readonly bool IsValueIndexed => (_repr & HandleIndexedMask) != 0;
 
   /// <summary>
   /// Gets the type of this handle.
   /// </summary>
-  internal HandleType Type => (HandleType)(_repr & HandleTypeMask);
+  internal readonly HandleType Type => (HandleType)(_repr & HandleTypeMask);
 
   /// <summary>
   /// Gets the raw value portion (top 12 bits).
   /// </summary>
-  internal ushort Value => (ushort)(_repr >> 4);
+  internal readonly ushort Value => (ushort)(_repr >> 4);
 
   #endregion
 
@@ -144,13 +144,13 @@ public struct StyleValueHandle : IEquatable<StyleValueHandle>
   #region Equality
 
   /// <inheritdoc />
-  public bool Equals(StyleValueHandle other) => _repr == other._repr;
+  public readonly bool Equals(StyleValueHandle other) => _repr == other._repr;
 
   /// <inheritdoc />
   public override bool Equals(object? obj) => obj is StyleValueHandle other && Equals(other);
 
   /// <inheritdoc />
-  public override int GetHashCode() => _repr.GetHashCode();
+  public override readonly int GetHashCode() => _repr.GetHashCode();
 
   /// <summary>
   /// Equality operator.

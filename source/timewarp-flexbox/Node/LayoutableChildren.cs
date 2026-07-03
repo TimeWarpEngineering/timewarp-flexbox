@@ -244,7 +244,7 @@ public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<Layout
     }
 
     /// <inheritdoc />
-    public void Dispose()
+    public readonly void Dispose()
     {
       // No unmanaged resources to dispose
     }

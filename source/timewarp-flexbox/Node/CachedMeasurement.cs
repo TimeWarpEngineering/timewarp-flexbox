@@ -57,7 +57,7 @@ public struct CachedMeasurement : IEquatable<CachedMeasurement>
   };
 
   /// <inheritdoc />
-  public bool Equals(CachedMeasurement other)
+  public readonly bool Equals(CachedMeasurement other)
   {
     bool isEqual = WidthSizingMode == other.WidthSizingMode &&
                    HeightSizingMode == other.HeightSizingMode;
@@ -93,7 +93,7 @@ public struct CachedMeasurement : IEquatable<CachedMeasurement>
   public override bool Equals(object? obj) => obj is CachedMeasurement other && Equals(other);
 
   /// <inheritdoc />
-  public override int GetHashCode() =>
+  public override readonly int GetHashCode() =>
       HashCode.Combine(AvailableWidth, AvailableHeight, WidthSizingMode, HeightSizingMode, ComputedWidth, ComputedHeight);
 
   /// <summary>
