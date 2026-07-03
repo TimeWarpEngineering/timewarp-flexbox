@@ -27,8 +27,8 @@ public static class LayoutHelpers
     /// <param name="size">The size dimension (modified by reference).</param>
     /// <remarks>
     /// This corresponds to constrainMaxSizeForMode in CalculateLayout.cpp (lines 38-64).
-    /// When a max dimension is defined and less than the current size, the size is
-    /// clamped to the max and the mode may change from StretchFit to FitContent.
+    /// When a max dimension is defined, StretchFit/FitContent sizes are clamped to the
+    /// max (including margin), and MaxContent mode becomes FitContent at the max size.
     /// </remarks>
     public static void ConstrainMaxSizeForMode(
         Node node,
@@ -41,26 +41,26 @@ public static class LayoutHelpers
     {
         ArgumentNullException.ThrowIfNull(node);
 
-        FloatOptional maxSize = axis.IsRow()
-            ? node.Style.ResolvedMaxDimension(direction, Dimension.Width, ownerAxisSize, ownerWidth)
-            : node.Style.ResolvedMaxDimension(direction, Dimension.Height, ownerAxisSize, ownerWidth);
+        FloatOptional maxSize =
+            node.Style.ResolvedMaxDimension(direction, axis.GetDimension(), ownerAxisSize, ownerWidth) +
+            new FloatOptional(node.Style.ComputeMarginForAxis(axis, ownerWidth));
 
-        if (maxSize.IsDefined && maxSize.Unwrap() >= 0)
+        switch (mode)
         {
-            switch (mode)
-            {
-                case SizingMode.StretchFit:
-                case SizingMode.FitContent:
-                    size = (Comparison.IsUndefined(size) || maxSize.Unwrap() < size)
-                        ? maxSize.Unwrap()
-                        : size;
-                    // When we clamp to max, use FitContent to indicate we're fitting within a constraint
+            case SizingMode.StretchFit:
+            case SizingMode.FitContent:
+                size = (maxSize.IsUndefined || size < maxSize.Unwrap())
+                    ? size
+                    : maxSize.Unwrap();
+                break;
+            case SizingMode.MaxContent:
+                if (maxSize.IsDefined)
+                {
                     mode = SizingMode.FitContent;
-                    break;
-                case SizingMode.MaxContent:
-                    // MaxContent mode is not affected by max constraints during measurement
-                    break;
-            }
+                    size = maxSize.Unwrap();
+                }
+
+                break;
         }
     }
 

@@ -95,8 +95,8 @@ public class LayoutHelpersTests
             ref mode,
             ref size);
 
-        // Assert - Size clamped to max (50) and mode changed to FitContent
-        mode.ShouldBe(SizingMode.FitContent);
+        // Assert - Size clamped to max (50); StretchFit mode is preserved
+        mode.ShouldBe(SizingMode.StretchFit);
         size.ShouldBe(50f);
     }
 
@@ -118,12 +118,12 @@ public class LayoutHelpersTests
             ref mode,
             ref size);
 
-        // Assert - Size is below max, so size unchanged but mode changes
-        mode.ShouldBe(SizingMode.FitContent);
+        // Assert - Size is below max, so size and mode are unchanged
+        mode.ShouldBe(SizingMode.StretchFit);
         size.ShouldBe(100f);
     }
 
-    public void ConstrainMaxSizeForModeShouldNotAffectMaxContentMode()
+    public void ConstrainMaxSizeForModeShouldConvertMaxContentToFitContent()
     {
         // Arrange
         FlexNode node = new();
@@ -141,9 +141,9 @@ public class LayoutHelpersTests
             ref mode,
             ref size);
 
-        // Assert - MaxContent mode is not affected
-        mode.ShouldBe(SizingMode.MaxContent);
-        size.ShouldBe(100f);
+        // Assert - MaxContent with a defined max becomes FitContent at the max size
+        mode.ShouldBe(SizingMode.FitContent);
+        size.ShouldBe(50f);
     }
 
     public void ConstrainMaxSizeForModeShouldWorkForColumnAxis()
@@ -164,8 +164,8 @@ public class LayoutHelpersTests
             ref mode,
             ref size);
 
-        // Assert - Size clamped to max height
-        mode.ShouldBe(SizingMode.FitContent);
+        // Assert - Size clamped to max height; StretchFit mode is preserved
+        mode.ShouldBe(SizingMode.StretchFit);
         size.ShouldBe(50f);
     }
 
@@ -187,8 +187,8 @@ public class LayoutHelpersTests
             ref mode,
             ref size);
 
-        // Assert - Undefined size, so use max
-        mode.ShouldBe(SizingMode.FitContent);
+        // Assert - Undefined size, so use max; StretchFit mode is preserved
+        mode.ShouldBe(SizingMode.StretchFit);
         size.ShouldBe(50f);
     }
 
@@ -513,7 +513,7 @@ public class LayoutHelpersTests
 
     public void ConstrainMaxSizeForModeShouldHandleNegativeMax()
     {
-        // Arrange - Negative max should be ignored
+        // Arrange - Negative max is applied as-is (matches C++ constrainMaxSizeForMode)
         FlexNode node = new();
         node.Style.SetMaxDimension(Dimension.Width, StyleSizeLength.Points(-10f));
         SizingMode mode = SizingMode.StretchFit;
@@ -529,9 +529,9 @@ public class LayoutHelpersTests
             ref mode,
             ref size);
 
-        // Assert - Negative max is not applied
+        // Assert - Size is clamped to the negative max, mode unchanged
         mode.ShouldBe(SizingMode.StretchFit);
-        size.ShouldBe(100f);
+        size.ShouldBe(-10f);
     }
 
     public void ConstrainMaxSizeForModeShouldThrowForNullNode()

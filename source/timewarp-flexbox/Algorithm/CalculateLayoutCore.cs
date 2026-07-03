@@ -598,110 +598,135 @@ public static class CalculateLayoutCore
                 break;
         }
 
-        int currentLineIndex = 0;
-        float lineHeight = 0;
-        float maxAscentForCurrentLine = 0;
+        List<Node> children = [.. node.LayoutChildren];
+        int endIndex = 0;
 
-        // First pass: compute line heights
-        foreach (Node child in node.LayoutChildren)
+        for (int i = 0; i < lineCount; i++)
         {
-            if (child.Style.Display == Display.None || child.Style.PositionType == PositionType.Absolute)
+            int startIndex = endIndex;
+            int childIndex = startIndex;
+
+            // compute the line's height and find the endIndex
+            float lineHeight = 0;
+            float maxAscentForCurrentLine = 0;
+            float maxDescentForCurrentLine = 0;
+
+            for (; childIndex < children.Count; childIndex++)
             {
-                continue;
-            }
+                Node child = children[childIndex];
+                if (child.Style.Display == Display.None)
+                {
+                    continue;
+                }
 
-            if (child.LineIndex != currentLineIndex)
-            {
-                // Move to next line
-                currentLead += currentLineIndex != 0 ? crossAxisGap : 0;
-                currentLead += leadPerLine + lineHeight + extraSpacePerLine;
-                currentLineIndex = child.LineIndex;
-                lineHeight = 0;
-                maxAscentForCurrentLine = 0;
-            }
-
-            // Compute line height
-            if (child.IsLayoutDimensionDefined(crossAxis))
-            {
-                lineHeight = Comparison.MaxOrDefined(lineHeight,
-                    child.Layout.GetMeasuredDimension(crossAxis.GetDimension()) +
-                    child.Style.ComputeMarginForAxis(crossAxis, availableInnerWidth));
-            }
-
-            if (AlignUtils.ResolveChildAlignment(node, child) == Align.Baseline)
-            {
-                float ascent = Baseline.CalculateBaseline(child) +
-                    child.Style.ComputeFlexStartMargin(FlexDirection.Column, direction, availableInnerWidth);
-                float descent = child.Layout.GetMeasuredDimension(Dimension.Height) +
-                    child.Style.ComputeMarginForAxis(FlexDirection.Column, availableInnerWidth) - ascent;
-                maxAscentForCurrentLine = Comparison.MaxOrDefined(maxAscentForCurrentLine, ascent);
-                lineHeight = Comparison.MaxOrDefined(lineHeight, maxAscentForCurrentLine + descent);
-            }
-
-            // Position the child
-            Align childAlignment = AlignUtils.ResolveChildAlignment(node, child);
-            float finalLineHeight = lineHeight + extraSpacePerLine;
-
-            switch (childAlignment)
-            {
-                case Align.FlexStart:
-                    child.Layout.SetPosition(crossAxis.FlexStartEdge(),
-                        currentLead + child.Style.ComputeFlexStartPosition(crossAxis, direction, availableInnerWidth));
-                    break;
-
-                case Align.FlexEnd:
-                    child.Layout.SetPosition(crossAxis.FlexStartEdge(),
-                        currentLead + finalLineHeight -
-                        child.Style.ComputeFlexEndMargin(crossAxis, direction, availableInnerWidth) -
-                        child.Layout.GetMeasuredDimension(crossAxis.GetDimension()));
-                    break;
-
-                case Align.Center:
-                    float childCrossSize = child.Layout.GetMeasuredDimension(crossAxis.GetDimension());
-                    child.Layout.SetPosition(crossAxis.FlexStartEdge(),
-                        currentLead + (finalLineHeight - childCrossSize) / 2);
-                    break;
-
-                case Align.Stretch:
-                    child.Layout.SetPosition(crossAxis.FlexStartEdge(),
-                        currentLead + child.Style.ComputeFlexStartMargin(crossAxis, direction, availableInnerWidth));
-
-                    if (!child.HasDefiniteLength(crossAxis.GetDimension(), availableInnerCrossDim))
+                if (child.Style.PositionType != PositionType.Absolute)
+                {
+                    if (child.LineIndex != i)
                     {
-                        float childWidth = isMainAxisRow
-                            ? child.Layout.GetMeasuredDimension(Dimension.Width) +
-                              child.Style.ComputeMarginForAxis(mainAxis, availableInnerWidth)
-                            : leadPerLine + finalLineHeight;
-
-                        float childHeight = !isMainAxisRow
-                            ? child.Layout.GetMeasuredDimension(Dimension.Height) +
-                              child.Style.ComputeMarginForAxis(crossAxis, availableInnerWidth)
-                            : leadPerLine + finalLineHeight;
-
-                        if (!Comparison.InexactEquals(childWidth, child.Layout.GetMeasuredDimension(Dimension.Width)) ||
-                            !Comparison.InexactEquals(childHeight, child.Layout.GetMeasuredDimension(Dimension.Height)))
-                        {
-                            CalculateLayoutInternal(child, childWidth, childHeight, direction,
-                                SizingMode.StretchFit, SizingMode.StretchFit,
-                                availableInnerWidth, availableInnerHeight, true, LayoutPassReason.MultilineStretch,
-                                layoutMarkerData, depth, generationCount);
-                        }
+                        break;
                     }
 
-                    break;
+                    if (child.IsLayoutDimensionDefined(crossAxis))
+                    {
+                        lineHeight = Comparison.MaxOrDefined(lineHeight,
+                            child.Layout.GetMeasuredDimension(crossAxis.GetDimension()) +
+                            child.Style.ComputeMarginForAxis(crossAxis, availableInnerWidth));
+                    }
 
-                case Align.Baseline:
-                    child.Layout.SetPosition(PhysicalEdge.Top,
-                        currentLead + maxAscentForCurrentLine - Baseline.CalculateBaseline(child) +
-                        child.Style.ComputeFlexStartPosition(FlexDirection.Column, direction, availableInnerCrossDim));
-                    break;
-
-                case Align.Auto:
-                case Align.SpaceBetween:
-                case Align.SpaceAround:
-                case Align.SpaceEvenly:
-                    break;
+                    if (AlignUtils.ResolveChildAlignment(node, child) == Align.Baseline)
+                    {
+                        float ascent = Baseline.CalculateBaseline(child) +
+                            child.Style.ComputeFlexStartMargin(FlexDirection.Column, direction, availableInnerWidth);
+                        float descent = child.Layout.GetMeasuredDimension(Dimension.Height) +
+                            child.Style.ComputeMarginForAxis(FlexDirection.Column, availableInnerWidth) - ascent;
+                        maxAscentForCurrentLine = Comparison.MaxOrDefined(maxAscentForCurrentLine, ascent);
+                        maxDescentForCurrentLine = Comparison.MaxOrDefined(maxDescentForCurrentLine, descent);
+                        lineHeight = Comparison.MaxOrDefined(lineHeight,
+                            maxAscentForCurrentLine + maxDescentForCurrentLine);
+                    }
+                }
             }
+
+            endIndex = childIndex;
+            currentLead += i != 0 ? crossAxisGap : 0;
+            lineHeight += extraSpacePerLine;
+
+            for (childIndex = startIndex; childIndex < endIndex; childIndex++)
+            {
+                Node child = children[childIndex];
+                if (child.Style.Display == Display.None)
+                {
+                    continue;
+                }
+
+                if (child.Style.PositionType != PositionType.Absolute)
+                {
+                    switch (AlignUtils.ResolveChildAlignment(node, child))
+                    {
+                        case Align.FlexStart:
+                            child.Layout.SetPosition(crossAxis.FlexStartEdge(),
+                                currentLead + child.Style.ComputeFlexStartPosition(crossAxis, direction, availableInnerWidth));
+                            break;
+
+                        case Align.FlexEnd:
+                            child.Layout.SetPosition(crossAxis.FlexStartEdge(),
+                                currentLead + lineHeight -
+                                child.Style.ComputeFlexEndMargin(crossAxis, direction, availableInnerWidth) -
+                                child.Layout.GetMeasuredDimension(crossAxis.GetDimension()));
+                            break;
+
+                        case Align.Center:
+                            float childHeight = child.Layout.GetMeasuredDimension(crossAxis.GetDimension());
+                            child.Layout.SetPosition(crossAxis.FlexStartEdge(),
+                                currentLead + (lineHeight - childHeight) / 2);
+                            break;
+
+                        case Align.Stretch:
+                            child.Layout.SetPosition(crossAxis.FlexStartEdge(),
+                                currentLead + child.Style.ComputeFlexStartMargin(crossAxis, direction, availableInnerWidth));
+
+                            // Remeasure child with the line height as it as been only
+                            // measured with the owners height yet.
+                            if (!child.HasDefiniteLength(crossAxis.GetDimension(), availableInnerCrossDim))
+                            {
+                                float stretchChildWidth = isMainAxisRow
+                                    ? child.Layout.GetMeasuredDimension(Dimension.Width) +
+                                      child.Style.ComputeMarginForAxis(mainAxis, availableInnerWidth)
+                                    : leadPerLine + lineHeight;
+
+                                float stretchChildHeight = !isMainAxisRow
+                                    ? child.Layout.GetMeasuredDimension(Dimension.Height) +
+                                      child.Style.ComputeMarginForAxis(crossAxis, availableInnerWidth)
+                                    : leadPerLine + lineHeight;
+
+                                if (!(Comparison.InexactEquals(stretchChildWidth, child.Layout.GetMeasuredDimension(Dimension.Width)) &&
+                                      Comparison.InexactEquals(stretchChildHeight, child.Layout.GetMeasuredDimension(Dimension.Height))))
+                                {
+                                    CalculateLayoutInternal(child, stretchChildWidth, stretchChildHeight, direction,
+                                        SizingMode.StretchFit, SizingMode.StretchFit,
+                                        availableInnerWidth, availableInnerHeight, true, LayoutPassReason.MultilineStretch,
+                                        layoutMarkerData, depth, generationCount);
+                                }
+                            }
+
+                            break;
+
+                        case Align.Baseline:
+                            child.Layout.SetPosition(PhysicalEdge.Top,
+                                currentLead + maxAscentForCurrentLine - Baseline.CalculateBaseline(child) +
+                                child.Style.ComputeFlexStartPosition(FlexDirection.Column, direction, availableInnerCrossDim));
+                            break;
+
+                        case Align.Auto:
+                        case Align.SpaceBetween:
+                        case Align.SpaceAround:
+                        case Align.SpaceEvenly:
+                            break;
+                    }
+                }
+            }
+
+            currentLead += leadPerLine + lineHeight;
         }
     }
 
