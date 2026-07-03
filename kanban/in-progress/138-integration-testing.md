@@ -77,8 +77,16 @@ Wire all components together, ensure the public API works end-to-end, and port/r
       (CalculateLayoutCore.cs, LayoutHelpers.cs), WebFlexBasis generation check
       (FlexBasis.cs), style-change dirtying (Style.cs/Node.cs), canSkipFlex min/max
       clamp (JustifyContent.cs). Suite: 1046 passed / 0 failed / 3 skipped.
-- [ ] Port medium-priority tests
-- [ ] Port low-priority tests
+- [x] Port medium-priority tests — all remaining generated files converted 2026-07-03
+      (Margin, Padding, Border, MinMaxDimension, Percentage, Gap, Display, BoxSizing,
+      StaticPosition, Rounding, AlignSelf, AspectRatio, Auto, Dimension, DisplayContents,
+      FlexBasisFitContent, IntrinsicSize, SizeOverflow); all pass. Suite: 1335/0/3.
+- [ ] Port low-priority tests — remaining hand-written unit tests: YGBaselineFuncTest,
+      YGAlignBaselineTest, YGAspectRatioTest, YGEdgeTest, YGComputedMargin/PaddingTest,
+      YGHadOverflowTest, YGRounding*Test, YGScaleChangeTest, YGZeroOutLayoutRecursivelyTest,
+      YGPersistenceTest, YGPersistentNodeCloningTest, FlexGapTest, YGDirtiedTest,
+      YGDirtyMarkingTest, YGNodeChildTest, plus IntrinsicSize text-measurement tests
+      (need a shared text-measure helper like Yoga's TestUtil)
 - [x] Port generated tests (can be automated) — automated via `runfiles/port-generated-tests.cs`;
       first 7 files converted 2026-07-03 (FlexDirection, JustifyContent, AlignItems, AlignContent,
       FlexWrap, Flex, AbsolutePosition = 241 tests). Remaining generated files: re-run the
