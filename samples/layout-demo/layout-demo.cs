@@ -1,5 +1,5 @@
-#!/usr/bin/dotnet --
-#:project ../../source/timewarp-flexbox/timewarp-flexbox.csproj
+#!/usr/bin/env -S dotnet --
+#:project $(SourceDirectory)timewarp-flexbox/timewarp-flexbox.csproj
 #:property EnablePreviewFeatures=true
 #:property NoWarn=CA1303;CA2007;IDE0058
 

@@ -1,4 +1,4 @@
-#!/usr/bin/dotnet --
+#!/usr/bin/env -S dotnet --
 #:property EnablePreviewFeatures=true
 #:property NoWarn=CA1303;CA2007
 
