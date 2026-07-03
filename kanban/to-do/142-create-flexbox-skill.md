@@ -45,9 +45,11 @@ compiling code examples. Target length in line with siblings (~350-500 lines).
       a source of known-good snippets)
 - [ ] Point to the visual demo and the Generated conformance tests as further
       reference material
-- [ ] Check how sibling repos register/distribute their skills beyond the repo
-      `skills/` folder (e.g. netclaw-skill-server) and hook flexbox in the same way
-      if applicable
+- [ ] Publication to https://timewarp.software/ happens automatically once the repo
+      qualifies for the site's catalog: the site aggregates `skills/*/SKILL.md` from
+      family repos' default branches at build time. Repo qualification and the
+      release-triggered rebuild are task 143's scope; verify the skill appears on the
+      site's skills index after both land.
 
 ## Notes
 
