@@ -15,11 +15,11 @@ PublishAot smoke test runs in CI on every build.
 ## Installation
 
 ```bash
-dotnet add package TimeWarp.Flexbox --prerelease
+dotnet add package TimeWarp.Flexbox
 ```
 
 ```xml
-<PackageReference Include="TimeWarp.Flexbox" Version="1.0.0-beta.4" />
+<PackageReference Include="TimeWarp.Flexbox" Version="1.0.0" />
 ```
 
 ## Usage

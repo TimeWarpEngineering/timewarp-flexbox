@@ -279,7 +279,7 @@ CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
 ## Installation
 
 ```bash
-dotnet add package TimeWarp.Flexbox --prerelease
+dotnet add package TimeWarp.Flexbox
 ```
 
 The package is on nuget.org and ships XML docs. Targets `net10.0`, zero
