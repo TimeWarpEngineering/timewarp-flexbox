@@ -97,3 +97,17 @@ Remaining items require owner action: make the repo public, register
 TimeWarp.Flexbox for nuget.org Trusted Publishing under TimeWarp.Enterprises,
 then cut the next release and verify the package page + flexbox skill appear
 on https://timewarp.software/.
+
+## Release-chain verification (2026-07-04, v1.0.0-beta.4)
+
+- Release pipeline green end-to-end in Actions: OIDC login, version check,
+  pack, "Your package was pushed" to nuget.org, "timewarp-software rebuild
+  dispatched" (org App token mint worked).
+- Package live on nuget.org: listed=true, gallery page 200, consumer install
+  verified (plain dotnet add package; readme example output exact).
+- Site rebuild runs complete successfully on each dispatch.
+- REMAINING: nuget.org's SEARCH index (which drives the site's owner-search
+  catalog) lags for brand-new package ids - still 0 hits ~2h after push.
+  Once it indexes, any rebuild (manual dispatch or the nightly cron) picks up
+  the package page and the flexbox skill automatically. Verify then check the
+  final box below.

@@ -16,8 +16,11 @@ verified: dll + readme + logo, MIT license, version 1.0.0-beta.3.
       succeeded ("Your package was pushed" to nuget.pkg.github.com/TimeWarpEngineering)
 - [x] Release notes state the API is entirely new (beta.2 was the deleted
       `FlexNode`/`FlexLayoutEngine` implementation) and list known gaps.
-- [ ] Verify the package installs into a consumer project (needs a PAT with
-      read:packages; push to the feed itself is confirmed via the workflow log)
+- [x] Verify the package installs into a consumer project — verified 2026-07-04
+      against nuget.org with 1.0.0-beta.4 (plain `dotnet add package`, no PAT):
+      the readme example runs and produces the documented output. (The repo has
+      since moved to public + nuget.org Trusted Publishing via tasks 141/143;
+      beta.4 superseded beta.3 as the first nuget.org release.)
 
 ## Toward stable 1.0 (follow-ups, not blockers for beta.3)
 
@@ -27,6 +30,10 @@ verified: dll + readme + logo, MIT license, version 1.0.0-beta.3.
 - [ ] Text-measurement test helper to unlock skipped IntrinsicSize tests
 - [ ] Enable GenerateDocumentationFile so the package ships XML docs
 
-## Results
+## Results (2026-07-04)
 
-(Add after completion)
+Complete. beta.3 published to GitHub Packages on 2026-07-03; the follow-up
+1.0.0-beta.4 (2026-07-04) became the first nuget.org release through the new
+Trusted Publishing pipeline, and consumer installation was verified against
+nuget.org. Stable-1.0 follow-ups moved to their own tasks (139 done, 141 done,
+142 done, 143 in progress).
