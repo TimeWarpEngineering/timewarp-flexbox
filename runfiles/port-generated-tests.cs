@@ -2,7 +2,7 @@
 #:property TreatWarningsAsErrors=false
 #:property CodeAnalysisTreatWarningsAsErrors=false
 #:property EnablePreviewFeatures=true
-#:property NoWarn=CA1303;CA2007
+#:property NoWarn=CA1303;CA2007;CA1305;IDE0028;IDE0211;RS0030
 
 // Converts Yoga's generated C++ gtest files (tests/generated/YG*Test.cpp) into
 // C# Fixie tests under test/timewarp-flexbox-tests/Generated/.
@@ -119,14 +119,14 @@ internal static partial class Converter
         }
 
         first = false;
-        output.AppendLine($"    public void {testName}()");
-        output.AppendLine("    {");
+        output.AppendLine($"  public void {testName}()");
+        output.AppendLine("  {");
         foreach (string line in translated)
         {
           output.AppendLine(line);
         }
 
-        output.AppendLine("    }");
+        output.AppendLine("  }");
         converted++;
       }
 
@@ -157,7 +157,7 @@ internal static partial class Converter
 
       if (translated.Length > 0)
       {
-        result.Add("        " + translated);
+        result.Add("    " + translated);
       }
     }
 
@@ -190,6 +190,21 @@ internal static partial class Converter
     if (m.Success)
     {
       return $"FlexNode {m.Groups[1].Value} = new(config);";
+    }
+
+    // Intrinsic text measurement (generated IntrinsicSize tests): the text is
+    // passed via node context and measured by the shared IntrinsicSizeMeasure
+    // helper (see test/timewarp-flexbox-tests/Generated/IntrinsicSizeMeasure.cs)
+    m = Regex.Match(line, "^YGNodeSetContext\\((\\w+), \\(void\\*\\)\"(.*)\"\\);$");
+    if (m.Success)
+    {
+      return $"{m.Groups[1].Value}.Context = \"{m.Groups[2].Value}\";";
+    }
+
+    m = Regex.Match(line, @"^YGNodeSetMeasureFunc\((\w+), &facebook::yoga::test::IntrinsicSizeMeasure\);$");
+    if (m.Success)
+    {
+      return $"{m.Groups[1].Value}.SetMeasureFunc(IntrinsicSizeMeasure.Measure);";
     }
 
     m = Regex.Match(line, @"^YGNodeInsertChild\((\w+), (\w+), (\d+)\);$");
