@@ -485,7 +485,7 @@ public class NodeTests
     root.InsertChild(new FlexNode(), 0);
 
     // Act & Assert
-    Should.Throw<YogaAssertException>(() => root.Reset());
+    Should.Throw<YogaAssertException>(root.Reset);
   }
 
   public void Reset_fails_with_owner()
@@ -496,7 +496,7 @@ public class NodeTests
     child.Owner = root;
 
     // Act & Assert
-    Should.Throw<YogaAssertException>(() => child.Reset());
+    Should.Throw<YogaAssertException>(child.Reset);
   }
 
   public void Reset_clears_all_state()

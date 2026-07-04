@@ -8,63 +8,18 @@ layouts (positions and sizes) for a tree of nodes â€” no UI framework required â
 and its behavior is verified against Yoga's own generated conformance suite
 (530 tests, LTR and RTL).
 
+The library has zero runtime dependencies and is fully **Native AOT and
+trimming compatible** (`IsAotCompatible`): no reflection, no dynamic code. A
+PublishAot smoke test runs in CI on every build.
+
 ## Installation
 
-This is a private package hosted on GitHub Packages. To consume it, you need to configure authentication.
-
-### 1. Create a Personal Access Token (PAT)
-
-1. Go to [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens)
-2. Generate a new token (classic) with `read:packages` scope
-3. Copy the token
-
-### 2. Configure nuget.config
-
-Create a `nuget.config` file in your repository root:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
-    <add key="github-timewarp" value="https://nuget.pkg.github.com/TimeWarpEngineering/index.json" />
-  </packageSources>
-  <packageSourceCredentials>
-    <github-timewarp>
-      <add key="Username" value="YOUR_GITHUB_USERNAME" />
-      <add key="ClearTextPassword" value="YOUR_PAT" />
-    </github-timewarp>
-  </packageSourceCredentials>
-</configuration>
+```bash
+dotnet add package TimeWarp.Flexbox --prerelease
 ```
 
-**Do not commit credentials to git.** Use one of these approaches:
-
-- Use environment variables in CI/CD
-- Use a user-level nuget.config (`~/.nuget/NuGet/NuGet.Config`)
-- Use `dotnet nuget add source` command
-
-### 3. GitHub Actions Authentication
-
-For consuming this package in GitHub Actions workflows:
-
-```yaml
-- name: Authenticate to GitHub Packages
-  run: |
-    dotnet nuget add source \
-      --username ${{ github.actor }} \
-      --password ${{ secrets.GITHUB_TOKEN }} \
-      --store-password-in-clear-text \
-      --name github-timewarp \
-      "https://nuget.pkg.github.com/TimeWarpEngineering/index.json"
-```
-
-Note: `GITHUB_TOKEN` works for repositories within the same organization. For external repositories, use a PAT stored as a secret.
-
-### 4. Add Package Reference
-
 ```xml
-<PackageReference Include="TimeWarp.Flexbox" Version="1.0.0-beta.3" />
+<PackageReference Include="TimeWarp.Flexbox" Version="1.0.0-beta.4" />
 ```
 
 ## Usage

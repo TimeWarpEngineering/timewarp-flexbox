@@ -29,10 +29,10 @@ using System.Collections;
 /// </remarks>
 public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
 {
-  private ushort _count;
-  private readonly uint[] _buffer;
-  private readonly BitArray _wideElements;
-  private Overflow? _overflow;
+  private ushort Count;
+  private readonly uint[] Buffer;
+  private readonly BitArray WideElements;
+  private Overflow? OverflowStorage;
 
   /// <summary>
   /// Initializes a new empty SmallValueBuffer.
@@ -40,10 +40,10 @@ public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
   public SmallValueBuffer()
   {
     int bufferSize = TBufferSize.Size;
-    _buffer = new uint[bufferSize];
-    _wideElements = new BitArray(bufferSize);
-    _count = 0;
-    _overflow = null;
+    Buffer = new uint[bufferSize];
+    WideElements = new BitArray(bufferSize);
+    Count = 0;
+    OverflowStorage = null;
   }
 
   /// <summary>
@@ -54,11 +54,11 @@ public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
     ArgumentNullException.ThrowIfNull(other);
 
     int bufferSize = TBufferSize.Size;
-    _count = other._count;
-    _buffer = new uint[bufferSize];
-    Array.Copy(other._buffer, _buffer, bufferSize);
-    _wideElements = new BitArray(other._wideElements);
-    _overflow = other._overflow is not null ? new Overflow(other._overflow) : null;
+    Count = other.Count;
+    Buffer = new uint[bufferSize];
+    Array.Copy(other.Buffer, Buffer, bufferSize);
+    WideElements = new BitArray(other.WideElements);
+    OverflowStorage = other.OverflowStorage is not null ? new Overflow(other.OverflowStorage) : null;
   }
 
   /// <summary>
@@ -69,22 +69,22 @@ public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
   /// <exception cref="InvalidOperationException">If the buffer exceeds 4096 chunks.</exception>
   public ushort Push(uint value)
   {
-    ushort index = _count++;
+    ushort index = Count++;
 
     if (index >= 4096)
     {
       throw new InvalidOperationException("SmallValueBuffer can only hold up to 4096 chunks");
     }
 
-    if (index < _buffer.Length)
+    if (index < Buffer.Length)
     {
-      _buffer[index] = value;
+      Buffer[index] = value;
       return index;
     }
 
-    _overflow ??= new Overflow();
-    _overflow.Buffer.Add(value);
-    _overflow.WideElements.Add(false);
+    OverflowStorage ??= new Overflow();
+    OverflowStorage.Buffer.Add(value);
+    OverflowStorage.WideElements.Add(false);
     return index;
   }
 
@@ -107,13 +107,13 @@ public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
       throw new InvalidOperationException("SmallValueBuffer can only hold up to 4096 chunks");
     }
 
-    if (lsbIndex < _buffer.Length)
+    if (lsbIndex < Buffer.Length)
     {
-      _wideElements[lsbIndex] = true;
+      WideElements[lsbIndex] = true;
     }
     else
     {
-      _overflow!.WideElements[lsbIndex - _buffer.Length] = true;
+      OverflowStorage!.WideElements[lsbIndex - Buffer.Length] = true;
     }
 
     return lsbIndex;
@@ -127,19 +127,19 @@ public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
   /// <returns>The index (unchanged for 32-bit replacement).</returns>
   public ushort Replace(ushort index, uint value)
   {
-    if (index < _buffer.Length)
+    if (index < Buffer.Length)
     {
-      _buffer[index] = value;
+      Buffer[index] = value;
     }
     else
     {
-      int overflowIndex = index - _buffer.Length;
-      if (_overflow is null || overflowIndex >= _overflow.Buffer.Count)
+      int overflowIndex = index - Buffer.Length;
+      if (OverflowStorage is null || overflowIndex >= OverflowStorage.Buffer.Count)
       {
         throw new ArgumentOutOfRangeException(nameof(index));
       }
 
-      _overflow.Buffer[overflowIndex] = value;
+      OverflowStorage.Buffer[overflowIndex] = value;
     }
 
     return index;
@@ -155,9 +155,9 @@ public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
   /// <returns>The index where the value is stored (may be different if widening).</returns>
   public ushort Replace(ushort index, ulong value)
   {
-    bool isWide = index < _wideElements.Length
-        ? _wideElements[index]
-        : _overflow!.WideElements[index - _buffer.Length];
+    bool isWide = index < WideElements.Length
+        ? WideElements[index]
+        : OverflowStorage!.WideElements[index - Buffer.Length];
 
     if (isWide)
     {
@@ -182,18 +182,18 @@ public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
   /// <exception cref="ArgumentOutOfRangeException">If the index is out of range.</exception>
   public uint Get32(ushort index)
   {
-    if (index < _buffer.Length)
+    if (index < Buffer.Length)
     {
-      return _buffer[index];
+      return Buffer[index];
     }
 
-    int overflowIndex = index - _buffer.Length;
-    if (_overflow is null || overflowIndex >= _overflow.Buffer.Count)
+    int overflowIndex = index - Buffer.Length;
+    if (OverflowStorage is null || overflowIndex >= OverflowStorage.Buffer.Count)
     {
       throw new ArgumentOutOfRangeException(nameof(index));
     }
 
-    return _overflow.Buffer[overflowIndex];
+    return OverflowStorage.Buffer[overflowIndex];
   }
 
   /// <summary>

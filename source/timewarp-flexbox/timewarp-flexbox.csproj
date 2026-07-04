@@ -4,7 +4,9 @@
     <RootNamespace>TimeWarp.Flexbox</RootNamespace>
     <AssemblyName>TimeWarp.Flexbox</AssemblyName>
     <Description>A pure C# implementation of the Flexbox layout algorithm for .NET applications</Description>
-    <PackageTags>flexbox;layout;css;yoga;ui</PackageTags>
+    <PackageTags>flexbox;layout;css;yoga;ui;aot;trimming</PackageTags>
+    <!-- Enables trimming/AOT/single-file analyzers and marks the package AOT-safe -->
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
 </Project>

@@ -507,6 +507,8 @@ public static class AbsoluteLayout
       case Justify.SpaceEvenly:
         SetCenterLayoutPosition(parent, child, direction, mainAxis, containingBlockWidth);
         break;
+      default:
+        break;
     }
   }
 
@@ -548,6 +550,8 @@ public static class AbsoluteLayout
         break;
       case Align.Center:
         SetCenterLayoutPosition(parent, child, direction, crossAxis, containingBlockWidth);
+        break;
+      default:
         break;
     }
   }

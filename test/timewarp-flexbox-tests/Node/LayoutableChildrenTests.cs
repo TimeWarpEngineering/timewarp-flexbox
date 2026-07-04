@@ -336,8 +336,15 @@ public class LayoutableChildrenTests
     MockNode? secondChild = null;
     foreach (MockNode child in layoutableChildren)
     {
-      if (count == 0) firstChild = child;
-      else if (count == 1) secondChild = child;
+      if (count == 0)
+      {
+        firstChild = child;
+      }
+      else if (count == 1)
+      {
+        secondChild = child;
+      }
+
       count++;
     }
 

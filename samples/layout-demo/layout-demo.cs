@@ -1,4 +1,6 @@
 #!/usr/bin/env -S dotnet --
+#:property TreatWarningsAsErrors=false
+#:property CodeAnalysisTreatWarningsAsErrors=false
 #:project $(SourceDirectory)timewarp-flexbox/timewarp-flexbox.csproj
 #:property EnablePreviewFeatures=true
 #:property NoWarn=CA1303;CA2007;IDE0058
@@ -335,12 +337,13 @@ internal static class AsciiRender
   {
     int cols = (int)MathF.Ceiling(root.Width / ScaleX) + 1;
     int rows = (int)MathF.Ceiling(root.Height / ScaleY) + 1;
-    char[,] grid = new char[rows, cols];
+    char[][] grid = new char[rows][];
     for (int r = 0; r < rows; r++)
     {
+      grid[r] = new char[cols];
       for (int c = 0; c < cols; c++)
       {
-        grid[r, c] = ' ';
+        grid[r][c] = ' ';
       }
     }
 
@@ -352,7 +355,7 @@ internal static class AsciiRender
     {
       for (int c = 0; c < cols; c++)
       {
-        sb.Append(grid[r, c]);
+        sb.Append(grid[r][c]);
       }
 
       sb.AppendLine();
@@ -361,7 +364,7 @@ internal static class AsciiRender
     return sb.ToString();
   }
 
-  private static void Draw(char[,] grid, LaidOutBox box, ref int label, int depth)
+  private static void Draw(char[][] grid, LaidOutBox box, ref int label, int depth)
   {
     int x0 = (int)MathF.Round(box.X / ScaleX);
     int y0 = (int)MathF.Round(box.Y / ScaleY);
@@ -370,13 +373,13 @@ internal static class AsciiRender
     x1 = Math.Max(x1, x0 + 1);
     y1 = Math.Max(y1, y0 + 1);
 
-    for (int c = x0; c <= x1 && c < grid.GetLength(1); c++)
+    for (int c = x0; c <= x1 && c < grid[0].Length; c++)
     {
       Put(grid, y0, c, '─');
       Put(grid, y1, c, '─');
     }
 
-    for (int r = y0; r <= y1 && r < grid.GetLength(0); r++)
+    for (int r = y0; r <= y1 && r < grid.Length; r++)
     {
       Put(grid, r, x0, '│');
       Put(grid, r, x1, '│');
@@ -403,11 +406,11 @@ internal static class AsciiRender
     }
   }
 
-  private static void Put(char[,] grid, int r, int c, char ch)
+  private static void Put(char[][] grid, int r, int c, char ch)
   {
-    if (r >= 0 && r < grid.GetLength(0) && c >= 0 && c < grid.GetLength(1))
+    if (r >= 0 && r < grid.Length && c >= 0 && c < grid[0].Length)
     {
-      grid[r, c] = ch;
+      grid[r][c] = ch;
     }
   }
 }

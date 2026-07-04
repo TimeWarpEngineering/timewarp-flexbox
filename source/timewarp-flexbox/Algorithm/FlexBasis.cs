@@ -266,7 +266,7 @@ public static class FlexBasis
           CalculateLayoutInternal is not null,
           "CalculateLayoutInternal delegate must be set before computing flex basis");
 
-      CalculateLayoutInternal!(
+      CalculateLayoutInternal(
           child,
           childWidth,
           childHeight,

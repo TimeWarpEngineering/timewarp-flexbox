@@ -17,12 +17,12 @@ public static class CalculateLayout
   /// Global generation counter used to detect when layout needs recalculation.
   /// Each layout pass increments this counter, forcing dirty nodes to be revisited.
   /// </summary>
-  private static int s_currentGenerationCount;
+  private static int GenerationCount;
 
   /// <summary>
   /// Gets the current generation count (for testing purposes).
   /// </summary>
-  internal static int CurrentGenerationCount => s_currentGenerationCount;
+  internal static int CurrentGenerationCount => GenerationCount;
 
   /// <summary>
   /// The public entry point for calculating layout on a node tree.
@@ -55,7 +55,7 @@ public static class CalculateLayout
     // Increment the generation count. This will force the recursive routine to
     // visit all dirty nodes at least once. Subsequent visits will be skipped if
     // the input parameters don't change.
-    int generationCount = Interlocked.Increment(ref s_currentGenerationCount);
+    int generationCount = Interlocked.Increment(ref GenerationCount);
 
     node.ProcessDimensions();
     Direction direction = node.ResolveDirection(ownerDirection);

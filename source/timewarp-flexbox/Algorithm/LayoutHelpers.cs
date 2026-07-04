@@ -61,6 +61,8 @@ public static class LayoutHelpers
         }
 
         break;
+      default:
+        break;
     }
   }
 

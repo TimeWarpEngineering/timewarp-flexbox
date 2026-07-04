@@ -296,7 +296,7 @@ public static class CalculateLayoutCore
           availableInnerMainDim, availableInnerCrossDim, availableInnerWidth, performLayout);
 
       float containerCrossAxis = availableInnerCrossDim;
-      if (sizingModeCrossDim == SizingMode.MaxContent || sizingModeCrossDim == SizingMode.FitContent)
+      if (sizingModeCrossDim is SizingMode.MaxContent or SizingMode.FitContent)
       {
         containerCrossAxis = BoundAxis.BoundAxisValue(node, crossAxis, direction,
             flexLine.Layout.CrossDim + paddingAndBorderAxisCross, crossAxisOwnerSize, ownerWidth) - paddingAndBorderAxisCross;
@@ -595,6 +595,7 @@ public static class CalculateLayoutCore
       case Align.Auto:
       case Align.FlexStart:
       case Align.Baseline:
+      default:
         break;
     }
 
@@ -721,6 +722,7 @@ public static class CalculateLayoutCore
             case Align.SpaceBetween:
             case Align.SpaceAround:
             case Align.SpaceEvenly:
+            default:
               break;
           }
         }

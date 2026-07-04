@@ -1,4 +1,6 @@
 #!/usr/bin/env -S dotnet --
+#:property TreatWarningsAsErrors=false
+#:property CodeAnalysisTreatWarningsAsErrors=false
 #:package TimeWarp.Amuru
 #:property NoWarn=CA2007
 

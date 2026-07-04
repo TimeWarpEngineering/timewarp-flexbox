@@ -17,7 +17,7 @@ namespace TimeWarp.Flexbox;
 /// </summary>
 public sealed class StyleValuePool
 {
-  private readonly SmallValueBuffer<BufferSize4> _buffer = new();
+  private readonly SmallValueBuffer<BufferSize4> Buffer = new();
 
   // Constants for inline integer packing
   private const ushort MaxInlineAbsValue = (1 << 11) - 1; // 2047
@@ -115,12 +115,11 @@ public sealed class StyleValuePool
     else
     {
       Debug.Assert(
-        handle.Type == StyleValueHandle.HandleType.Point ||
-        handle.Type == StyleValueHandle.HandleType.Percent,
+        handle.Type is StyleValueHandle.HandleType.Point or StyleValueHandle.HandleType.Percent,
         "Invalid handle type for GetLength");
 
       float value = handle.IsValueIndexed
-        ? BitCastToFloat(_buffer.Get32(handle.Value))
+        ? BitCastToFloat(Buffer.Get32(handle.Value))
         : UnpackInlineInteger(handle.Value);
 
       return handle.Type == StyleValueHandle.HandleType.Point
@@ -157,12 +156,11 @@ public sealed class StyleValuePool
     else
     {
       Debug.Assert(
-        handle.Type == StyleValueHandle.HandleType.Point ||
-        handle.Type == StyleValueHandle.HandleType.Percent,
+        handle.Type is StyleValueHandle.HandleType.Point or StyleValueHandle.HandleType.Percent,
         "Invalid handle type for GetSize");
 
       float value = handle.IsValueIndexed
-        ? BitCastToFloat(_buffer.Get32(handle.Value))
+        ? BitCastToFloat(Buffer.Get32(handle.Value))
         : UnpackInlineInteger(handle.Value);
 
       return handle.Type == StyleValueHandle.HandleType.Point
@@ -187,7 +185,7 @@ public sealed class StyleValuePool
         "Invalid handle type for GetNumber");
 
       float value = handle.IsValueIndexed
-        ? BitCastToFloat(_buffer.Get32(handle.Value))
+        ? BitCastToFloat(Buffer.Get32(handle.Value))
         : UnpackInlineInteger(handle.Value);
 
       return new FloatOptional(value);
@@ -205,7 +203,7 @@ public sealed class StyleValuePool
     if (handle.IsValueIndexed)
     {
       // Already indexed - replace in buffer
-      ushort newIndex = _buffer.Replace(handle.Value, BitCastToUInt(value));
+      ushort newIndex = Buffer.Replace(handle.Value, BitCastToUInt(value));
       handle.SetValue(newIndex);
     }
     else if (IsIntegerPackable(value))
@@ -216,7 +214,7 @@ public sealed class StyleValuePool
     else
     {
       // Need to store in buffer
-      ushort newIndex = _buffer.Push(BitCastToUInt(value));
+      ushort newIndex = Buffer.Push(BitCastToUInt(value));
       handle.SetValue(newIndex);
       handle.SetValueIsIndexed();
     }
@@ -229,7 +227,7 @@ public sealed class StyleValuePool
     if (handle.IsValueIndexed)
     {
       // Already indexed - replace in buffer
-      ushort newIndex = _buffer.Replace(handle.Value, (uint)keyword);
+      ushort newIndex = Buffer.Replace(handle.Value, (uint)keyword);
       handle.SetValue(newIndex);
     }
     else
@@ -246,7 +244,7 @@ public sealed class StyleValuePool
   private static bool IsIntegerPackable(float f)
   {
     int i = (int)f;
-    return (float)i == f && i >= -MaxInlineAbsValue && i <= MaxInlineAbsValue;
+    return i == f && i >= -MaxInlineAbsValue && i <= MaxInlineAbsValue;
   }
 
   /// <summary>

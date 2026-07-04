@@ -35,7 +35,7 @@ namespace TimeWarp.Flexbox;
 public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<LayoutableChildren<T>>
     where T : class, ILayoutableNode
 {
-  private readonly T? _parent;
+  private readonly T? Parent;
 
   /// <summary>
   /// Creates a new <see cref="LayoutableChildren{T}"/> for the specified parent node.
@@ -43,14 +43,14 @@ public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<Layout
   /// <param name="parent">The parent node whose layoutable children to iterate.</param>
   public LayoutableChildren(T? parent)
   {
-    _parent = parent;
+    Parent = parent;
   }
 
   /// <summary>
   /// Returns an enumerator that iterates through the layoutable children.
   /// </summary>
   /// <returns>An enumerator for the layoutable children.</returns>
-  public Enumerator GetEnumerator() => new(_parent);
+  public Enumerator GetEnumerator() => new(Parent);
 
   /// <inheritdoc />
   IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
@@ -61,13 +61,13 @@ public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<Layout
   #region Equality
 
   /// <inheritdoc />
-  public bool Equals(LayoutableChildren<T> other) => ReferenceEquals(_parent, other._parent);
+  public bool Equals(LayoutableChildren<T> other) => ReferenceEquals(Parent, other.Parent);
 
   /// <inheritdoc />
   public override bool Equals(object? obj) => obj is LayoutableChildren<T> other && Equals(other);
 
   /// <inheritdoc />
-  public override int GetHashCode() => _parent?.GetHashCode() ?? 0;
+  public override int GetHashCode() => Parent?.GetHashCode() ?? 0;
 
   /// <summary>
   /// Equality operator.
@@ -92,11 +92,11 @@ public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<Layout
   /// </remarks>
   public struct Enumerator : IEnumerator<T>
   {
-    private T? _node;
-    private int _childIndex;
-    private Stack<(T Node, int ChildIndex)>? _backtrack;
-    private T? _current;
-    private bool _started;
+    private T? Node;
+    private int ChildIndex;
+    private Stack<(T Node, int ChildIndex)>? Backtrack;
+    private T? CurrentInternal;
+    private bool Started;
 
     /// <summary>
     /// Creates a new enumerator for the specified parent node.
@@ -104,15 +104,15 @@ public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<Layout
     /// <param name="parent">The parent node to enumerate children from.</param>
     internal Enumerator(T? parent)
     {
-      _node = parent;
-      _childIndex = 0;
-      _backtrack = null;
-      _current = null;
-      _started = false;
+      Node = parent;
+      ChildIndex = 0;
+      Backtrack = null;
+      CurrentInternal = null;
+      Started = false;
     }
 
     /// <inheritdoc />
-    public readonly T Current => _current!;
+    public readonly T Current => CurrentInternal!;
 
     /// <inheritdoc />
     readonly object System.Collections.IEnumerator.Current => Current;
@@ -120,46 +120,46 @@ public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<Layout
     /// <inheritdoc />
     public bool MoveNext()
     {
-      if (_node is null || _node.GetChildCount() == 0)
+      if (Node is null || Node.GetChildCount() == 0)
       {
-        _current = null;
+        CurrentInternal = null;
         return false;
       }
 
-      if (!_started)
+      if (!Started)
       {
         // First call - position at first child
-        _started = true;
-        _childIndex = 0;
+        Started = true;
+        ChildIndex = 0;
 
         // Skip display:contents nodes at position 0
-        T firstChild = (T)_node.GetChild(0);
+        T firstChild = (T)Node.GetChild(0);
         if (firstChild.GetDisplay() == Display.Contents)
         {
           SkipContentsNodes();
         }
 
         // If we exhausted all nodes during skip, return false
-        if (_node is null)
+        if (Node is null)
         {
-          _current = null;
+          CurrentInternal = null;
           return false;
         }
 
-        _current = (T)_node.GetChild(_childIndex);
+        CurrentInternal = (T)Node.GetChild(ChildIndex);
         return true;
       }
 
       // Subsequent calls - advance to next child
       Next();
 
-      if (_node is null)
+      if (Node is null)
       {
-        _current = null;
+        CurrentInternal = null;
         return false;
       }
 
-      _current = (T)_node.GetChild(_childIndex);
+      CurrentInternal = (T)Node.GetChild(ChildIndex);
       return true;
     }
 
@@ -168,20 +168,20 @@ public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<Layout
     /// </summary>
     private void Next()
     {
-      if (_childIndex + 1 >= _node!.GetChildCount())
+      if (ChildIndex + 1 >= Node!.GetChildCount())
       {
         // Current node has no more children, try to backtrack
-        if (_backtrack is null || _backtrack.Count == 0)
+        if (Backtrack is null || Backtrack.Count == 0)
         {
           // No nodes to backtrack to, iteration complete
-          _node = null;
+          Node = null;
           return;
         }
 
         // Pop and restore the latest backtrack entry
-        (T backNode, int backIndex) = _backtrack.Pop();
-        _node = backNode;
-        _childIndex = backIndex;
+        (T backNode, int backIndex) = Backtrack.Pop();
+        Node = backNode;
+        ChildIndex = backIndex;
 
         // Recursively advance from the restored position
         Next();
@@ -189,10 +189,10 @@ public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<Layout
       else
       {
         // Move to next child
-        _childIndex++;
+        ChildIndex++;
 
         // Skip display:contents nodes
-        T child = (T)_node.GetChild(_childIndex);
+        T child = (T)Node.GetChild(ChildIndex);
         if (child.GetDisplay() == Display.Contents)
         {
           SkipContentsNodes();
@@ -212,18 +212,18 @@ public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<Layout
     /// </remarks>
     private void SkipContentsNodes()
     {
-      T currentNode = (T)_node!.GetChild(_childIndex);
+      T currentNode = (T)Node!.GetChild(ChildIndex);
 
       while (currentNode.GetDisplay() == Display.Contents &&
              currentNode.GetChildCount() > 0)
       {
         // Push current state for backtracking
-        _backtrack ??= new Stack<(T, int)>();
-        _backtrack.Push((_node!, _childIndex));
+        Backtrack ??= new Stack<(T, int)>();
+        Backtrack.Push((Node!, ChildIndex));
 
         // Descend into the contents node
-        _node = currentNode;
-        _childIndex = 0;
+        Node = currentNode;
+        ChildIndex = 0;
 
         // Get the first child of the contents node
         currentNode = (T)currentNode.GetChild(0);

@@ -13,7 +13,10 @@
     <!-- CA1822: Test methods cannot be static for Fixie -->
     <!-- CA2007: ConfigureAwait not needed in test projects -->
     <!-- CA2252: Allow preview features for testing frameworks -->
-    <NoWarn>$(NoWarn);CA1515;CA1707;CA1822;CA2007;CA2252</NoWarn>
+    <!-- IDE1006: Ported Yoga tests keep upstream snake_case names for traceability -->
+    <!-- RCS1163/IDE0060: Measure/baseline callbacks must match delegate signatures; unused params expected -->
+    <!-- IDE0160/IDE0040/IDE0022/CA1050/RCS1102/CS0050: Fixie.Main.cs is package-injected generated source -->
+    <NoWarn>$(NoWarn);CA1515;CA1707;CA1822;CA2007;CA2252;IDE1006;RCS1163;IDE0060;IDE0160;IDE0040;IDE0022;CA1050;RCS1102;CS0050</NoWarn>
   </PropertyGroup>
 
 </Project>

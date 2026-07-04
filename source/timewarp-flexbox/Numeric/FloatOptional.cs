@@ -39,7 +39,7 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
   // the default constructor is called. However, since this is a readonly struct,
   // we can't have a parameterless constructor. Users should use FloatOptional.Undefined
   // or new FloatOptional(float.NaN) to get an undefined value.
-  private readonly float _value;
+  private readonly float Value;
 
   /// <summary>
   /// Creates a FloatOptional with the specified value.
@@ -47,7 +47,7 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
   /// <param name="value">The float value to wrap.</param>
   public FloatOptional(float value)
   {
-    _value = value;
+    Value = value;
   }
 
   /// <summary>
@@ -60,7 +60,7 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
   /// </summary>
   /// <returns>The wrapped float value.</returns>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public float Unwrap() => _value;
+  public float Unwrap() => Value;
 
   /// <summary>
   /// Gets the wrapped value if defined, otherwise returns the default value.
@@ -68,7 +68,7 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
   /// <param name="defaultValue">The value to return if undefined.</param>
   /// <returns>The wrapped value or the default.</returns>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public float UnwrapOrDefault(float defaultValue) => IsUndefined ? defaultValue : _value;
+  public float UnwrapOrDefault(float defaultValue) => IsUndefined ? defaultValue : Value;
 
   /// <summary>
   /// Gets whether this value is undefined (NaN).
@@ -76,7 +76,7 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
   public bool IsUndefined
   {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => Comparison.IsUndefined(_value);
+    get => Comparison.IsUndefined(Value);
   }
 
   /// <summary>
@@ -85,13 +85,13 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
   public bool IsDefined
   {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => Comparison.IsDefined(_value);
+    get => Comparison.IsDefined(Value);
   }
 
   /// <summary>
   /// Adds two FloatOptional values.
   /// </summary>
-  public static FloatOptional Add(FloatOptional left, FloatOptional right) => new(left._value + right._value);
+  public static FloatOptional Add(FloatOptional left, FloatOptional right) => new(left.Value + right.Value);
 
   /// <summary>
   /// Compares this FloatOptional with another.
@@ -113,14 +113,14 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
       return 1;
     }
 
-    return _value.CompareTo(other._value);
+    return Value.CompareTo(other.Value);
   }
 
   /// <inheritdoc />
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public bool Equals(FloatOptional other) =>
       // Equal if both values are equal OR both are undefined (NaN)
-      _value == other._value || (IsUndefined && other.IsUndefined);
+      Value == other.Value || (IsUndefined && other.IsUndefined);
 
   /// <inheritdoc />
   public override bool Equals(object? obj) => obj is FloatOptional other && Equals(other);
@@ -128,10 +128,10 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
   /// <inheritdoc />
   public override int GetHashCode() =>
       // NaN values should all hash to the same value
-      IsUndefined ? 0 : _value.GetHashCode();
+      IsUndefined ? 0 : Value.GetHashCode();
 
   /// <inheritdoc />
-  public override string ToString() => IsUndefined ? "undefined" : _value.ToString(CultureInfo.InvariantCulture);
+  public override string ToString() => IsUndefined ? "undefined" : Value.ToString(CultureInfo.InvariantCulture);
 
   // Equality operators
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -154,10 +154,10 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
 
   // Comparison operators
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static bool operator >(FloatOptional left, FloatOptional right) => left._value > right._value;
+  public static bool operator >(FloatOptional left, FloatOptional right) => left.Value > right.Value;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static bool operator <(FloatOptional left, FloatOptional right) => left._value < right._value;
+  public static bool operator <(FloatOptional left, FloatOptional right) => left.Value < right.Value;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static bool operator >=(FloatOptional left, FloatOptional right) => left > right || left == right;
@@ -167,7 +167,7 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
 
   // Arithmetic operators
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static FloatOptional operator +(FloatOptional left, FloatOptional right) => new(left._value + right._value);
+  public static FloatOptional operator +(FloatOptional left, FloatOptional right) => new(left.Value + right.Value);
 
   // Implicit conversion from float
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

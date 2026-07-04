@@ -24,7 +24,7 @@ public struct StyleValueHandle : IEquatable<StyleValueHandle>
   private const ushort HandleIndexedMask = 0b0000_0000_0000_1000;
   private const ushort HandleValueMask = 0b1111_1111_1111_0000;
 
-  private ushort _repr;
+  private ushort Repr;
 
   /// <summary>
   /// The type of value stored in this handle.
@@ -76,32 +76,32 @@ public struct StyleValueHandle : IEquatable<StyleValueHandle>
   /// <summary>
   /// Gets whether this handle represents an undefined value.
   /// </summary>
-  public bool IsUndefined => Type == HandleType.Undefined;
+  public readonly bool IsUndefined => Type == HandleType.Undefined;
 
   /// <summary>
   /// Gets whether this handle represents a defined value.
   /// </summary>
-  public bool IsDefined => !IsUndefined;
+  public readonly bool IsDefined => !IsUndefined;
 
   /// <summary>
   /// Gets whether this handle represents an auto value.
   /// </summary>
-  public bool IsAuto => Type == HandleType.Auto;
+  public readonly bool IsAuto => Type == HandleType.Auto;
 
   /// <summary>
   /// Gets whether this handle's value is indexed in a pool.
   /// </summary>
-  internal readonly bool IsValueIndexed => (_repr & HandleIndexedMask) != 0;
+  internal readonly bool IsValueIndexed => (Repr & HandleIndexedMask) != 0;
 
   /// <summary>
   /// Gets the type of this handle.
   /// </summary>
-  internal readonly HandleType Type => (HandleType)(_repr & HandleTypeMask);
+  internal readonly HandleType Type => (HandleType)(Repr & HandleTypeMask);
 
   /// <summary>
   /// Gets the raw value portion (top 12 bits).
   /// </summary>
-  internal readonly ushort Value => (ushort)(_repr >> 4);
+  internal readonly ushort Value => (ushort)(Repr >> 4);
 
   #endregion
 
@@ -112,7 +112,7 @@ public struct StyleValueHandle : IEquatable<StyleValueHandle>
   /// </summary>
   internal void SetType(HandleType type)
   {
-    _repr = (ushort)((_repr & ~HandleTypeMask) | (byte)type);
+    Repr = (ushort)((Repr & ~HandleTypeMask) | (byte)type);
   }
 
   /// <summary>
@@ -120,7 +120,7 @@ public struct StyleValueHandle : IEquatable<StyleValueHandle>
   /// </summary>
   internal void SetValue(ushort value)
   {
-    _repr = (ushort)((_repr & ~HandleValueMask) | (value << 4));
+    Repr = (ushort)((Repr & ~HandleValueMask) | (value << 4));
   }
 
   /// <summary>
@@ -128,13 +128,13 @@ public struct StyleValueHandle : IEquatable<StyleValueHandle>
   /// </summary>
   internal void SetValueIsIndexed()
   {
-    _repr |= HandleIndexedMask;
+    Repr |= HandleIndexedMask;
   }
 
   /// <summary>
   /// Checks if this handle is a specific keyword.
   /// </summary>
-  internal bool IsKeyword(HandleKeyword keyword)
+  internal readonly bool IsKeyword(HandleKeyword keyword)
   {
     return Type == HandleType.Keyword && Value == (ushort)keyword;
   }
@@ -144,13 +144,13 @@ public struct StyleValueHandle : IEquatable<StyleValueHandle>
   #region Equality
 
   /// <inheritdoc />
-  public readonly bool Equals(StyleValueHandle other) => _repr == other._repr;
+  public readonly bool Equals(StyleValueHandle other) => Repr == other.Repr;
 
   /// <inheritdoc />
-  public override bool Equals(object? obj) => obj is StyleValueHandle other && Equals(other);
+  public override readonly bool Equals(object? obj) => obj is StyleValueHandle other && Equals(other);
 
   /// <inheritdoc />
-  public override readonly int GetHashCode() => _repr.GetHashCode();
+  public override readonly int GetHashCode() => Repr.GetHashCode();
 
   /// <summary>
   /// Equality operator.

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TimeWarp.Flexbox.AotSmoke</RootNamespace>
+    <AssemblyName>TimeWarp.Flexbox.AotSmoke</AssemblyName>
+    <PublishAot>true</PublishAot>
+    <!-- RS0030/CA1303: a native smoke binary reports via Console by design;
+         it must stay zero-dependency to prove the library alone is AOT-safe -->
+    <NoWarn>$(NoWarn);RS0030;CA1303</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../source/timewarp-flexbox/timewarp-flexbox.csproj" />
+  </ItemGroup>
+
+</Project>

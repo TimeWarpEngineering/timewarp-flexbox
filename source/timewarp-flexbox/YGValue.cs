@@ -120,6 +120,8 @@ public readonly struct YGValue : IEquatable<YGValue>
       Unit.FitContent or
       Unit.MaxContent or
       Unit.Stretch => Unit.GetHashCode(),
+      Unit.Point or
+      Unit.Percent => HashCode.Combine(Value, Unit),
       _ => HashCode.Combine(Value, Unit)
     };
   }

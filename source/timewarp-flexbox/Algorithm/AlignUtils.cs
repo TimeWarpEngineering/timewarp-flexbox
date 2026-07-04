@@ -56,6 +56,9 @@ public static class AlignUtils
       // Start instead of FlexStart (for row-reverse containers)
       Align.SpaceAround or Align.SpaceEvenly => Align.FlexStart,
 
+      // All other alignments are used as-is
+      Align.Auto or Align.FlexStart or Align.Center or Align.FlexEnd or Align.Baseline => align,
+
       _ => align
     };
   }
@@ -80,6 +83,9 @@ public static class AlignUtils
       // Fallback to safe center. TODO (T208209388): This should be aligned to
       // Start instead of FlexStart (for row-reverse containers)
       Justify.SpaceAround or Justify.SpaceEvenly => Justify.FlexStart,
+
+      // All other justifications are used as-is
+      Justify.FlexStart or Justify.Center or Justify.FlexEnd => justify,
 
       _ => justify
     };
