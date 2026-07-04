@@ -27,7 +27,7 @@ using System.Collections;
 ///
 /// Question: Should we pool the Overflow allocations? For now, following C++ which uses unique_ptr.
 /// </remarks>
-public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
+internal class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
 {
   private ushort Count;
   private readonly uint[] Buffer;
@@ -229,7 +229,7 @@ public class SmallValueBuffer<TBufferSize> where TBufferSize : IBufferSize
 /// <summary>
 /// Interface for defining buffer sizes at compile time.
 /// </summary>
-public interface IBufferSize
+internal interface IBufferSize
 {
   /// <summary>
   /// The number of 32-bit chunks in the inline buffer.
@@ -242,7 +242,7 @@ public interface IBufferSize
 /// Note: This is a marker type used only as a generic argument, not for instantiation.
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1815:Override equals and operator equals on value types", Justification = "Marker type only used as generic argument")]
-public readonly struct BufferSize4 : IBufferSize
+internal readonly struct BufferSize4 : IBufferSize
 {
   /// <inheritdoc />
   public static int Size => 4;
@@ -253,7 +253,7 @@ public readonly struct BufferSize4 : IBufferSize
 /// Note: This is a marker type used only as a generic argument, not for instantiation.
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1815:Override equals and operator equals on value types", Justification = "Marker type only used as generic argument")]
-public readonly struct BufferSize8 : IBufferSize
+internal readonly struct BufferSize8 : IBufferSize
 {
   /// <inheritdoc />
   public static int Size => 8;
@@ -264,7 +264,7 @@ public readonly struct BufferSize8 : IBufferSize
 /// Note: This is a marker type used only as a generic argument, not for instantiation.
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1815:Override equals and operator equals on value types", Justification = "Marker type only used as generic argument")]
-public readonly struct BufferSize16 : IBufferSize
+internal readonly struct BufferSize16 : IBufferSize
 {
   /// <inheritdoc />
   public static int Size => 16;
@@ -273,7 +273,7 @@ public readonly struct BufferSize16 : IBufferSize
 /// <summary>
 /// Convenience alias for SmallValueBuffer with default size of 4.
 /// </summary>
-public class SmallValueBuffer : SmallValueBuffer<BufferSize4>
+internal class SmallValueBuffer : SmallValueBuffer<BufferSize4>
 {
   /// <summary>
   /// Initializes a new empty SmallValueBuffer with default size.

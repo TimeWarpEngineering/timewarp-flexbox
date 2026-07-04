@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Running layout state for a flex line during layout calculation.
 /// </summary>
-public struct FlexLineRunningLayout : IEquatable<FlexLineRunningLayout>
+internal struct FlexLineRunningLayout : IEquatable<FlexLineRunningLayout>
 {
   /// <summary>
   /// Total flex grow factors of flex items which are to be laid in the current
@@ -71,7 +71,7 @@ public struct FlexLineRunningLayout : IEquatable<FlexLineRunningLayout>
 /// <summary>
 /// Represents a flex line containing items that flow together.
 /// </summary>
-public sealed class FlexLine
+internal sealed class FlexLine
 {
   private readonly List<Node> InFlowItems = [];
 

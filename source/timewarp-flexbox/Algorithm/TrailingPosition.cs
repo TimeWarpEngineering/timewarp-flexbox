@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Provides trailing position calculation utilities for the layout algorithm.
 /// </summary>
-public static class TrailingPosition
+internal static class TrailingPosition
 {
   /// <summary>
   /// Given an offset to an edge, returns the offset to the opposite edge on the

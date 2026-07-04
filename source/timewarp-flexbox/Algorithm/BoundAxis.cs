@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Provides axis bounding utilities for the layout algorithm.
 /// </summary>
-public static class BoundAxis
+internal static class BoundAxis
 {
   /// <summary>
   /// Gets the total padding and border for the specified axis.

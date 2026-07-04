@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Provides justify-content positioning along the main axis.
 /// </summary>
-public static class JustifyContent
+internal static class JustifyContent
 {
   /// <summary>
   /// Positions items along the main axis according to justify-content,

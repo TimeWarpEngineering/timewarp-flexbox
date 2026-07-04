@@ -15,11 +15,11 @@ PublishAot smoke test runs in CI on every build.
 ## Installation
 
 ```bash
-dotnet add package TimeWarp.Flexbox --prerelease
+dotnet add package TimeWarp.Flexbox
 ```
 
 ```xml
-<PackageReference Include="TimeWarp.Flexbox" Version="1.0.0-beta.4" />
+<PackageReference Include="TimeWarp.Flexbox" Version="1.0.0" />
 ```
 
 ## Usage
@@ -61,7 +61,8 @@ Styles are set through `Node.Style`:
 - Box model: `SetMargin`, `SetPadding`, `SetBorder` per `Edge`, `SetGap` per `Gutter`
 - Positioning: `PositionType` (relative/absolute/static) with `SetPosition` insets
 
-Results are read from `Node.Layout` after calling `CalculateLayout.Calculate`:
+Results are read from `Node.Layout` after calling `CalculateLayout.Calculate`
+(or the equivalent instance convenience `root.CalculateLayout()`):
 `GetPosition(PhysicalEdge)` and `GetDimension(Dimension)`.
 
 ### Defaults

@@ -180,13 +180,26 @@ public sealed class Node : ILayoutableNode
   #region ILayoutableNode Implementation
 
   /// <inheritdoc />
-  public ILayoutableNode GetChild(int index) => ChildrenInternal[index];
+  ILayoutableNode ILayoutableNode.GetChild(int index) => ChildrenInternal[index];
 
   /// <inheritdoc />
   public int GetChildCount() => ChildrenInternal.Count;
 
   /// <inheritdoc />
-  public Display GetDisplay() => Style.Display;
+  Display ILayoutableNode.GetDisplay() => Style.Display;
+
+  /// <summary>
+  /// Computes the layout for this node tree. Convenience for
+  /// <see cref="TimeWarp.Flexbox.CalculateLayout.Calculate"/>.
+  /// </summary>
+  /// <param name="availableWidth">Available width, or <see cref="float.NaN"/> for unconstrained.</param>
+  /// <param name="availableHeight">Available height, or <see cref="float.NaN"/> for unconstrained.</param>
+  /// <param name="ownerDirection">The layout direction (LTR or RTL).</param>
+  public void CalculateLayout(
+      float availableWidth = float.NaN,
+      float availableHeight = float.NaN,
+      Direction ownerDirection = Direction.LTR) =>
+    TimeWarp.Flexbox.CalculateLayout.Calculate(this, availableWidth, availableHeight, ownerDirection);
 
   #endregion
 
@@ -276,14 +289,14 @@ public sealed class Node : ILayoutableNode
   /// <summary>
   /// Gets the child at the specified index.
   /// </summary>
-  public Node GetChildNode(int index) => ChildrenInternal[index];
+  public Node GetChild(int index) => ChildrenInternal[index];
 
   // Note: ChildCount property removed to avoid CA1721 conflict with GetChildCount() from ILayoutableNode
 
   /// <summary>
   /// Gets an enumerable over layoutable children (handling display:contents).
   /// </summary>
-  public LayoutableChildren<Node> LayoutChildren => new(this);
+  internal LayoutableChildren<Node> LayoutChildren => new(this);
 
   /// <summary>
   /// Gets the count of layoutable children (handling display:contents).
@@ -1043,7 +1056,14 @@ public sealed class Node : ILayoutableNode
         clonedChild ??= child.Clone();
         clonedChild.Owner = this;
 
-        if (clonedChild.HasContentsChildren)
+        if (clonedChild.Style.Display == Display.Contents)
+        {
+          // The contents node's children are treated as children of the
+          // contents node's parent for layout purposes, so they need
+          // to be cloned as well.
+          clonedChild.CloneChildrenIfNeeded();
+        }
+        else if (clonedChild.HasContentsChildren)
         {
           clonedChild.CloneContentsChildrenIfNeeded();
         }
@@ -1078,7 +1098,11 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public Node Clone()
   {
-    return new Node(this);
+    // C++ YGNodeClone clears the owner: a clone starts detached; callers
+    // (including CloneChildrenIfNeeded) re-parent it explicitly.
+    Node clone = new(this);
+    clone.Owner = null;
+    return clone;
   }
 
   /// <summary>
@@ -1267,7 +1291,7 @@ public sealed class Node : ILayoutableNode
   /// <summary>
   /// Resets layout results to default values.
   /// </summary>
-  private void ResetLayoutResults()
+  internal void ResetLayoutResults()
   {
     Layout.SetDirection(Direction.Inherit);
     Layout.SetHadOverflow(false);

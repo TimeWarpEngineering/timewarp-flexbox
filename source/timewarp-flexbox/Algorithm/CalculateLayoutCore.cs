@@ -12,7 +12,7 @@ namespace TimeWarp.Flexbox;
 /// The core layout algorithm implementation.
 /// Implements all 11 steps of the flexbox layout algorithm.
 /// </summary>
-public static class CalculateLayoutCore
+internal static class CalculateLayoutCore
 {
   /// <summary>
   /// The main recursive layout function that implements the 11-step flexbox algorithm.
@@ -104,7 +104,7 @@ public static class CalculateLayoutCore
           layoutMarkerData,
           reason);
 
-      LayoutHelpers.CleanupContentsNodesRecursively(node);
+      LayoutHelpers.CleanupContentsNodesRecursively(node, performLayout);
       return;
     }
 
@@ -123,7 +123,7 @@ public static class CalculateLayoutCore
           ownerWidth,
           ownerHeight);
 
-      LayoutHelpers.CleanupContentsNodesRecursively(node);
+      LayoutHelpers.CleanupContentsNodesRecursively(node, performLayout);
       return;
     }
 
@@ -139,14 +139,14 @@ public static class CalculateLayoutCore
             ownerWidth,
             ownerHeight))
     {
-      LayoutHelpers.CleanupContentsNodesRecursively(node);
+      LayoutHelpers.CleanupContentsNodesRecursively(node, didPerformLayout: false);
       return;
     }
 
     // At this point we know we're going to perform work.
     node.CloneChildrenIfNeeded();
     node.Layout.SetHadOverflow(false);
-    LayoutHelpers.CleanupContentsNodesRecursively(node);
+    LayoutHelpers.CleanupContentsNodesRecursively(node, performLayout);
 
     // STEP 1: CALCULATE VALUES FOR REMAINDER OF ALGORITHM
     FlexDirection mainAxis = node.Style.FlexDirection.ResolveDirection(direction);

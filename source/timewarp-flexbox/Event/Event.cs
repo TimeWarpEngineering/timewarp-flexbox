@@ -14,7 +14,7 @@ namespace TimeWarp.Flexbox;
 /// Specifies the type of layout operation performed on a node.
 /// </summary>
 [OrdinalCount(4)]
-public enum LayoutType
+internal enum LayoutType
 {
   /// <summary>Full layout calculation.</summary>
   Layout = 0,
@@ -33,7 +33,7 @@ public enum LayoutType
 /// Specifies the reason for a layout pass.
 /// </summary>
 [OrdinalCount(8)]
-public enum LayoutPassReason
+internal enum LayoutPassReason
 {
   /// <summary>Initial layout pass.</summary>
   Initial = 0,
@@ -67,7 +67,7 @@ public enum LayoutPassReason
 /// <summary>
 /// Extension methods for LayoutPassReason.
 /// </summary>
-public static class LayoutPassReasonExtensions
+internal static class LayoutPassReasonExtensions
 {
   /// <summary>
   /// Converts a LayoutPassReason to its string representation.
@@ -95,7 +95,7 @@ public static class LayoutPassReasonExtensions
 /// <summary>
 /// Statistics collected during a layout pass.
 /// </summary>
-public sealed class LayoutData
+internal sealed class LayoutData
 {
   /// <summary>
   /// Number of full layout calculations performed.
@@ -169,7 +169,7 @@ public sealed class LayoutData
 /// <summary>
 /// Specifies the type of event being published.
 /// </summary>
-public enum EventType
+internal enum EventType
 {
   /// <summary>A node was allocated.</summary>
   NodeAllocation,
@@ -206,7 +206,7 @@ public enum EventType
 /// <summary>
 /// Base interface for event data.
 /// </summary>
-public interface IEventData
+internal interface IEventData
 {
   /// <summary>
   /// Gets the type of event this data represents.
@@ -218,7 +218,7 @@ public interface IEventData
 /// Event data for node allocation events.
 /// </summary>
 /// <param name="Config">The configuration associated with the node.</param>
-public readonly record struct NodeAllocationEventData(Config? Config) : IEventData
+internal readonly record struct NodeAllocationEventData(Config? Config) : IEventData
 {
   /// <inheritdoc />
   public EventType EventType => EventType.NodeAllocation;
@@ -228,7 +228,7 @@ public readonly record struct NodeAllocationEventData(Config? Config) : IEventDa
 /// Event data for node deallocation events.
 /// </summary>
 /// <param name="Config">The configuration associated with the node.</param>
-public readonly record struct NodeDeallocationEventData(Config? Config) : IEventData
+internal readonly record struct NodeDeallocationEventData(Config? Config) : IEventData
 {
   /// <inheritdoc />
   public EventType EventType => EventType.NodeDeallocation;
@@ -238,7 +238,7 @@ public readonly record struct NodeDeallocationEventData(Config? Config) : IEvent
 /// Event data for node layout events.
 /// </summary>
 /// <param name="LayoutType">The type of layout operation performed.</param>
-public readonly record struct NodeLayoutEventData(LayoutType LayoutType) : IEventData
+internal readonly record struct NodeLayoutEventData(LayoutType LayoutType) : IEventData
 {
   /// <inheritdoc />
   public EventType EventType => EventType.NodeLayout;
@@ -247,7 +247,7 @@ public readonly record struct NodeLayoutEventData(LayoutType LayoutType) : IEven
 /// <summary>
 /// Event data for layout pass start events.
 /// </summary>
-public readonly record struct LayoutPassStartEventData() : IEventData
+internal readonly record struct LayoutPassStartEventData() : IEventData
 {
   /// <inheritdoc />
   public EventType EventType => EventType.LayoutPassStart;
@@ -257,7 +257,7 @@ public readonly record struct LayoutPassStartEventData() : IEventData
 /// Event data for layout pass end events.
 /// </summary>
 /// <param name="LayoutData">Statistics from the layout pass.</param>
-public readonly record struct LayoutPassEndEventData(LayoutData? LayoutData) : IEventData
+internal readonly record struct LayoutPassEndEventData(LayoutData? LayoutData) : IEventData
 {
   /// <inheritdoc />
   public EventType EventType => EventType.LayoutPassEnd;
@@ -266,7 +266,7 @@ public readonly record struct LayoutPassEndEventData(LayoutData? LayoutData) : I
 /// <summary>
 /// Event data for measure callback start events.
 /// </summary>
-public readonly record struct MeasureCallbackStartEventData() : IEventData
+internal readonly record struct MeasureCallbackStartEventData() : IEventData
 {
   /// <inheritdoc />
   public EventType EventType => EventType.MeasureCallbackStart;
@@ -282,7 +282,7 @@ public readonly record struct MeasureCallbackStartEventData() : IEventData
 /// <param name="MeasuredWidth">The measured width result.</param>
 /// <param name="MeasuredHeight">The measured height result.</param>
 /// <param name="Reason">The reason for the measure call.</param>
-public readonly record struct MeasureCallbackEndEventData(
+internal readonly record struct MeasureCallbackEndEventData(
     float Width,
     MeasureMode WidthMeasureMode,
     float Height,
@@ -298,7 +298,7 @@ public readonly record struct MeasureCallbackEndEventData(
 /// <summary>
 /// Event data for node baseline start events.
 /// </summary>
-public readonly record struct NodeBaselineStartEventData() : IEventData
+internal readonly record struct NodeBaselineStartEventData() : IEventData
 {
   /// <inheritdoc />
   public EventType EventType => EventType.NodeBaselineStart;
@@ -307,7 +307,7 @@ public readonly record struct NodeBaselineStartEventData() : IEventData
 /// <summary>
 /// Event data for node baseline end events.
 /// </summary>
-public readonly record struct NodeBaselineEndEventData() : IEventData
+internal readonly record struct NodeBaselineEndEventData() : IEventData
 {
   /// <inheritdoc />
   public EventType EventType => EventType.NodeBaselineEnd;
@@ -323,7 +323,7 @@ public readonly record struct NodeBaselineEndEventData() : IEventData
 /// <param name="node">The node associated with the event (may be null for some events).</param>
 /// <param name="eventType">The type of event.</param>
 /// <param name="eventData">The event data.</param>
-public delegate void EventSubscriber(object? node, EventType eventType, IEventData eventData);
+internal delegate void EventSubscriber(object? node, EventType eventType, IEventData eventData);
 
 /// <summary>
 /// Static event publisher for Yoga layout events.
@@ -336,7 +336,7 @@ public delegate void EventSubscriber(object? node, EventType eventType, IEventDa
 /// In C#, we use a similar approach with Interlocked operations for the linked list head.
 /// The class is named YogaEvent instead of Event to avoid conflict with C# reserved keyword.
 /// </remarks>
-public static class YogaEvent
+internal static class YogaEvent
 {
   private sealed class SubscriberNode
   {

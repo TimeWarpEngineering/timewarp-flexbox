@@ -15,7 +15,7 @@ namespace TimeWarp.Flexbox;
 /// stored within a buffer provided by the pool. The pool contains a fixed number
 /// of inline slots before falling back to heap allocating additional slots.
 /// </summary>
-public sealed class StyleValuePool
+internal sealed class StyleValuePool
 {
   private readonly SmallValueBuffer<BufferSize4> Buffer = new();
 

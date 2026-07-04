@@ -19,7 +19,7 @@ public delegate void YogaLogHandler(object? context, LogLevel level, string mess
 /// Corresponds to yoga/debug/Log.h and Log.cpp (the log overloads and
 /// getDefaultLogger).
 /// </remarks>
-public static class YogaLog
+internal static class YogaLog
 {
   /// <summary>
   /// Logs a message with no node or config context.

@@ -26,7 +26,7 @@ namespace TimeWarp.Flexbox;
 /// <param name="depth">Current recursion depth.</param>
 /// <param name="generationCount">Current generation counter for cache invalidation.</param>
 /// <returns>True if the layout was performed, false if cached.</returns>
-public delegate bool CalculateLayoutInternalFunc(
+internal delegate bool CalculateLayoutInternalFunc(
     Node node,
     float availableWidth,
     float availableHeight,
@@ -45,7 +45,7 @@ public delegate bool CalculateLayoutInternalFunc(
 /// Provides flex basis calculation functions for the layout algorithm.
 /// These determine the initial size of flex items before flex grow/shrink is applied.
 /// </summary>
-public static class FlexBasis
+internal static class FlexBasis
 {
   /// <summary>
   /// The delegate used for internal layout calculations.
@@ -378,9 +378,17 @@ public static class FlexBasis
 
       if (child.Style.Display == Display.None)
       {
-        LayoutHelpers.ZeroOutLayoutRecursively(child);
-        child.HasNewLayout = true;
-        child.SetDirty(false);
+        // Only mutate display:none children during layout passes. Zeroing them
+        // out during measure-only passes contributes nothing to the measurement,
+        // but sets hasNewLayout on nodes the parent's layout pass may never
+        // visit, leaking the flag into lazily-shared clones.
+        if (performLayout)
+        {
+          LayoutHelpers.ZeroOutLayoutRecursively(child);
+          child.HasNewLayout = true;
+          child.SetDirty(false);
+        }
+
         continue;
       }
 

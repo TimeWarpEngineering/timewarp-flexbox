@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Provides utilities for rounding layout values to the pixel grid.
 /// </summary>
-public static class PixelGrid
+internal static class PixelGrid
 {
   /// <summary>
   /// Rounds a point value to the nearest physical pixel based on DPI (pointScaleFactor).
@@ -51,12 +51,12 @@ public static class PixelGrid
       ++fractional;
     }
 
-    if (Comparison.InexactEquals((float)fractional, 0))
+    if (Comparison.InexactEquals(fractional, 0.0))
     {
       // First we check if the value is already rounded
       scaledValue -= fractional;
     }
-    else if (Comparison.InexactEquals((float)fractional, 1.0f))
+    else if (Comparison.InexactEquals(fractional, 1.0))
     {
       scaledValue = scaledValue - fractional + 1.0;
     }
@@ -74,7 +74,7 @@ public static class PixelGrid
       // Finally we just round the value
       scaledValue = scaledValue - fractional +
           (!double.IsNaN(fractional) &&
-           (fractional > 0.5 || Comparison.InexactEquals((float)fractional, 0.5f))
+           (fractional > 0.5 || Comparison.InexactEquals(fractional, 0.5))
               ? 1.0
               : 0.0);
     }

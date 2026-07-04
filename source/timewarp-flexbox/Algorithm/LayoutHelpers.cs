@@ -12,7 +12,7 @@ namespace TimeWarp.Flexbox;
 /// Provides helper utility functions for the layout algorithm.
 /// These are leaf-level functions with minimal dependencies.
 /// </summary>
-public static class LayoutHelpers
+internal static class LayoutHelpers
 {
   /// <summary>
   /// Applies max-size constraints to sizing mode and dimension.
@@ -158,9 +158,10 @@ public static class LayoutHelpers
   {
     ArgumentNullException.ThrowIfNull(node);
 
-    // Zero out the layout dimensions
-    node.SetLayoutMeasuredDimension(0, Dimension.Width);
-    node.SetLayoutMeasuredDimension(0, Dimension.Height);
+    // The layout is no longer valid: reset all results (positions, margins,
+    // paddings, borders, cached measurements) as C++ does with
+    // `node->getLayout() = {}`, then pin the dimensions at zero
+    node.ResetLayoutResults();
     node.SetLayoutDimension(0, Dimension.Width);
     node.SetLayoutDimension(0, Dimension.Height);
 
@@ -168,6 +169,7 @@ public static class LayoutHelpers
     node.HasNewLayout = true;
 
     // Recursively zero out children
+    node.CloneChildrenIfNeeded();
     foreach (Node child in node.Children)
     {
       ZeroOutLayoutRecursively(child);
@@ -180,35 +182,41 @@ public static class LayoutHelpers
   /// </summary>
   /// <param name="node">The node to process.</param>
   /// <remarks>
-  /// This corresponds to cleanupContentsNodesRecursively in CalculateLayout.cpp (lines 483-499).
+  /// This corresponds to cleanupContentsNodesRecursively in CalculateLayout.cpp.
   /// Nodes with display:contents are "invisible" containers - they don't generate
   /// any boxes themselves, but their children are treated as if they were direct
   /// children of the grandparent node for layout purposes.
   /// </remarks>
-  public static void CleanupContentsNodesRecursively(Node node)
+  /// <param name="didPerformLayout">Whether a full layout pass produced these results.</param>
+  public static void CleanupContentsNodesRecursively(Node node, bool didPerformLayout)
   {
     ArgumentNullException.ThrowIfNull(node);
 
+    if (!node.HasContentsChildren)
+    {
+      return;
+    }
+
+    node.CloneContentsChildrenIfNeeded();
     foreach (Node child in node.Children)
     {
       if (child.Style.Display == Display.Contents)
       {
-        // Zero out the contents node's own layout
-        child.SetLayoutMeasuredDimension(0, Dimension.Width);
-        child.SetLayoutMeasuredDimension(0, Dimension.Height);
+        // The contents node generates no box: reset its layout entirely and
+        // pin the dimensions at zero
+        child.ResetLayoutResults();
         child.SetLayoutDimension(0, Dimension.Width);
         child.SetLayoutDimension(0, Dimension.Height);
 
-        // Mark as having new layout
-        child.HasNewLayout = true;
+        if (didPerformLayout)
+        {
+          child.HasNewLayout = true;
+        }
 
-        // Recursively process the contents node's children
-        CleanupContentsNodesRecursively(child);
-      }
-      else
-      {
-        // For non-contents children, still check their descendants
-        CleanupContentsNodesRecursively(child);
+        child.SetDirty(false);
+        child.CloneChildrenIfNeeded();
+
+        CleanupContentsNodesRecursively(child, didPerformLayout);
       }
     }
   }

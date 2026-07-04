@@ -351,11 +351,12 @@ public class LayoutHelpersTests
     // Act
     LayoutHelpers.ZeroOutLayoutRecursively(node);
 
-    // Assert
+    // Assert - the C++ resets the whole layout (node->getLayout() = {}) and
+    // pins the layout dimensions at zero; measured dimensions become undefined
     node.Layout.GetDimension(Dimension.Width).ShouldBe(0f);
     node.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
-    node.Layout.GetMeasuredDimension(Dimension.Width).ShouldBe(0f);
-    node.Layout.GetMeasuredDimension(Dimension.Height).ShouldBe(0f);
+    Comparison.IsUndefined(node.Layout.GetMeasuredDimension(Dimension.Width)).ShouldBeTrue();
+    Comparison.IsUndefined(node.Layout.GetMeasuredDimension(Dimension.Height)).ShouldBeTrue();
     node.HasNewLayout.ShouldBeTrue();
   }
 
@@ -421,7 +422,7 @@ public class LayoutHelpersTests
     contentsChild.Owner = parent;
 
     // Act
-    LayoutHelpers.CleanupContentsNodesRecursively(parent);
+    LayoutHelpers.CleanupContentsNodesRecursively(parent, didPerformLayout: true);
 
     // Assert - Contents node is zeroed
     contentsChild.Layout.GetDimension(Dimension.Width).ShouldBe(0f);
@@ -442,7 +443,7 @@ public class LayoutHelpersTests
     regularChild.Owner = parent;
 
     // Act
-    LayoutHelpers.CleanupContentsNodesRecursively(parent);
+    LayoutHelpers.CleanupContentsNodesRecursively(parent, didPerformLayout: true);
 
     // Assert - Regular node is NOT zeroed
     regularChild.Layout.GetDimension(Dimension.Width).ShouldBe(100f);
@@ -472,7 +473,7 @@ public class LayoutHelpersTests
     contentsParent.Owner = root;
 
     // Act
-    LayoutHelpers.CleanupContentsNodesRecursively(root);
+    LayoutHelpers.CleanupContentsNodesRecursively(root, didPerformLayout: true);
 
     // Assert - Both contents nodes are zeroed
     contentsParent.Layout.GetDimension(Dimension.Width).ShouldBe(0f);
@@ -481,8 +482,11 @@ public class LayoutHelpersTests
     contentsChild.HasNewLayout.ShouldBeTrue();
   }
 
-  public void CleanupContentsNodesRecursivelyShouldProcessContentsChildrenOfRegularNodes()
+  public void CleanupContentsNodesRecursivelyShouldNotWalkIntoRegularChildren()
   {
+    // C++ cleanupContentsNodesRecursively only touches display:contents
+    // children of the given node; a regular child's contents children are
+    // handled when cleanup runs for that child during its own layout pass.
     // Arrange
     FlexNode root = new();
     FlexNode regularChild = new();
@@ -495,16 +499,14 @@ public class LayoutHelpersTests
     contentsGrandchild.HasNewLayout = false;
 
     regularChild.InsertChild(contentsGrandchild, 0);
-    contentsGrandchild.Owner = regularChild;
     root.InsertChild(regularChild, 0);
-    regularChild.Owner = root;
 
     // Act
-    LayoutHelpers.CleanupContentsNodesRecursively(root);
+    LayoutHelpers.CleanupContentsNodesRecursively(root, didPerformLayout: true);
 
-    // Assert - Contents grandchild is zeroed even though parent is regular
-    contentsGrandchild.Layout.GetDimension(Dimension.Width).ShouldBe(0f);
-    contentsGrandchild.HasNewLayout.ShouldBeTrue();
+    // Assert - the grandchild under a regular (non-contents) child is untouched
+    contentsGrandchild.Layout.GetDimension(Dimension.Width).ShouldBe(50f);
+    contentsGrandchild.HasNewLayout.ShouldBeFalse();
   }
 
   #endregion
@@ -577,7 +579,7 @@ public class LayoutHelpersTests
   {
     // Act & Assert
     Should.Throw<ArgumentNullException>(() =>
-        LayoutHelpers.CleanupContentsNodesRecursively(null!));
+        LayoutHelpers.CleanupContentsNodesRecursively(null!, didPerformLayout: true));
   }
 
   #endregion

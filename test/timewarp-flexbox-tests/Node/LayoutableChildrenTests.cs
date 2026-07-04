@@ -9,7 +9,7 @@ namespace TimeWarp.Flexbox.Tests.Node;
 /// <summary>
 /// Mock node implementation for testing LayoutableChildren.
 /// </summary>
-public sealed class MockNode : ILayoutableNode
+internal sealed class MockNode : ILayoutableNode
 {
   private readonly List<MockNode> _children = [];
   private Display _display = Display.Flex;

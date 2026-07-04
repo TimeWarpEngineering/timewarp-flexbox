@@ -23,7 +23,7 @@ namespace TimeWarp.Flexbox;
 /// <item>Second Pass: Distribute space using adjusted totals</item>
 /// </list>
 /// </remarks>
-public static class FlexDistribution
+internal static class FlexDistribution
 {
   /// <summary>
   /// First pass: Detects flex items whose min/max constraints trigger and freezes them at those sizes.

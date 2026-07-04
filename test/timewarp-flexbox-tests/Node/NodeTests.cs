@@ -265,9 +265,9 @@ public class NodeTests
 
     // Assert
     root.GetChildCount().ShouldBe(3);
-    root.GetChildNode(0).ShouldBe(child0);
-    root.GetChildNode(1).ShouldBe(child1);
-    root.GetChildNode(2).ShouldBe(child2);
+    root.GetChild(0).ShouldBe(child0);
+    root.GetChild(1).ShouldBe(child1);
+    root.GetChild(2).ShouldBe(child2);
   }
 
   public void RemoveChild_removes_correct_child()
@@ -286,7 +286,7 @@ public class NodeTests
     // Assert
     removed.ShouldBeTrue();
     root.GetChildCount().ShouldBe(1);
-    root.GetChildNode(0).ShouldBe(child1);
+    root.GetChild(0).ShouldBe(child1);
   }
 
   public void RemoveChild_returns_false_for_nonexistent_child()
@@ -321,7 +321,7 @@ public class NodeTests
 
     // Assert
     root.GetChildCount().ShouldBe(1);
-    root.GetChildNode(0).ShouldBe(child1);
+    root.GetChild(0).ShouldBe(child1);
   }
 
   public void ReplaceChild_replaces_at_index()
@@ -340,8 +340,8 @@ public class NodeTests
 
     // Assert
     root.GetChildCount().ShouldBe(2);
-    root.GetChildNode(0).ShouldBe(replacement);
-    root.GetChildNode(1).ShouldBe(child1);
+    root.GetChild(0).ShouldBe(replacement);
+    root.GetChild(1).ShouldBe(child1);
   }
 
   public void ReplaceChild_by_reference()
@@ -360,8 +360,8 @@ public class NodeTests
 
     // Assert
     root.GetChildCount().ShouldBe(2);
-    root.GetChildNode(0).ShouldBe(replacement);
-    root.GetChildNode(1).ShouldBe(child1);
+    root.GetChild(0).ShouldBe(replacement);
+    root.GetChild(1).ShouldBe(child1);
   }
 
   public void ClearChildren_removes_all_children()
@@ -393,8 +393,8 @@ public class NodeTests
 
     // Assert
     root.GetChildCount().ShouldBe(2);
-    root.GetChildNode(0).ShouldBe(newChild0);
-    root.GetChildNode(1).ShouldBe(newChild1);
+    root.GetChild(0).ShouldBe(newChild0);
+    root.GetChild(1).ShouldBe(newChild1);
   }
 
   #endregion
@@ -471,7 +471,7 @@ public class NodeTests
     // Assert
     clone.GetChildCount().ShouldBe(1);
     // Children are shallow copied - same reference
-    clone.GetChildNode(0).ShouldBe(child);
+    clone.GetChild(0).ShouldBe(child);
   }
 
   #endregion
@@ -786,7 +786,7 @@ public class NodeTests
     node.Style.Display = Display.None;
 
     // Act & Assert
-    node.GetDisplay().ShouldBe(Display.None);
+    ((ILayoutableNode)node).GetDisplay().ShouldBe(Display.None);
   }
 
   #endregion

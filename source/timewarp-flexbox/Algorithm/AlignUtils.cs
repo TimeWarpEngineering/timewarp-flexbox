@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Provides alignment utility functions for the layout algorithm.
 /// </summary>
-public static class AlignUtils
+internal static class AlignUtils
 {
   /// <summary>
   /// Resolves the alignment for a child based on parent's alignItems and child's alignSelf.

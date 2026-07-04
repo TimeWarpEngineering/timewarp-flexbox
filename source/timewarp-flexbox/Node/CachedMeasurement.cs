@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Stores a cached measurement result to avoid redundant calculations.
 /// </summary>
-public struct CachedMeasurement : IEquatable<CachedMeasurement>
+internal struct CachedMeasurement : IEquatable<CachedMeasurement>
 {
   /// <summary>
   /// The available width used for this measurement.

@@ -17,7 +17,7 @@ namespace TimeWarp.Flexbox;
 /// https://www.w3.org/TR/css-sizing-3/#auto-box-sizes
 /// https://www.w3.org/TR/css-flexbox-1/#min-size-auto
 /// </remarks>
-public enum SizingMode
+internal enum SizingMode
 {
   /// <summary>
   /// The size a box would take if its outer size filled the available space in
@@ -47,7 +47,7 @@ public enum SizingMode
 /// <summary>
 /// Extension methods for SizingMode conversions.
 /// </summary>
-public static class SizingModeExtensions
+internal static class SizingModeExtensions
 {
   /// <summary>
   /// Converts a SizingMode to the corresponding MeasureMode.

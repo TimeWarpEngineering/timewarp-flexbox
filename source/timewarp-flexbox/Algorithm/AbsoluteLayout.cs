@@ -26,7 +26,7 @@ namespace TimeWarp.Flexbox;
 /// </list>
 /// See: https://www.w3.org/TR/css-flexbox-1/#abspos-items
 /// </remarks>
-public static class AbsoluteLayout
+internal static class AbsoluteLayout
 {
   /// <summary>
   /// Delegate for the internal layout calculation function.

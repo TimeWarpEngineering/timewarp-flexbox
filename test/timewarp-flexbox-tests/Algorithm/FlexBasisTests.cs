@@ -661,6 +661,9 @@ public sealed class FlexBasisTests : IDisposable
 
     LayoutData layoutData = new();
 
+    // display:none children are only mutated during layout passes (C++ guards
+    // zeroOutLayoutRecursively with performLayout to avoid leaking hasNewLayout
+    // from measure-only passes)
     FlexBasis.ComputeFlexBasisForChildren(
         node,
         300,
@@ -669,14 +672,17 @@ public sealed class FlexBasisTests : IDisposable
         SizingMode.StretchFit,
         Direction.LTR,
         FlexDirection.Row,
-        false,
+        true,
         layoutData,
         0,
         1);
 
-    // Display:none children should have zeroed-out layout
-    hiddenChild.Layout.GetMeasuredDimension(Dimension.Width).ShouldBe(0);
-    hiddenChild.Layout.GetMeasuredDimension(Dimension.Height).ShouldBe(0);
+    // Display:none children get their layout fully reset (measured dimensions
+    // become undefined) with layout dimensions pinned at zero
+    Comparison.IsUndefined(hiddenChild.Layout.GetMeasuredDimension(Dimension.Width)).ShouldBeTrue();
+    Comparison.IsUndefined(hiddenChild.Layout.GetMeasuredDimension(Dimension.Height)).ShouldBeTrue();
+    hiddenChild.Layout.GetDimension(Dimension.Width).ShouldBe(0f);
+    hiddenChild.Layout.GetDimension(Dimension.Height).ShouldBe(0f);
     hiddenChild.HasNewLayout.ShouldBeTrue();
   }
 

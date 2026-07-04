@@ -36,7 +36,7 @@ public class YogaAssertException : Exception
 /// Corresponds to yoga/debug/AssertFatal.h and AssertFatal.cpp
 /// (assertFatal, assertFatalWithNode, assertFatalWithConfig).
 /// </remarks>
-public static class YogaAssert
+internal static class YogaAssert
 {
   /// <summary>
   /// Throws a <see cref="YogaAssertException"/> with the given message.

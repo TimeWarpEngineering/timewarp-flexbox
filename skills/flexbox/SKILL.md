@@ -27,7 +27,7 @@ dependencies; fully Native AOT and trimming compatible.
 | Margins / padding / borders | `Style.SetMargin/SetPadding/SetBorder(Edge.All, StyleLength.Points(8))` |
 | Pin to a corner/edge | `Style.PositionType = PositionType.Absolute` + `Style.SetPosition(Edge.Right, ...)` |
 | Text or other content-sized leaf | `node.SetMeasureFunc(...)` |
-| Compute the layout | `CalculateLayout.Calculate(root, availW, availH, Direction.LTR)` |
+| Compute the layout | `root.CalculateLayout()` (or `CalculateLayout.Calculate(root, availW, availH, dir)`) |
 | Read results | `node.Layout.GetPosition(PhysicalEdge.Left)` / `GetDimension(Dimension.Width)` |
 | Web-CSS defaults instead of Yoga defaults | `new Node(new Config { UseWebDefaults = true })` |
 
@@ -279,7 +279,7 @@ CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
 ## Installation
 
 ```bash
-dotnet add package TimeWarp.Flexbox --prerelease
+dotnet add package TimeWarp.Flexbox
 ```
 
 The package is on nuget.org and ships XML docs. Targets `net10.0`, zero

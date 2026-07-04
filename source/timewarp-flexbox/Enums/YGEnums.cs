@@ -400,7 +400,7 @@ public enum PhysicalEdge
 /// In C#, we use generic methods with constraints and attributes to achieve similar goals.
 /// The ordinal count is provided via the <see cref="OrdinalCountAttribute"/> on each enum.
 /// </remarks>
-public static class YogaEnums
+internal static class YogaEnums
 {
   /// <summary>
   /// Gets the count of ordinals in a Yoga enum (must have OrdinalCountAttribute).
@@ -490,7 +490,7 @@ public static class YogaEnums
 /// This attribute must be applied to all Yoga enums that participate in the ordinals system.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Enum, Inherited = false, AllowMultiple = false)]
-public sealed class OrdinalCountAttribute : Attribute
+internal sealed class OrdinalCountAttribute : Attribute
 {
   /// <summary>
   /// Gets the number of ordinal values in the enum.
@@ -514,7 +514,7 @@ public sealed class OrdinalCountAttribute : Attribute
 /// <summary>
 /// Extension methods for converting Yoga enums to their CSS-compatible string representations.
 /// </summary>
-public static class YogaEnumExtensions
+internal static class YogaEnumExtensions
 {
   /// <summary>Converts Align to its CSS string representation.</summary>
   public static string ToCssString(this Align value) => value switch

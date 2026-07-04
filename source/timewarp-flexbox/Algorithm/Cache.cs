@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Provides utilities for determining if cached layout measurements can be reused.
 /// </summary>
-public static class Cache
+internal static class Cache
 {
   /// <summary>
   /// Determines if a cached measurement can be reused based on the current sizing constraints.
