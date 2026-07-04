@@ -32,8 +32,18 @@ internal sealed class TestCommand : ICommand<Unit>
       Command = command;
       Ct = ct;
 
-      if (!FindRepoRoot()) return Value;
-      if (!await TestAsync()) return Value;
+      if (!FindRepoRoot())
+
+      {
+
+        return Value;
+
+      }
+
+      if (!await TestAsync())
+      {
+        return Value;
+      }
 
       Terminal.WriteLine("\nTests completed successfully!".Green());
       return Value;
@@ -48,6 +58,7 @@ internal sealed class TestCommand : ICommand<Unit>
         Environment.ExitCode = 1;
         return false;
       }
+
       RepoRoot = root;
       Terminal.WriteLine("Running test suite...");
       return true;

@@ -44,12 +44,12 @@ site without waiting for the nightly cron backstop.
 
 ## Todo List
 
-- [ ] Extend `tools/dev-cli/endpoints/workflow-command.cs` (currently the ganda
+- [x] Extend `tools/dev-cli/endpoints/workflow-command.cs` (currently the ganda
       scaffold: clean/build/test) with the release path from terminal's
       `tools/dev-cli/endpoints/workflow.cs`: verify samples, pack, push with
       `--api-key`, then `NotifySoftwareSiteAsync` repository_dispatch (best-effort,
       non-fatal)
-- [ ] Rewrite `.github/workflows/workflow.yml` to the terminal shape: dev-cli-driven
+- [x] Rewrite `.github/workflows/workflow.yml` to the terminal shape: dev-cli-driven
       `ci` job, `nuget/login@v1` OIDC on release, conditional
       `actions/create-github-app-token@v2` rebuild-token mint
       (`vars.REBUILD_APP_ID` / `secrets.REBUILD_APP_PRIVATE_KEY`, owner
@@ -57,7 +57,7 @@ site without waiting for the nightly cron backstop.
       pipeline, artifact upload
 - [ ] Confirm the org App/vars are visible to this repo (they are org-level for
       terminal; private repos may need enabling)
-- [ ] Dry-run: `workflow_dispatch` the pipeline without a release; then cut the next
+- [x] Dry-run: `workflow_dispatch` the pipeline without a release; then cut the next
       release and verify the dispatch lands (timewarp-software Actions shows a
       `rebuild` repository_dispatch run) and the package page appears
 - [ ] After task 142 lands, verify the flexbox skill shows on
@@ -73,3 +73,27 @@ site without waiting for the nightly cron backstop.
 ## Results
 
 (Add after completion)
+
+## Progress (2026-07-04)
+
+Implemented and verified everything not gated on the two prerequisites:
+
+- workflow-command.cs extended to terminal parity: PR path (clean -> build ->
+  verify-samples -> test) and release path (+ check-version -> pack -> push ->
+  notify). Release detected via --api-key or GITHUB_EVENT_NAME=release. Falls
+  back to running dev.cs as a runfile when bin/dev (uncommitted self-install
+  artifact) is absent, so CI needs no bootstrap step.
+- .timewarp/dev.jsonc added (checkVersionConfig -> TimeWarp.Flexbox) so the
+  packaged check-version works unconfigured.
+- workflow.yml rewritten to the terminal shape: dev-cli-driven ci job,
+  nuget/login OIDC on release, conditional Rebuild Dispatcher app-token mint,
+  GH_TOKEN passed to the pipeline, AOT smoke step retained, artifact upload.
+- Verified locally: PR workflow green end-to-end; release dry-run green
+  (version check "safe to release", pack succeeds, push/notify skipped without
+  key); repository_dispatch tested for real with local gh auth - timewarp-
+  software started a "rebuild" repository_dispatch run from our payload.
+
+Remaining items require owner action: make the repo public, register
+TimeWarp.Flexbox for nuget.org Trusted Publishing under TimeWarp.Enterprises,
+then cut the next release and verify the package page + flexbox skill appear
+on https://timewarp.software/.

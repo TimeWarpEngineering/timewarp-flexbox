@@ -35,9 +35,20 @@ internal sealed class BuildCommand : ICommand<Unit>
       Command = command;
       Ct = ct;
 
-      if (!FindRepoRoot()) return Value;
-      if (!await CleanAsync()) return Value;
-      if (!await BuildAsync()) return Value;
+      if (!FindRepoRoot())
+      {
+        return Value;
+      }
+
+      if (!await CleanAsync())
+      {
+        return Value;
+      }
+
+      if (!await BuildAsync())
+      {
+        return Value;
+      }
 
       Terminal.WriteLine("\nBuild completed successfully!".Green());
       return Value;
@@ -52,6 +63,7 @@ internal sealed class BuildCommand : ICommand<Unit>
         Environment.ExitCode = 1;
         return false;
       }
+
       RepoRoot = root;
       Terminal.WriteLine($"Building repository at {RepoRoot}...");
       return true;
@@ -59,7 +71,10 @@ internal sealed class BuildCommand : ICommand<Unit>
 
     private async Task<bool> CleanAsync()
     {
-      if (!Command.Clean) return true;
+      if (!Command.Clean)
+      {
+        return true;
+      }
 
       Terminal.WriteLine("\nCleaning before build...");
       CommandResult command = DotNet.Clean()
@@ -70,7 +85,7 @@ internal sealed class BuildCommand : ICommand<Unit>
       return await ExecuteAsync(command, "Clean failed!");
     }
 
-    private async Task<bool> BuildAsync()
+    private Task<bool> BuildAsync()
     {
       Terminal.WriteLine("\nBuilding...");
       CommandResult command = DotNet.Build()
@@ -79,7 +94,7 @@ internal sealed class BuildCommand : ICommand<Unit>
         .WithNoValidation()
         .Build();
 
-      return await ExecuteAsync(command, "Build failed!");
+      return ExecuteAsync(command, "Build failed!");
     }
 
     private async Task<bool> ExecuteAsync(CommandResult command, string failureMessage)
