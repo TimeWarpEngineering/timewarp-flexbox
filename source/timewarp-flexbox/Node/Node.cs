@@ -1056,7 +1056,14 @@ public sealed class Node : ILayoutableNode
         clonedChild ??= child.Clone();
         clonedChild.Owner = this;
 
-        if (clonedChild.HasContentsChildren)
+        if (clonedChild.Style.Display == Display.Contents)
+        {
+          // The contents node's children are treated as children of the
+          // contents node's parent for layout purposes, so they need
+          // to be cloned as well.
+          clonedChild.CloneChildrenIfNeeded();
+        }
+        else if (clonedChild.HasContentsChildren)
         {
           clonedChild.CloneContentsChildrenIfNeeded();
         }
@@ -1091,7 +1098,11 @@ public sealed class Node : ILayoutableNode
   /// </summary>
   public Node Clone()
   {
-    return new Node(this);
+    // C++ YGNodeClone clears the owner: a clone starts detached; callers
+    // (including CloneChildrenIfNeeded) re-parent it explicitly.
+    Node clone = new(this);
+    clone.Owner = null;
+    return clone;
   }
 
   /// <summary>
@@ -1280,7 +1291,7 @@ public sealed class Node : ILayoutableNode
   /// <summary>
   /// Resets layout results to default values.
   /// </summary>
-  private void ResetLayoutResults()
+  internal void ResetLayoutResults()
   {
     Layout.SetDirection(Direction.Inherit);
     Layout.SetHadOverflow(false);

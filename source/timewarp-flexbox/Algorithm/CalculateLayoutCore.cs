@@ -104,7 +104,7 @@ internal static class CalculateLayoutCore
           layoutMarkerData,
           reason);
 
-      LayoutHelpers.CleanupContentsNodesRecursively(node);
+      LayoutHelpers.CleanupContentsNodesRecursively(node, performLayout);
       return;
     }
 
@@ -123,7 +123,7 @@ internal static class CalculateLayoutCore
           ownerWidth,
           ownerHeight);
 
-      LayoutHelpers.CleanupContentsNodesRecursively(node);
+      LayoutHelpers.CleanupContentsNodesRecursively(node, performLayout);
       return;
     }
 
@@ -139,14 +139,14 @@ internal static class CalculateLayoutCore
             ownerWidth,
             ownerHeight))
     {
-      LayoutHelpers.CleanupContentsNodesRecursively(node);
+      LayoutHelpers.CleanupContentsNodesRecursively(node, didPerformLayout: false);
       return;
     }
 
     // At this point we know we're going to perform work.
     node.CloneChildrenIfNeeded();
     node.Layout.SetHadOverflow(false);
-    LayoutHelpers.CleanupContentsNodesRecursively(node);
+    LayoutHelpers.CleanupContentsNodesRecursively(node, performLayout);
 
     // STEP 1: CALCULATE VALUES FOR REMAINDER OF ALGORITHM
     FlexDirection mainAxis = node.Style.FlexDirection.ResolveDirection(direction);

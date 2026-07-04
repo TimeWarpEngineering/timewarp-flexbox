@@ -378,9 +378,17 @@ internal static class FlexBasis
 
       if (child.Style.Display == Display.None)
       {
-        LayoutHelpers.ZeroOutLayoutRecursively(child);
-        child.HasNewLayout = true;
-        child.SetDirty(false);
+        // Only mutate display:none children during layout passes. Zeroing them
+        // out during measure-only passes contributes nothing to the measurement,
+        // but sets hasNewLayout on nodes the parent's layout pass may never
+        // visit, leaking the flag into lazily-shared clones.
+        if (performLayout)
+        {
+          LayoutHelpers.ZeroOutLayoutRecursively(child);
+          child.HasNewLayout = true;
+          child.SetDirty(false);
+        }
+
         continue;
       }
 
