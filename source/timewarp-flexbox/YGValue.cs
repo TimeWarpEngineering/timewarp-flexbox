@@ -179,7 +179,7 @@ public readonly struct YGValue : IEquatable<YGValue>
 /// <summary>
 /// Provides utility methods related to YGValue and undefined float values.
 /// </summary>
-public static class YGValueUtilities
+internal static class YGValueUtilities
 {
   /// <summary>
   /// Float value to represent "undefined" in style values.

@@ -12,7 +12,7 @@ namespace TimeWarp.Flexbox;
 /// The core layout algorithm implementation.
 /// Implements all 11 steps of the flexbox layout algorithm.
 /// </summary>
-public static class CalculateLayoutCore
+internal static class CalculateLayoutCore
 {
   /// <summary>
   /// The main recursive layout function that implements the 11-step flexbox algorithm.

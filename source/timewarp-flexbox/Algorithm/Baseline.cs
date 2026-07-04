@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Provides baseline calculation utilities for the layout algorithm.
 /// </summary>
-public static class Baseline
+internal static class Baseline
 {
   /// <summary>
   /// Calculates the baseline represented as an offset from the top edge of the node.

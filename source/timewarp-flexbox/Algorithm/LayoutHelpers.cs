@@ -12,7 +12,7 @@ namespace TimeWarp.Flexbox;
 /// Provides helper utility functions for the layout algorithm.
 /// These are leaf-level functions with minimal dependencies.
 /// </summary>
-public static class LayoutHelpers
+internal static class LayoutHelpers
 {
   /// <summary>
   /// Applies max-size constraints to sizing mode and dimension.

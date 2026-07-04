@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <!-- The unit tests exercise the internal algorithm machinery directly
+         (they are ported Yoga unit tests) -->
+    <InternalsVisibleTo Include="timewarp-flexbox-tests" />
+  </ItemGroup>
+
   <PropertyGroup>
     <RootNamespace>TimeWarp.Flexbox</RootNamespace>
     <AssemblyName>TimeWarp.Flexbox</AssemblyName>

@@ -13,7 +13,7 @@ namespace TimeWarp.Flexbox;
 /// These handle special cases: nodes with measure functions, nodes without children,
 /// and nodes with fixed sizes.
 /// </summary>
-public static class MeasureNode
+internal static class MeasureNode
 {
   /// <summary>
   /// Measures a node that has a custom measure function (e.g., text nodes).

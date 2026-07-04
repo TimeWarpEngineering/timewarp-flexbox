@@ -18,7 +18,7 @@ namespace TimeWarp.Flexbox;
 /// StyleValuePool.Store(), and StyleValuePool.GetLength()/
 /// StyleValuePool.GetNumber().
 /// </remarks>
-public struct StyleValueHandle : IEquatable<StyleValueHandle>
+internal struct StyleValueHandle : IEquatable<StyleValueHandle>
 {
   private const ushort HandleTypeMask = 0b0000_0000_0000_0111;
   private const ushort HandleIndexedMask = 0b0000_0000_0000_1000;

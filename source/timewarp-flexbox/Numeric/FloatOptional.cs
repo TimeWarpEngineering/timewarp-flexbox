@@ -177,7 +177,7 @@ public readonly struct FloatOptional : IEquatable<FloatOptional>, IComparable<Fl
 /// <summary>
 /// Extension methods for FloatOptional.
 /// </summary>
-public static class FloatOptionalExtensions
+internal static class FloatOptionalExtensions
 {
   /// <summary>
   /// Returns the maximum of two FloatOptional values, treating undefined values specially.

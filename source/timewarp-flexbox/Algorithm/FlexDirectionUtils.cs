@@ -11,7 +11,7 @@ namespace TimeWarp.Flexbox;
 /// <summary>
 /// Extension methods and utilities for FlexDirection.
 /// </summary>
-public static class FlexDirectionUtils
+internal static class FlexDirectionUtils
 {
   /// <summary>
   /// Checks if the flex direction is row-based.

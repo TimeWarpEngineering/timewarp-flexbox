@@ -32,7 +32,7 @@ namespace TimeWarp.Flexbox;
 /// <c>std::forward_list</c>.
 /// </para>
 /// </remarks>
-public readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<LayoutableChildren<T>>
+internal readonly struct LayoutableChildren<T> : IEnumerable<T>, IEquatable<LayoutableChildren<T>>
     where T : class, ILayoutableNode
 {
   private readonly T? Parent;

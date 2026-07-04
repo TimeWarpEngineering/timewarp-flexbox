@@ -65,19 +65,19 @@ public sealed class LayoutResults : IEquatable<LayoutResults>
   /// </summary>
   /// <param name="index">The index of the cached measurement.</param>
   /// <returns>The cached measurement at the specified index.</returns>
-  public CachedMeasurement GetCachedMeasurement(int index) => CachedMeasurements[index];
+  internal CachedMeasurement GetCachedMeasurement(int index) => CachedMeasurements[index];
 
   /// <summary>
   /// Sets the cached measurement at the specified index.
   /// </summary>
   /// <param name="index">The index of the cached measurement.</param>
   /// <param name="measurement">The cached measurement to set.</param>
-  public void SetCachedMeasurement(int index, CachedMeasurement measurement) => CachedMeasurements[index] = measurement;
+  internal void SetCachedMeasurement(int index, CachedMeasurement measurement) => CachedMeasurements[index] = measurement;
 
   /// <summary>
   /// Cached layout result for the node.
   /// </summary>
-  public CachedMeasurement CachedLayout { get; set; }
+  internal CachedMeasurement CachedLayout { get; set; }
 
   #endregion
 

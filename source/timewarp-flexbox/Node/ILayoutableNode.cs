@@ -17,7 +17,7 @@ namespace TimeWarp.Flexbox;
 /// the node tree while handling display:contents nodes specially.
 /// The full Node implementation (Task 122) will implement this interface.
 /// </remarks>
-public interface ILayoutableNode
+internal interface ILayoutableNode
 {
   /// <summary>
   /// Gets the child at the specified index.
