@@ -35,9 +35,9 @@ site without waiting for the nightly cron backstop.
 
 ## Prerequisites (decisions needed)
 
-- [ ] **Make the repository public** — it is currently PRIVATE; the site's privacy
+- [x] **Make the repository public** (done 2026-07-04, verified PUBLIC) — it is currently PRIVATE; the site's privacy
       check and raw.githubusercontent skill fetches require a public repo
-- [ ] **Publish to nuget.org instead of (or in addition to) GitHub Packages** —
+- [x] **Publish to nuget.org instead of (or in addition to) GitHub Packages** (Trusted Publishing registered 2026-07-04; readme install section rewritten) —
       register TimeWarp.Flexbox for Trusted Publishing under TimeWarp.Enterprises;
       once done, rewrite the readme installation section (the PAT/GitHub-Packages
       dance becomes a plain `dotnet add package`)
@@ -55,7 +55,7 @@ site without waiting for the nightly cron backstop.
       (`vars.REBUILD_APP_ID` / `secrets.REBUILD_APP_PRIVATE_KEY`, owner
       TimeWarpEngineering, repositories timewarp-software), `GH_TOKEN` passed to the
       pipeline, artifact upload
-- [ ] Confirm the org App/vars are visible to this repo (they are org-level for
+- [x] Confirm the org App/vars are visible to this repo (they are org-level for
       terminal; private repos may need enabling)
 - [x] Dry-run: `workflow_dispatch` the pipeline without a release; then cut the next
       release and verify the dispatch lands (timewarp-software Actions shows a

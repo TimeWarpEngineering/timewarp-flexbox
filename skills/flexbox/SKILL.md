@@ -278,13 +278,12 @@ CalculateLayout.Calculate(root, float.NaN, float.NaN, Direction.LTR);
 
 ## Installation
 
-```xml
-<PackageReference Include="TimeWarp.Flexbox" Version="1.0.0-beta.3" />
+```bash
+dotnet add package TimeWarp.Flexbox --prerelease
 ```
 
-The package is on the TimeWarpEngineering GitHub Packages feed (see the
-repository readme for feed authentication) and ships XML docs. Targets
-`net10.0`, zero dependencies, `IsAotCompatible`.
+The package is on nuget.org and ships XML docs. Targets `net10.0`, zero
+dependencies, `IsAotCompatible`.
 
 ## Further Reference
 
