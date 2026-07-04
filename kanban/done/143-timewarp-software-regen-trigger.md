@@ -60,9 +60,10 @@ site without waiting for the nightly cron backstop.
 - [x] Dry-run: `workflow_dispatch` the pipeline without a release; then cut the next
       release and verify the dispatch lands (timewarp-software Actions shows a
       `rebuild` repository_dispatch run) and the package page appears
-- [ ] After task 142 lands, verify the flexbox skill shows on
-      https://timewarp.software/ skills index (or add this repo to
-      `extraSkillRepos` if it remains off nuget.org)
+- [x] After task 142 lands, verify the flexbox skill shows on
+      https://timewarp.software/ skills index — VERIFIED 2026-07-04: skill live at
+      /skills/flexbox/SKILL.md and in the skills index; package page live at
+      /packages/timewarp.flexbox/
 
 ## Dependencies
 
@@ -111,3 +112,17 @@ on https://timewarp.software/.
   Once it indexes, any rebuild (manual dispatch or the nightly cron) picks up
   the package page and the flexbox skill automatically. Verify then check the
   final box below.
+
+## Results (2026-07-04)
+
+Complete and verified end-to-end with v1.0.0-beta.4:
+release event -> OIDC Trusted Publishing -> push to nuget.org -> rebuild
+dispatch -> site rebuild -> https://timewarp.software/ shows the
+timewarp.flexbox package page and the flexbox skill.
+
+Follow-up discovered in the process: the dispatch races NuGet's SEARCH index
+(the site catalog's data source) — a brand-new package id took ~3.5h to become
+searchable, so the release-triggered rebuilds ran too early and a manual
+re-dispatch was needed. Fix proposed on the receiver side (poll the search
+index for the payload's exact version before building, 30-min bound, nightly
+backstop unchanged): timewarp-software PR #23.
