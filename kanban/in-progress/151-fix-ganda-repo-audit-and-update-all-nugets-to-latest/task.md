@@ -74,6 +74,7 @@ Acceptance:
 - Created: b3bc5dc2-e0c9-4b04-ac76-4a1bd4f7a1f3 (2026-11-08)
 - Implementation: grok task-work (2026-11-08)
 - Line-cap: shrink-only `.timewarp/line-cap-baseline.json` for the 36 Yoga ports and generated fixtures (task 151). Splitting invents boundaries the port must not have. `source-file-line-cap.severity = off` would hide later over-cap files. Origin has no baseline, so this first ratchet is legal.
+- Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1bbf3-b482-76a2-b863-84e42461802a, max-turns 500, Done — 2026-11-08T16:47:12Z
 
 ## Results
 
