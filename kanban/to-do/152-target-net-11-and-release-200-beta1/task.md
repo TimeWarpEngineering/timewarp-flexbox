@@ -37,8 +37,11 @@ leave `ganda repo audit` clean.
 
 ## Notes
 
-- Version is 2.0.0-beta.1 by request (2026-11-09). Adding a TFM alone is not a
-  breaking change, so record any real breaking changes in release notes.
+- Why 2.0.0: the 2.0.0 line will drop `net10.0` once .NET 11 is GA. That drop is
+  the breaking change. 2.0.0-beta.1 is the first beta toward it and still ships
+  both TFMs. Do not drop net10.0 in this task. (Steve, 2026-11-09)
+- Release notes for beta.1 should say: net10.0 support ends at 2.0.0 GA, which
+  follows .NET 11 GA; stay on 1.x for net10.0.
 - Cutting the release is a human-approved step after the PR merges.
 
 ## Session
