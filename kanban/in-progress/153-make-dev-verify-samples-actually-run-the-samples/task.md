@@ -109,3 +109,4 @@ With `bin/dev` hidden, `dotnet run tools/dev-cli/dev.cs -- workflow` on that sam
 - Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1bc65-cd95-7e31-bbfa-f683d12e76bf, max-turns 500, Done — 2026-11-08T18:46:44Z
 - Review oracle: claude-opus-5-5 (tw-implementation-review, effort 2, roster general, turn cap 120), round 1, disposition accepted-exceptions, 0 open — 2026-11-09
 - Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session d2be8b0d-0abc-4e45-96d7-a4cfdd9c4477, max-turns 120, artifacts general.md, merged.md, disposition.md — 2026-11-08T18:49:46Z
+- Installed ganda changed during this walk: was 50245520 bytes 6960d933b0215f2d5776a313661be767146c85b1b1580b012d28042e019026ce; now 50404368 bytes 4cddea1b1ea98bf485ebbf9a8de534c3316dead53097be626514fa4b1b7831a0
