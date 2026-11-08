@@ -19,19 +19,19 @@ them first or note the gaps in the release notes.
 
 ## Todo List
 
-- [ ] Confirm task 144 merged; public API reviewed and final
-- [ ] Decide on 145/146: land first, or list as known gaps in release notes
-- [ ] Bump `<Version>` in `source/Directory.Build.props` to `1.0.0`
-- [ ] Update readme + skill install snippets (drop `--prerelease`; version 1.0.0)
-- [ ] PR dev -> master, green CI, merge
-- [ ] `gh release create v1.0.0` (NOT --prerelease). Release notes: stable API
+- [x] Confirm task 144 merged; public API reviewed and final
+- [x] Decide on 145/146: land first, or list as known gaps in release notes
+- [x] Bump `<Version>` in `source/Directory.Build.props` to `1.0.0`
+- [x] Update readme + skill install snippets (drop `--prerelease`; version 1.0.0)
+- [x] PR dev -> master, green CI, merge
+- [x] `gh release create v1.0.0` (NOT --prerelease). Release notes: stable API
       commitment statement; conformance/AOT/perf highlights; anything excluded
       (FixFlexBasisFitContent, intrinsic text if 146 not done); breaking changes
       vs beta.4 from the 144 internalization (beta consumers using internals)
-- [ ] Verify the chain: nuget.org (stable channel now — the site's
+- [x] Verify the chain: nuget.org (stable channel now — the site's
       `prerelease=false` owner search picks it up), site rebuild (the PR #23
       wait-gate handles search-index lag), package page shows stable version
-- [ ] Consumer install check without `--prerelease`
+- [x] Consumer install check without `--prerelease`
 
 ## Notes
 
@@ -43,4 +43,20 @@ them first or note the gaps in the release notes.
 
 ## Results
 
-(Add after completion)
+Closed out 2026-11-09 (the release itself shipped 2026-07-04; this card was never updated).
+
+- Task 144 (API tightening), 145 and 146 are all in `kanban/done/`, so there are no
+  known gaps to list
+- `source/Directory.Build.props` `<Version>` is `1.0.0`
+- PR #11 "feat: release 1.0.0 - stable API, full Yoga test coverage, five engine fixes" merged
+- GitHub release `v1.0.0` published 2026-07-04, marked Latest, not prerelease
+- nuget.org flat container lists `1.0.0` after `1.0.0-beta.4`
+- readme install snippet is `dotnet add package TimeWarp.Flexbox` / `Version="1.0.0"` (no `--prerelease`)
+- Consumer check 2026-11-09: a fresh net10.0 console app,
+  `dotnet add package TimeWarp.Flexbox` resolved `1.0.0` from nuget.org and built
+
+Not rechecked at close-out: the site rebuild and the nuget.org package page.
+
+## Session
+
+- Close-out: b3bc5dc2-e0c9-4b04-ac76-4a1bd4f7a1f3 (2026-11-09)
