@@ -89,3 +89,5 @@ clean; host unstage-all (ganda).
 - Trigger: `/tw-merge` software 033 — GC refused, then leftover journal
   committed; 262 left consumer sweep out of scope
 - Pattern: `*.journal.json` (cockpit, 2026-09-03) — one glob, not six names
+- Folded into **151** (fix ganda repo audit + update NuGets) 2026-11-08; archived.
+  151's `audit --fix` and Requirements carry this task's acceptance checks.
