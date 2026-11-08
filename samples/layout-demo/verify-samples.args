@@ -1,0 +1,4 @@
+# Arguments dev verify-samples passes to this sample after the build.
+# {out} is a temporary file outside the repo. The sample must create it (non-empty).
+# {outdir} is that file's directory. Only {out} is checked. Both are deleted afterward.
+--html {out}

@@ -10,6 +10,7 @@
 // Stays on net10.0. The library package also ships net11.0.
 //   ./samples/layout-demo/layout-demo.cs
 //   ./samples/layout-demo/layout-demo.cs --html out.html
+// dev verify-samples reads verify-samples.args, passes --html {out}, and checks that file.
 
 using System.Globalization;
 using System.Text;
