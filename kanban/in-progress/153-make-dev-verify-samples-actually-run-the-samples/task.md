@@ -41,6 +41,10 @@ run the layout demo by hand to prove it worked.
 - [x] Purpose/Design regions updated
 - [x] `dev workflow` green locally and in CI; audit exits 0
 
+## Review
+
+- Round 1: Done
+
 ## Notes
 
 - Found in task 152 Results (2026-11-09): "`verify-samples` is still a stub that
@@ -81,8 +85,27 @@ verify-samples: samples/layout-demo/layout-demo.cs (net10.0) run failed (exit 1)
 
 With `bin/dev` hidden, `dotnet run tools/dev-cli/dev.cs -- workflow` on that same break exited 1. The log contains `verify-samples: samples/layout-demo/layout-demo.cs (net10.0) run failed (exit 1).` and `Sample verification failed!`. It does not contain "Tests completed" or "Workflow completed successfully!".
 
+### Review disposition
+
+- Rounds: 1. Effort 2, roster: general (the review oracle, which also checked plan alignment).
+- Final counts: bug 0, suggestion 1 wontfix, nit 2 wontfix. Open: 0.
+- Disposition: **accepted-exceptions**.
+  - M1 (suggestion): `IsUnderBuildOutput` tests the absolute path, so a checkout under a `bin` or `obj` directory skips every sample. That fails closed and is a follow-up candidate.
+  - M2 (nit): `{out}` is always `output.html`.
+  - M3 (nit): `verify-samples.args` has no quoting.
+  - The rationale for each is in `review/disposition.md`.
+- Re-verified by the reviewer:
+  - `dotnet run tools/dev-cli/dev.cs -- verify-samples` exited 0.
+  - `git status --porcelain --ignored samples` was clean before and after, and the scratch directory was removed.
+  - `ganda repo audit` exited 0 (advisory `vscode-window-icon` only).
+- Not re-run by the reviewer: the negative check and the full `dev workflow`. The evidence above is accepted.
+- The implementer restatement matches the task. There is no misread.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
 ## Session
 
 - Created: b3bc5dc2-e0c9-4b04-ac76-4a1bd4f7a1f3 (2026-11-09)
 - Implementation: verify-samples builds and runs each sample (2026-11-09)
 - Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1bc65-cd95-7e31-bbfa-f683d12e76bf, max-turns 500, Done — 2026-11-08T18:46:44Z
+- Review oracle: claude-opus-5-5 (tw-implementation-review, effort 2, roster general, turn cap 120), round 1, disposition accepted-exceptions, 0 open — 2026-11-09
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session d2be8b0d-0abc-4e45-96d7-a4cfdd9c4477, max-turns 120, artifacts general.md, merged.md, disposition.md — 2026-11-08T18:49:46Z
