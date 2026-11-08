@@ -48,7 +48,7 @@ leave `ganda repo audit` clean.
 - [x] AOT smoke covers the intended TFM(s)
 - [x] Version 2.0.0-beta.1; readme/skill snippets updated
 - [x] `ganda repo audit --fix`; commit results; audit exits 0
-- [ ] Build + tests green locally and in CI
+- [x] Build + tests green locally and in CI
 - [ ] After merge: cut the prerelease per tw-release (`dev release`, not hand tags)
 
 ## Notes
@@ -63,7 +63,7 @@ leave `ganda repo audit` clean.
 ## Session
 
 - Created: b3bc5dc2-e0c9-4b04-ac76-4a1bd4f7a1f3 (2026-11-09)
-- Implement: grok (2026-11-09). Library, unit tests, and AOT smoke multi-target `net10.0;net11.0`. Version `2.0.0-beta.1`. Layout demo and benchmarks stay on `net10.0`. Audit exit 0. Local `./bin/dev workflow` green. GitHub CI is the open checklist item until the hosted run finishes. The prerelease cut stays after merge.
+- Implement: grok (2026-11-09). Library, unit tests, and AOT smoke multi-target `net10.0;net11.0`. Version `2.0.0-beta.1`. Layout demo and benchmarks stay on `net10.0`. Audit exit 0. Local `./bin/dev workflow` green. GitHub run [42508073157](https://github.com/TimeWarpEngineering/timewarp-flexbox/actions/runs/42508073157) green on both TFMs. The prerelease cut stays after merge.
 
 ## Results
 
@@ -80,6 +80,8 @@ CI publishes the AOT smoke once per TFM into `artifacts/aot-smoke/<tfm>` and run
 `./bin/dev workflow` (clean, Release build, verify-samples, test) exited 0: 0 warnings, 0 errors, 1468 passed on net10.0 and 1468 passed on net11.0. `verify-samples` is still a stub that prints success. The layout demo was run separately: `dotnet run --file samples/layout-demo/layout-demo.cs` exited 0. The only demo warnings are the pre-existing RS0030 `Console` bans.
 
 Native AOT publish for `net10.0` and `net11.0` (`-c Release -r linux-x64`) each printed `AOT smoke: PASS (all layout checks)`.
+
+GitHub Actions run [42508073157](https://github.com/TimeWarpEngineering/timewarp-flexbox/actions/runs/42508073157) (`workflow_dispatch` on this branch) succeeded. The pipeline built both TFMs with 0 errors, tests passed 1468 on net10.0 and 1468 on net11.0, and the AOT step printed `AOT smoke: PASS (all layout checks)` for both `artifacts/aot-smoke/net10.0` and `artifacts/aot-smoke/net11.0`.
 
 The packed `artifacts/packages/TimeWarp.Flexbox.2.0.0-beta.1.nupkg` contains `lib/net10.0/TimeWarp.Flexbox.dll`, `lib/net10.0/TimeWarp.Flexbox.xml`, `lib/net11.0/TimeWarp.Flexbox.dll`, and `lib/net11.0/TimeWarp.Flexbox.xml`. The nuspec release notes are the sunset sentence. Both TFM dependency groups are empty.
 
