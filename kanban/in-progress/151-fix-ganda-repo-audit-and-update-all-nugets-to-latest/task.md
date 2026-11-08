@@ -130,3 +130,8 @@ Fix pass for review round 1:
 Smoke: from this worktree run `ganda repo audit`, then `dotnet test timewarp-flexbox.slnx`, then `dotnet run samples/layout-demo/layout-demo.cs -- --html /tmp/flexbox-demo.html`. In `.github/workflows/workflow.yml`, confirm one setup step uses `dotnet-version: '10.0.x'` and the next uses `dotnet-version: '11.0.x'` with `dotnet-quality: preview`.
 
 Expect: audit exits 0 and `source-file-line-cap` passes, the test host reports 1468 passed and 0 failed, the demo writes `/tmp/flexbox-demo.html`, and `wc -l samples/layout-demo/layout-demo.cs` prints a count below 500.
+- CI red on PR #12 (run 42503142992, 2026-11-09): `AOT smoke test` step,
+  `dotnet publish tests/timewarp-flexbox-aot-smoke` fails with MSB3030
+  "Could not copy the file bin/Release/net10.0/linux-x64/TimeWarp.Flexbox.AotSmoke.xml
+  because it was not found" (SDK 11.0.100-rc.3). Likely the doc-file setting
+  from the audit/SDK change; fix and re-run the walk.
