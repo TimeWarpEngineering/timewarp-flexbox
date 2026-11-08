@@ -15,6 +15,10 @@ clean audit and move every NuGet package to its latest version.
   is on the latest version. TimeWarp packages come from
   https://nuget.pkg.github.com/TimeWarpEngineering/index.json
 - `bin/dev` builds and `dev --capabilities` runs
+- Folded from task 150: root `.gitignore` has the `*.journal.json` glob
+  (not the six exact names), `git ls-files '*.journal.json'` is empty
+  (`git rm --cached` any tracked journal, never product `task.md`), and
+  `git check-ignore -v kanban/to-do/task-work.journal.json` hits that line
 - Build and tests pass after the bumps
 
 ### Failing checks at creation
@@ -42,11 +46,11 @@ Manual:
 - [ ] Update every NuGet package to latest
 - [ ] Build and tests green
 - [ ] `ganda repo audit` exits 0
-- [ ] Task 150 requirements met (`*.journal.json` in `.gitignore`); note it in Results
+- [ ] Folded 150: `*.journal.json` ignored, no tracked journals, check-ignore confirms
 
 ## Notes
 
-- Task 150 (routine-journals-gitignore) is covered by the `--fix` here.
+- Task 150 (routine-journals-gitignore) was folded into this task and archived on 2026-11-08.
 - At claim, the worktree on-create handler left uncommitted edits in
   `tools/dev-cli/dev.cs` and `tools/dev-cli/global-usings.cs` (Nuru/Mediator
   migration). Review them as the starting point for the dev-CLI fix.
