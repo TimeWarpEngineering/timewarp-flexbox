@@ -85,3 +85,4 @@ With `bin/dev` hidden, `dotnet run tools/dev-cli/dev.cs -- workflow` on that sam
 
 - Created: b3bc5dc2-e0c9-4b04-ac76-4a1bd4f7a1f3 (2026-11-09)
 - Implementation: verify-samples builds and runs each sample (2026-11-09)
+- Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1bc65-cd95-7e31-bbfa-f683d12e76bf, max-turns 500, Done — 2026-11-08T18:46:44Z
