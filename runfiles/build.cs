@@ -2,8 +2,9 @@
 #:property TreatWarningsAsErrors=false
 #:property CodeAnalysisTreatWarningsAsErrors=false
 #:package TimeWarp.Amuru
+#:package TimeWarp.Amuru.Tools
 #:property EnablePreviewFeatures=true
-#:property NoWarn=CA1303;CA2007
+#:property NoWarn=CA1303;CA2007;RS0030
 
 // Build TimeWarp.Flexbox project
 // Usage: ./runfiles/build.cs [configuration]

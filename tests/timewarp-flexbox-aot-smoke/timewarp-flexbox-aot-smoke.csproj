@@ -5,6 +5,10 @@
     <RootNamespace>TimeWarp.Flexbox.AotSmoke</RootNamespace>
     <AssemblyName>TimeWarp.Flexbox.AotSmoke</AssemblyName>
     <PublishAot>true</PublishAot>
+    <!-- No XML doc file: Native AOT publish on SDK 11 fails MSB3030 looking for
+         bin/<config>/<tfm>/<rid>/TimeWarp.Flexbox.AotSmoke.xml. That layout never
+         copies the documentation file. The smoke binary does not ship docs. -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <!-- RS0030/CA1303: a native smoke binary reports via Console by design;
          it must stay zero-dependency to prove the library alone is AOT-safe -->
     <NoWarn>$(NoWarn);RS0030;CA1303</NoWarn>

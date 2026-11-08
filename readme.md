@@ -83,5 +83,5 @@ HTML page comparing the engine's output against your browser's native flexbox:
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details. Behavior modeled on Facebook's
+MIT — see [license](license) for details. Behavior modeled on Facebook's
 [Yoga](https://github.com/facebook/yoga) (MIT, Copyright (c) Meta Platforms, Inc.).

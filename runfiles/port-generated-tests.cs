@@ -5,7 +5,7 @@
 #:property NoWarn=CA1303;CA2007;CA1305;IDE0028;IDE0211;RS0030
 
 // Converts Yoga's generated C++ gtest files (tests/generated/YG*Test.cpp) into
-// C# Fixie tests under test/timewarp-flexbox-tests/Generated/.
+// C# Fixie tests under test/timewarp-flexbox-tests/generated/.
 //
 // Usage: ./runfiles/port-generated-tests.cs <yoga-repo-path> <TestName>...
 // Example: ./runfiles/port-generated-tests.cs ~/repos/github.com/facebook/yoga FlexDirection JustifyContent
@@ -31,7 +31,7 @@ if (!Directory.Exists(Path.Combine(repoRoot, "test")))
   repoRoot = Directory.GetCurrentDirectory();
 }
 
-string outputDir = Path.Combine(repoRoot, "test", "timewarp-flexbox-tests", "Generated");
+string outputDir = Path.Combine(repoRoot, "test", "timewarp-flexbox-tests", "generated");
 Directory.CreateDirectory(outputDir);
 
 int exitCode = 0;
@@ -194,7 +194,7 @@ internal static partial class Converter
 
     // Intrinsic text measurement (generated IntrinsicSize tests): the text is
     // passed via node context and measured by the shared IntrinsicSizeMeasure
-    // helper (see test/timewarp-flexbox-tests/Generated/IntrinsicSizeMeasure.cs)
+    // helper (see test/timewarp-flexbox-tests/generated/IntrinsicSizeMeasure.cs)
     m = Regex.Match(line, "^YGNodeSetContext\\((\\w+), \\(void\\*\\)\"(.*)\"\\);$");
     if (m.Success)
     {

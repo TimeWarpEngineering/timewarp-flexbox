@@ -6,7 +6,7 @@
     <Project Path="test/timewarp-flexbox-tests/timewarp-flexbox-tests.csproj" />
   </Folder>
   <Folder Name="/benchmarks/">
-    <Project Path="benchmarks/timewarp-flexbox-benchmarks/TimeWarp.Flexbox.Benchmarks.csproj" />
+    <Project Path="benchmarks/timewarp-flexbox-benchmarks/time-warp.flexbox.benchmarks.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj" />

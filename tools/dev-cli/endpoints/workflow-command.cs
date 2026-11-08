@@ -34,7 +34,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       Terminal = terminal;
     }
 
-    public async ValueTask<Unit> Handle(WorkflowCommand command, CancellationToken ct)
+    public async Task<Unit> Handle(WorkflowCommand command, CancellationToken ct)
     {
       Ct = ct;
 
@@ -43,50 +43,50 @@ internal sealed class WorkflowCommand : ICommand<Unit>
 
       if (!FindRepoRoot(isRelease))
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (!await RunStepAsync("clean", "Clean failed!"))
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (!await RunStepAsync("build", "Build failed!"))
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (!await RunStepAsync("verify-samples", "Sample verification failed!"))
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (!await RunStepAsync("test", "Tests failed!"))
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (!isRelease)
       {
         Terminal.WriteLine("\nWorkflow completed successfully!".Green());
-        return Value;
+        return Unit.Value;
       }
 
       if (!await RunStepAsync("check-version", "Version check failed!"))
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (!await PackAsync())
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (!string.IsNullOrEmpty(command.ApiKey))
       {
         if (!await PushAsync(command.ApiKey))
         {
-          return Value;
+          return Unit.Value;
         }
 
         await NotifySoftwareSiteAsync();
@@ -97,7 +97,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       }
 
       Terminal.WriteLine("\nRelease workflow completed successfully!".Green());
-      return Value;
+      return Unit.Value;
     }
 
     private bool FindRepoRoot(bool isRelease)
