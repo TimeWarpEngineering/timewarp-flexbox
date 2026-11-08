@@ -14,12 +14,17 @@ PublishAot smoke test runs in CI on every build.
 
 ## Installation
 
+2.0.0-beta.1 is a prerelease. It targets `net10.0` and `net11.0`.
+`1.0.0` stays the stable line (`dotnet add package TimeWarp.Flexbox` with no
+`--prerelease`). net10.0 support ends at 2.0.0 GA, which follows .NET 11 GA;
+stay on 1.x for net10.0.
+
 ```bash
-dotnet add package TimeWarp.Flexbox
+dotnet add package TimeWarp.Flexbox --prerelease
 ```
 
 ```xml
-<PackageReference Include="TimeWarp.Flexbox" Version="1.0.0" />
+<PackageReference Include="TimeWarp.Flexbox" Version="2.0.0-beta.1" />
 ```
 
 ## Usage

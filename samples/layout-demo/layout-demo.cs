@@ -1,11 +1,13 @@
 #!/usr/bin/env -S dotnet --
 #:property TreatWarningsAsErrors=false
 #:property CodeAnalysisTreatWarningsAsErrors=false
+#:property TargetFramework=net10.0
 #:project $(SourceDirectory)timewarp-flexbox/timewarp-flexbox.csproj
 #:property EnablePreviewFeatures=true
 #:property NoWarn=CA1303;CA2007;IDE0058
 
 // Visual demo: ASCII boxes in the terminal, or --html for a browser comparison of the same styles.
+// Stays on net10.0. The library package also ships net11.0.
 //   ./samples/layout-demo/layout-demo.cs
 //   ./samples/layout-demo/layout-demo.cs --html out.html
 
