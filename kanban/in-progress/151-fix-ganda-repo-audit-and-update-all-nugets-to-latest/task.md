@@ -52,6 +52,7 @@ Manual:
 - [x] Stale kebab paths in the readme, skill, and integration-testing note
 - [x] Line-cap reason names task 151; layout demo is under 500 lines
 - [x] `dev.cs` Design names the `TimeWarp.Mediator` move
+- [x] AOT smoke publish on SDK 11 does not look for a missing XML doc file
 
 ## Review
 
@@ -70,6 +71,8 @@ Bring this repo to a clean `ganda repo audit` (exit 0, no Error-severity failure
 
 Fix pass (review round 1): close the five open findings without a new review. CI must be able to compile the net11.0 dev CLI. The Yoga test porter must write into `generated`. Stale kebab paths in the readme, the flexbox skill, and the integration-testing note must match the files on disk. The line-cap ratchet must name task 151 and why the Yoga ports stay whole, and the layout demo must sit at or under 500 lines. The Mediator comment must point at a Design note that actually mentions that move.
 
+CI follow-up: PR #12's AOT smoke step fails on SDK 11.0.100-rc.3 with MSB3030 because publish looks for `TimeWarp.Flexbox.AotSmoke.xml` under `bin/Release/net10.0/linux-x64` and that file is never copied there. The smoke project must publish and the native binary must pass, the same way the dev CLI already turns documentation generation off for its own AOT publish.
+
 Acceptance:
 
 - `ganda repo audit --fix` lands, and a later `ganda repo audit` exits 0.
@@ -84,6 +87,7 @@ Acceptance:
 - `readme.md` links `license`. The flexbox skill and the integration-testing note use the kebab-case paths.
 - `[ganda.audit]` records why the line-cap baseline exists and names task 151. `samples/layout-demo/layout-demo.cs` is at or under 500 lines and is not in the baseline.
 - `tools/dev-cli/dev.cs` Design says that `ICommand` and `Unit` live in `TimeWarp.Mediator`.
+- `dotnet publish` of `tests/timewarp-flexbox-aot-smoke` with `-c Release -r linux-x64` exits 0 on SDK 11, and the published native binary prints `AOT smoke: PASS`. The smoke project does not ask the publish layout to copy an XML doc file that Native AOT never writes into `bin`.
 
 ## Session
 
@@ -95,6 +99,7 @@ Acceptance:
 - Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 120, artifacts general.md, merged.md — 2026-11-08T16:50:21Z
 - Fix pass (implement-fix-2): M1–M5 on this branch. Audit 38 passed, 0 failed, 2 skipped. Tests 1468 passed, 0 failed. Layout demo is 497 lines.
 - Review oracle round 2: reviewer-claude (claude-opus-5-5, headless), effort 2, roster general, turn cap 120 — 2026-11-09. Delta `facda76..9ac7d1f`; M1–M5 fixed, 0 new, 0 open. Disposition `clean`.
+- CI fix: implementer-grok (2026-11-09). PR #12 run 42503142992 failed `dotnet publish tests/timewarp-flexbox-aot-smoke` with MSB3030 for `bin/Release/net10.0/linux-x64/TimeWarp.Flexbox.AotSmoke.xml` on SDK 11.0.100-rc.3. The doc file is produced under `obj` and the SDK 11 publish layout never copies it into that `bin` path.
 
 ## Results
 
@@ -125,13 +130,12 @@ Fix pass for review round 1:
 - Disposition: **clean**. No exceptions and no escalations.
 - Paths: `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md` (final ledger), `review/disposition.md`.
 
+CI follow-up (PR #12, run 42503142992): SDK 11 Native AOT publish tried to copy `TimeWarp.Flexbox.AotSmoke.xml` from `bin/Release/net10.0/linux-x64` and the file was not there. `tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj` now sets `GenerateDocumentationFile` to false, the same reason the dev CLI already does. The library still generates documentation from the root `Directory.Build.props`.
+
+Verified on this machine (SDK 11.0.100-rc.3.26522.148 and SDK 10.0.403): `dotnet publish tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj --configuration Release -r linux-x64` exits 0, and the published `TimeWarp.Flexbox.AotSmoke` prints `AOT smoke: PASS (all layout checks)`. `dotnet build timewarp-flexbox.slnx --configuration Release` reports 0 warnings and 0 errors. `ganda repo audit` exits 0 (38 passed, 0 failed, 2 skipped). The 1468-test suite was not re-run; this change does not touch the test sources.
+
 ### How to validate
 
-Smoke: from this worktree run `ganda repo audit`, then `dotnet test timewarp-flexbox.slnx`, then `dotnet run samples/layout-demo/layout-demo.cs -- --html /tmp/flexbox-demo.html`. In `.github/workflows/workflow.yml`, confirm one setup step uses `dotnet-version: '10.0.x'` and the next uses `dotnet-version: '11.0.x'` with `dotnet-quality: preview`.
+Smoke: from this worktree, with the .NET 11 preview SDK selected, run `dotnet publish tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj --configuration Release -r linux-x64 -o /tmp/flexbox-aot-smoke` and then `/tmp/flexbox-aot-smoke/TimeWarp.Flexbox.AotSmoke`. Then run `ganda repo audit`.
 
-Expect: audit exits 0 and `source-file-line-cap` passes, the test host reports 1468 passed and 0 failed, the demo writes `/tmp/flexbox-demo.html`, and `wc -l samples/layout-demo/layout-demo.cs` prints a count below 500.
-- CI red on PR #12 (run 42503142992, 2026-11-09): `AOT smoke test` step,
-  `dotnet publish tests/timewarp-flexbox-aot-smoke` fails with MSB3030
-  "Could not copy the file bin/Release/net10.0/linux-x64/TimeWarp.Flexbox.AotSmoke.xml
-  because it was not found" (SDK 11.0.100-rc.3). Likely the doc-file setting
-  from the audit/SDK change; fix and re-run the walk.
+Expect: publish exits 0 with no MSB3030, the binary prints `AOT smoke: PASS (all layout checks)` and exits 0, and the audit reports 0 failed checks.
