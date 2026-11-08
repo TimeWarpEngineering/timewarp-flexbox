@@ -19,7 +19,9 @@
 // Entry point for the dev CLI
 #endregion
 #region Design
-// Thin wrapper around TimeWarp.Nuru to execute development commands
+// Thin wrapper around TimeWarp.Nuru. Shared endpoints (clean, self-install,
+// check-version, release) come from TimeWarp.Nuru.DevCli and require the DI
+// registrations below (NURU050 names any that are missing).
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
@@ -28,11 +30,9 @@ NuruApp app = NuruApp.CreateBuilder()
   .ConfigureServices(services =>
   {
     services.AddSingleton<IRepoCleanService, RepoCleanService>();
-    services.AddSingleton<INuGetPackageService, NuGetPackageService>();
-    services.AddSingleton<IRepoCheckVersionService, RepoCheckVersionService>();
     services.AddSingleton<NuGetVersionService>();
-    services.AddSingleton<GitTagCheckService>();
     services.AddSingleton<IRepoConfigService, RepoConfigService>();
+    services.AddSingleton<IPackableProjectService, PackableProjectService>();
   })
   .DiscoverEndpoints()
   .Build();

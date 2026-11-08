@@ -27,7 +27,7 @@ internal sealed class TestCommand : ICommand<Unit>
       Terminal = terminal;
     }
 
-    public async ValueTask<Unit> Handle(TestCommand command, CancellationToken ct)
+    public async Task<Unit> Handle(TestCommand command, CancellationToken ct)
     {
       Command = command;
       Ct = ct;
@@ -36,17 +36,17 @@ internal sealed class TestCommand : ICommand<Unit>
 
       {
 
-        return Value;
+        return Unit.Value;
 
       }
 
       if (!await TestAsync())
       {
-        return Value;
+        return Unit.Value;
       }
 
       Terminal.WriteLine("\nTests completed successfully!".Green());
-      return Value;
+      return Unit.Value;
     }
 
     private bool FindRepoRoot()

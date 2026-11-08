@@ -1,4 +1,4 @@
-#!/usr/bin/dotnet run
+#!/usr/bin/env -S dotnet --
 #:project ../../source/timewarp-flexbox/timewarp-flexbox.csproj
 
 using TimeWarp.Flexbox;
