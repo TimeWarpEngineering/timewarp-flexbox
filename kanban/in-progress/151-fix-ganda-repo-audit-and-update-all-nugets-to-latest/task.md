@@ -55,8 +55,8 @@ Manual:
 
 ## Review
 
-- Round 1: M1–M5 addressed on this branch. Round 2 disposition is the host review node.
-
+- Round 1: M1–M5 addressed on this branch.
+- Round 2: Done
 ## Notes
 
 - Task 150 (routine-journals-gitignore) was folded into this task and archived on 2026-11-08.
@@ -94,6 +94,7 @@ Acceptance:
 - Review oracle round 1: reviewer-claude (claude-opus-5-5, headless), effort 2, roster general, turn cap 120 — 2026-11-08. 5 open findings (2 bug, 2 suggestion, 1 nit); fix pass requested.
 - Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 120, artifacts general.md, merged.md — 2026-11-08T16:50:21Z
 - Fix pass (implement-fix-2): M1–M5 on this branch. Audit 38 passed, 0 failed, 2 skipped. Tests 1468 passed, 0 failed. Layout demo is 497 lines.
+- Review oracle round 2: reviewer-claude (claude-opus-5-5, headless), effort 2, roster general, turn cap 120 — 2026-11-09. Delta `facda76..9ac7d1f`; M1–M5 fixed, 0 new, 0 open. Disposition `clean`.
 
 ## Results
 
@@ -117,9 +118,12 @@ Fix pass for review round 1:
 
 ### Review
 
-- Round 1 (effort 2, roster general): 2 bug, 2 suggestion, 1 nit. The fix pass addresses M1–M5. Round 2 has not run.
-- Verified on the fix pass: audit exit 0 (38/0/2), 1468/1468 tests pass, layout demo exits 0 at 497 lines.
-- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md` (live ledger).
+- Rounds: 2. Effort 2, roster general (reviewer-claude, claude-opus-5-5).
+- Round 1: 2 bug, 2 suggestion, 1 nit (M1–M5), all open. Fix commit 9ac7d1f addressed them.
+- Round 2 (delta `facda76..9ac7d1f`): M1–M5 verified fixed, no new findings. `ganda repo audit` exits 0, `source-file-line-cap` passes, the layout demo exits 0 at 497 lines, and every renamed path resolves.
+- Final counts: bug 0 open / 2 fixed, suggestion 0 open / 2 fixed, nit 0 open / 1 fixed. 0 wontfix.
+- Disposition: **clean**. No exceptions and no escalations.
+- Paths: `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md` (final ledger), `review/disposition.md`.
 
 ### How to validate
 

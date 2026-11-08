@@ -2,7 +2,7 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 604
+- Lines changed: 250
 - Effort: 2
 - TCB hits: none
 - Roster axes: general
@@ -25,3 +25,9 @@
 - Do not invent issues to fill space; zero issues is a valid outcome
 - Address the diff and surrounding call sites; re-verify falsifiable claims against the repo
 - Prior rounds are immutable; new work goes in `round-(N+1)/`
+
+## Round 2
+
+**Date:** 2026-11-09
+**Diff scope:** fix-pass delta `facda76..9ac7d1f` (round-1 base → fix commit 9ac7d1f), product paths
+**Effort / roster:** 2 / general (reviewer-claude, claude-opus-5-5, headless review-2 oracle)
