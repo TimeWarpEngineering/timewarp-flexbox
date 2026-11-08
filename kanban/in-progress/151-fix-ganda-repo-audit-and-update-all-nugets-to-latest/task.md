@@ -58,6 +58,7 @@ Manual:
 
 - Round 1: M1–M5 addressed on this branch.
 - Round 2: Done
+- Round 3: Done
 ## Notes
 
 - Task 150 (routine-journals-gitignore) was folded into this task and archived on 2026-11-08.
@@ -101,6 +102,8 @@ Acceptance:
 - Review oracle round 2: reviewer-claude (claude-opus-5-5, headless), effort 2, roster general, turn cap 120 — 2026-11-09. Delta `facda76..9ac7d1f`; M1–M5 fixed, 0 new, 0 open. Disposition `clean`.
 - CI fix: implementer-grok (2026-11-09). PR #12 run 42503142992 failed `dotnet publish tests/timewarp-flexbox-aot-smoke` with MSB3030 for `bin/Release/net10.0/linux-x64/TimeWarp.Flexbox.AotSmoke.xml` on SDK 11.0.100-rc.3. The doc file is produced under `obj` and the SDK 11 publish layout never copies it into that `bin` path.
 - Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1bc21-22c5-70b1-a769-bfa931d64d7b, max-turns 500, Done — 2026-11-08T17:13:19Z
+- Review oracle round 3: reviewer-claude (claude-opus-5-5, headless), effort 3, roster general, turn cap 200 — 2026-11-09. Delta `9ac7d1f..8d57233` (1e77e8a). 0 new findings, 0 open. Disposition `clean`.
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 4fc64aa4-f7e0-40f7-a930-5c8e87b86c0c, max-turns 200, artifacts general.md, merged.md, disposition.md — 2026-11-08T17:16:22Z
 
 ## Results
 
@@ -124,12 +127,13 @@ Fix pass for review round 1:
 
 ### Review
 
-- Rounds: 2. Effort 2, roster general (reviewer-claude, claude-opus-5-5).
+- Rounds: 3. Rounds 1–2 ran at effort 2 and round 3 at effort 3. Roster general (reviewer-claude, claude-opus-5-5).
 - Round 1: 2 bug, 2 suggestion, 1 nit (M1–M5), all open. Fix commit 9ac7d1f addressed them.
 - Round 2 (delta `facda76..9ac7d1f`): M1–M5 verified fixed, no new findings. `ganda repo audit` exits 0, `source-file-line-cap` passes, the layout demo exits 0 at 497 lines, and every renamed path resolves.
+- Round 3 (delta `9ac7d1f..8d57233`, CI fix 1e77e8a): no new findings. MSB3030 reproduces when docs are forced on. As committed, the AOT publish exits 0 and the binary prints `AOT smoke: PASS`. The Release solution build has 0 warnings, `dotnet test` reports 1468 passed, and `ganda repo audit` exits 0.
 - Final counts: bug 0 open / 2 fixed, suggestion 0 open / 2 fixed, nit 0 open / 1 fixed. 0 wontfix.
-- Disposition: **clean**. No exceptions and no escalations.
-- Paths: `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md` (final ledger), `review/disposition.md`.
+- Disposition: **clean**. No exceptions and no escalations. The operator follow-ups (not findings) are in `review/round-3/general.md`: CI builds the net10.0 product on the SDK 11 preview because there is no `global.json`, and the smoke project loses IDE0005.
+- Paths: `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/round-3/{general,merged}.md` (final ledger), `review/disposition.md`.
 
 CI follow-up (PR #12, run 42503142992): SDK 11 Native AOT publish tried to copy `TimeWarp.Flexbox.AotSmoke.xml` from `bin/Release/net10.0/linux-x64` and the file was not there. `tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj` now sets `GenerateDocumentationFile` to false, the same reason the dev CLI already does. The library still generates documentation from the root `Directory.Build.props`.
 

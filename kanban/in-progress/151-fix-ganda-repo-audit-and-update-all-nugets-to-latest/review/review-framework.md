@@ -2,11 +2,11 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 250
-- Effort: 2
+- Lines changed: 961
+- Effort: 3
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 120 (--max-turns; cursor uncapped)
+- Turn cap: 200 (--max-turns; cursor uncapped)
 
 ## Framework — task 151
 
@@ -31,3 +31,9 @@
 **Date:** 2026-11-09
 **Diff scope:** fix-pass delta `facda76..9ac7d1f` (round-1 base → fix commit 9ac7d1f), product paths
 **Effort / roster:** 2 / general (reviewer-claude, claude-opus-5-5, headless review-2 oracle)
+
+## Round 3
+
+**Date:** 2026-11-09
+**Diff scope:** CI follow-up delta `9ac7d1f..8d57233`, product paths: commit 1e77e8a (`tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj`, +4). Prior M1–M5 re-checked against HEAD.
+**Effort / roster:** 3 (budget by diff, 961 lines on the branch) / general (reviewer-claude, claude-opus-5-5, headless review oracle)
