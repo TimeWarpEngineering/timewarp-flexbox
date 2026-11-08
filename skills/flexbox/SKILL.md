@@ -290,8 +290,8 @@ dependencies, `IsAotCompatible`.
 - `samples/layout-demo/layout-demo.cs` in the repo renders layouts as ASCII
   boxes in the terminal, or (with `--html`) as a page comparing engine output
   against the browser's native flexbox side by side.
-- `test/timewarp-flexbox-tests/Generated/` contains Yoga's conformance suite
+- `test/timewarp-flexbox-tests/generated/` contains Yoga's conformance suite
   ported to C# — a searchable catalog of expected values for any flexbox
   scenario.
-- Defaults, enums, and the full style surface: `source/timewarp-flexbox/Style/Style.cs`
-  and `Enums/YGEnums.cs`.
+- Defaults, enums, and the full style surface: `source/timewarp-flexbox/style/Style.cs`
+  and `enums/YGEnums.cs`.

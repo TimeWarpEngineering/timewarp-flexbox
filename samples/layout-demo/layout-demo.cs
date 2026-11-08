@@ -5,14 +5,9 @@
 #:property EnablePreviewFeatures=true
 #:property NoWarn=CA1303;CA2007;IDE0058
 
-// Visual demo for TimeWarp.Flexbox.
-//
-// Usage:
-//   ./samples/layout-demo/layout-demo.cs                 ASCII-render scenarios to the terminal
-//   ./samples/layout-demo/layout-demo.cs --html out.html Also write an HTML page that draws the
-//                                                        engine's computed boxes next to the
-//                                                        browser's native CSS flexbox for the
-//                                                        same styles - the two must match.
+// Visual demo: ASCII boxes in the terminal, or --html for a browser comparison of the same styles.
+//   ./samples/layout-demo/layout-demo.cs
+//   ./samples/layout-demo/layout-demo.cs --html out.html
 
 using System.Globalization;
 using System.Text;
@@ -212,11 +207,7 @@ static LaidOutBox Capture(Node node, BoxSpec spec, float absX, float absY)
 {
   float x = absX + node.Layout.GetPosition(PhysicalEdge.Left);
   float y = absY + node.Layout.GetPosition(PhysicalEdge.Top);
-  LaidOutBox box = new(
-      x, y,
-      node.Layout.GetDimension(Dimension.Width),
-      node.Layout.GetDimension(Dimension.Height),
-      []);
+  LaidOutBox box = new(x, y, node.Layout.GetDimension(Dimension.Width), node.Layout.GetDimension(Dimension.Height), []);
   for (int i = 0; i < node.Children.Count; i++)
   {
     box.Children.Add(Capture(node.Children[i], spec.Children[i], x, y));
@@ -430,21 +421,15 @@ internal static class HtmlRender
     html.AppendLine("""
       <style>
         body { font-family: system-ui, sans-serif; margin: 2rem; background: #f5f5f4; color: #1c1917; }
-        h1 { font-size: 1.3rem; } h2 { font-size: 1rem; margin: 2rem 0 .5rem; }
-        .pair { display: flex; gap: 24px; flex-wrap: wrap; }
+        h1 { font-size: 1.3rem; } h2 { font-size: 1rem; margin: 2rem 0 .5rem; } .pair { display: flex; gap: 24px; flex-wrap: wrap; }
         .panel { background: #fff; border: 1px solid #d6d3d1; border-radius: 8px; padding: 12px; }
-        .panel h3 { margin: 0 0 8px; font-size: .8rem; font-weight: 600; color: #57534e;
-                    text-transform: uppercase; letter-spacing: .05em; }
-        .cell { border: 1px dashed #a8a29e; }
-        .engine-root { position: relative; }
+        .panel h3 { margin: 0 0 8px; font-size: .8rem; font-weight: 600; color: #57534e; text-transform: uppercase; letter-spacing: .05em; }
+        .cell { border: 1px dashed #a8a29e; } .engine-root { position: relative; }
         .engine-box { position: absolute; box-sizing: border-box; box-shadow: inset 0 0 0 1px rgba(0,0,0,.35); }
-        .css-box { box-sizing: border-box; box-shadow: inset 0 0 0 1px rgba(0,0,0,.35); }
-        p.note { color: #57534e; max-width: 60ch; }
+        .css-box { box-sizing: border-box; box-shadow: inset 0 0 0 1px rgba(0,0,0,.35); } p.note { color: #57534e; max-width: 60ch; }
       </style></head><body>
       <h1>TimeWarp.Flexbox vs the browser's native flexbox</h1>
-      <p class="note">Each scenario is rendered twice from the same styles: the left panel is the
-      browser's own CSS flexbox; the right panel draws absolutely-positioned boxes at the exact
-      coordinates computed by TimeWarp.Flexbox. If the engine is correct, the panels are identical.</p>
+      <p class="note">Each scenario is rendered twice from the same styles: the left panel is the browser's own CSS flexbox; the right panel draws absolutely-positioned boxes at the exact coordinates computed by TimeWarp.Flexbox. If the engine is correct, the panels are identical.</p>
       """);
 
     foreach ((Scenario scenario, LaidOutBox root) in results)
@@ -471,7 +456,7 @@ internal static class HtmlRender
       int[] engineCounter = [0];
       foreach (LaidOutBox child in root.Children)
       {
-        AppendEngineBox(html, child, engineCounter);
+        AppendEngineBox(html, child, 0, 0, engineCounter);
       }
 
       html.AppendLine("</div></div></div>");
@@ -496,29 +481,15 @@ internal static class HtmlRender
     html.AppendLine("</div>");
   }
 
-  private static void AppendEngineBox(StringBuilder html, LaidOutBox box, int[] counter)
+  private static void AppendEngineBox(StringBuilder html, LaidOutBox box, float originX, float originY, int[] counter)
   {
     counter[0]++;
     string color = Palette[counter[0] % Palette.Length];
     html.AppendLine(CultureInfo.InvariantCulture,
-        $"<div class=\"engine-box\" style=\"left:{box.X}px;top:{box.Y}px;width:{box.Width}px;height:{box.Height}px;background:{color}\">");
+        $"<div class=\"engine-box\" style=\"left:{box.X - originX}px;top:{box.Y - originY}px;width:{box.Width}px;height:{box.Height}px;background:{color}\">");
     foreach (LaidOutBox child in box.Children)
     {
-      AppendEngineChildBox(html, child, box, counter);
-    }
-
-    html.AppendLine("</div>");
-  }
-
-  private static void AppendEngineChildBox(StringBuilder html, LaidOutBox box, LaidOutBox parent, int[] counter)
-  {
-    counter[0]++;
-    string color = Palette[counter[0] % Palette.Length];
-    html.AppendLine(CultureInfo.InvariantCulture,
-        $"<div class=\"engine-box\" style=\"left:{box.X - parent.X}px;top:{box.Y - parent.Y}px;width:{box.Width}px;height:{box.Height}px;background:{color}\">");
-    foreach (LaidOutBox child in box.Children)
-    {
-      AppendEngineChildBox(html, child, box, counter);
+      AppendEngineBox(html, child, box.X, box.Y, counter);
     }
 
     html.AppendLine("</div>");

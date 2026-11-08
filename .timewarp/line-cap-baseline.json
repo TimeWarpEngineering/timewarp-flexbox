@@ -1,6 +1,5 @@
 {
   "files": {
-    "samples/layout-demo/layout-demo.cs": 526,
     "source/timewarp-flexbox/algorithm/AbsoluteLayout.cs": 628,
     "source/timewarp-flexbox/algorithm/CalculateLayoutCore.cs": 763,
     "source/timewarp-flexbox/enums/YGEnums.cs": 713,

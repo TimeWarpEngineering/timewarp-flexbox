@@ -47,6 +47,15 @@ Manual:
 - [x] Build and tests green
 - [x] `ganda repo audit` exits 0
 - [x] Folded 150: `*.journal.json` ignored, no tracked journals, check-ignore confirms
+- [x] CI installs the .NET 10 SDK and the .NET 11 preview SDK
+- [x] Yoga porter writes under `generated`
+- [x] Stale kebab paths in the readme, skill, and integration-testing note
+- [x] Line-cap reason names task 151; layout demo is under 500 lines
+- [x] `dev.cs` Design names the `TimeWarp.Mediator` move
+
+## Review
+
+- Round 1: M1–M5 addressed on this branch. Round 2 disposition is the host review node.
 
 ## Notes
 
@@ -59,6 +68,8 @@ Manual:
 
 Bring this repo to a clean `ganda repo audit` (exit 0, no Error-severity failures) and put every NuGet pin on its latest version so `bin/dev` builds and the test suite still passes.
 
+Fix pass (review round 1): close the five open findings without a new review. CI must be able to compile the net11.0 dev CLI. The Yoga test porter must write into `generated`. Stale kebab paths in the readme, the flexbox skill, and the integration-testing note must match the files on disk. The line-cap ratchet must name task 151 and why the Yoga ports stay whole, and the layout demo must sit at or under 500 lines. The Mediator comment must point at a Design note that actually mentions that move.
+
 Acceptance:
 
 - `ganda repo audit --fix` lands, and a later `ganda repo audit` exits 0.
@@ -68,6 +79,11 @@ Acceptance:
 - Every `PackageVersion` in `Directory.Packages.props` and every runfile `#:package` is the latest version. TimeWarp packages resolve from the GitHub TimeWarpEngineering NuGet feed.
 - Build and tests pass after those bumps.
 - Root `.gitignore` ignores `*.journal.json` as one glob (not six exact names), no `*.journal.json` file is tracked, and `git check-ignore -v` on `kanban/to-do/task-work.journal.json` matches that glob.
+- CI installs the .NET 10 SDK and the .NET 11 preview SDK before it runs `tools/dev-cli/dev.cs`.
+- `runfiles/port-generated-tests.cs` writes under `test/timewarp-flexbox-tests/generated`, and its path comments match.
+- `readme.md` links `license`. The flexbox skill and the integration-testing note use the kebab-case paths.
+- `[ganda.audit]` records why the line-cap baseline exists and names task 151. `samples/layout-demo/layout-demo.cs` is at or under 500 lines and is not in the baseline.
+- `tools/dev-cli/dev.cs` Design says that `ICommand` and `Unit` live in `TimeWarp.Mediator`.
 
 ## Session
 
@@ -75,6 +91,9 @@ Acceptance:
 - Implementation: grok task-work (2026-11-08)
 - Line-cap: shrink-only `.timewarp/line-cap-baseline.json` for the 36 Yoga ports and generated fixtures (task 151). Splitting invents boundaries the port must not have. `source-file-line-cap.severity = off` would hide later over-cap files. Origin has no baseline, so this first ratchet is legal.
 - Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1bbf3-b482-76a2-b863-84e42461802a, max-turns 500, Done — 2026-11-08T16:47:12Z
+- Review oracle round 1: reviewer-claude (claude-opus-5-5, headless), effort 2, roster general, turn cap 120 — 2026-11-08. 5 open findings (2 bug, 2 suggestion, 1 nit); fix pass requested.
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 120, artifacts general.md, merged.md — 2026-11-08T16:50:21Z
+- Fix pass (implement-fix-2): M1–M5 on this branch. Audit 38 passed, 0 failed, 2 skipped. Tests 1468 passed, 0 failed. Layout demo is 497 lines.
 
 ## Results
 
@@ -85,10 +104,25 @@ Acceptance:
 - Pins (nuget.org; confirming `ganda nuget outdated` reports all 19 up to date): TimeWarp.Amuru 3.0.0-beta.1, TimeWarp.Amuru.Tools 3.0.0-beta.1, TimeWarp.Terminal 1.0.2, TimeWarp.Build.Tasks 1.0.0, Microsoft.CodeAnalysis.BannedApiAnalyzers 5.6.0, TimeWarp.Nuru 4.0.0-beta.11, TimeWarp.Nuru.DevCli 4.0.0-beta.11, TimeWarp.SourceGenerators 1.0.0-beta.11, TimeWarp.Fixie 3.1.0, Fixie.TestAdapter 4.2.0, Microsoft.NET.Test.Sdk 18.11.0, Shouldly 4.3.0, coverlet.collector 10.1.0, BenchmarkDotNet 0.15.8, Roslynator.Analyzers / CodeAnalysis.Analyzers / Formatting.Analyzers 5.0.1, Microsoft.CodeAnalysis.NetAnalyzers 10.0.403, Microsoft.CodeAnalysis.CSharp.CodeStyle 5.9.0. The GitHub TimeWarpEngineering feed returned NAME_UNKNOWN for TimeWarp.Nuru and TimeWarp.Amuru. `nuget.config` maps only `TimeWarp.Flexbox*` to that feed, so these dependencies resolve from nuget.org.
 - Folded task 150: `.gitignore` line 423 is `*.journal.json`. `git ls-files '*.journal.json'` is empty. `git check-ignore -v kanban/to-do/task-work.journal.json` matches that line.
 - `dotnet build timewarp-flexbox.slnx`: 0 warnings, 0 errors. `dotnet test timewarp-flexbox.slnx`: 1468 passed, 0 failed, 0 skipped. `runfiles/build.cs` and `runfiles/test.cs` both exit 0 (Fixie: 1468 passed). `./bin/dev --capabilities` returns the timewarp-flexbox dev CLI description.
-- This branch stays 5 commits behind `origin/master`. Those commits are kanban land commits only and were not merged.
+- Context at the start of the fix pass reported this branch 7 commits behind `master`. Those commits were not merged.
+
+Fix pass for review round 1:
+
+- M1: `.github/workflows/workflow.yml` installs SDK `10.0.x`, then SDK `11.0.x` with `dotnet-quality: preview`. Product projects stay net10.0. The dev CLI and runfiles target net11.0. The machine has SDK 10.0.403 and 11.0.100-rc.3.26522.148.
+- M2: `runfiles/port-generated-tests.cs` writes to `test/timewarp-flexbox-tests/generated`. The header comment and the IntrinsicSizeMeasure comment use that directory.
+- M3: `readme.md` links `license`. `skills/flexbox/SKILL.md` points at `test/timewarp-flexbox-tests/generated/`, `source/timewarp-flexbox/style/Style.cs`, and `source/timewarp-flexbox/enums/YGEnums.cs`. The integration-testing note points at `.agent/workspace/2025-12-09-t12-30-00-gh-issue-2-idempotency-analysis.md`.
+- M4: `[ganda.audit]` in `.editorconfig` names task 151 and why `.timewarp/line-cap-baseline.json` exists. The check stays on. `samples/layout-demo/layout-demo.cs` is 497 lines and is not in the baseline (35 entries remain). The demo's ASCII body matches the previous run. Its HTML matches after whitespace is collapsed. Nested engine boxes stay parent-relative; the first level is still positioned from the origin.
+- M5: `tools/dev-cli/dev.cs` Design states that `ICommand` and `Unit` live in `TimeWarp.Mediator`.
+- This pass: `ganda repo audit` exits 0 (38 passed, 0 failed, 2 skipped), including `source-file-line-cap`. `dotnet test timewarp-flexbox.slnx` reports 1468 passed, 0 failed, 0 skipped. `dotnet run samples/layout-demo/layout-demo.cs -- --html /tmp/layout-demo-new.html` exits 0. The only demo warnings are the pre-existing RS0030 `Console` bans.
+
+### Review
+
+- Round 1 (effort 2, roster general): 2 bug, 2 suggestion, 1 nit. The fix pass addresses M1–M5. Round 2 has not run.
+- Verified on the fix pass: audit exit 0 (38/0/2), 1468/1468 tests pass, layout demo exits 0 at 497 lines.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md` (live ledger).
 
 ### How to validate
 
-Smoke: from this worktree run `ganda repo audit`, then `./bin/dev --capabilities`, then `dotnet test timewarp-flexbox.slnx`.
+Smoke: from this worktree run `ganda repo audit`, then `dotnet test timewarp-flexbox.slnx`, then `dotnet run samples/layout-demo/layout-demo.cs -- --html /tmp/flexbox-demo.html`. In `.github/workflows/workflow.yml`, confirm one setup step uses `dotnet-version: '10.0.x'` and the next uses `dotnet-version: '11.0.x'` with `dotnet-quality: preview`.
 
-Expect: audit exits 0 with no Error-severity failures, capabilities JSON names this repo's development CLI, and the test host reports 1468 passed, 0 failed.
+Expect: audit exits 0 and `source-file-line-cap` passes, the test host reports 1468 passed and 0 failed, the demo writes `/tmp/flexbox-demo.html`, and `wc -l samples/layout-demo/layout-demo.cs` prints a count below 500.

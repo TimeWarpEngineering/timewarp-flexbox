@@ -424,3 +424,10 @@ dotnet_diagnostic.TWA002.severity = silent
 dotnet_diagnostic.IDE0290.severity = none
 # TW0007 file-level usings (TimeWarp.SourceGenerators)
 dotnet_diagnostic.TW0007.filename = global-usings.cs
+
+[ganda.audit]
+# source-file-line-cap stays on. .timewarp/line-cap-baseline.json is the shrink-only
+# ratchet for Yoga ports and generated fixtures that must stay whole (task 151).
+# Splitting those files invents boundaries the port does not have. Turning the
+# check off would hide a file that grows past 500 lines. The layout demo is a
+# repo-authored sample, so it is not in the baseline.

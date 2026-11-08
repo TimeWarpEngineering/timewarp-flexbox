@@ -22,6 +22,7 @@
 // Thin wrapper around TimeWarp.Nuru. Shared endpoints (clean, self-install,
 // check-version, release) come from TimeWarp.Nuru.DevCli and require the DI
 // registrations below (NURU050 names any that are missing).
+// ICommand and Unit live in TimeWarp.Mediator as of Nuru 3.0.0-beta.79.
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()

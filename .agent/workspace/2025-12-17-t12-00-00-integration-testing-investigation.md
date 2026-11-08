@@ -150,4 +150,4 @@ All 20 failures are in `CalculateLayoutTests` - the integration tests for full l
 
 - C++ Yoga Source: `/home/steventcramer/worktrees/github.com/facebook/yoga/main/yoga/algorithm/CalculateLayout.cpp`
 - Task: `kanban/in-progress/138-integration-testing.md`
-- Previous Analysis: `.agent/workspace/2025-12-09T12-30-00_gh-issue-2-idempotency-analysis.md`
+- Previous Analysis: `.agent/workspace/2025-12-09-t12-30-00-gh-issue-2-idempotency-analysis.md`
