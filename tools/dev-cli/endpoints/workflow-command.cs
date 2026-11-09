@@ -20,7 +20,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
   [Option("api-key", Description = "NuGet API key for publishing (from OIDC Trusted Publishing)")]
   public string? ApiKey { get; set; }
 
-  internal sealed class Handler : ICommandHandler<WorkflowCommand, Unit>
+  internal sealed class Handler : IRequestHandler<WorkflowCommand, Unit>
   {
     private const string PackageId = "TimeWarp.Flexbox";
 
@@ -34,7 +34,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       Terminal = terminal;
     }
 
-    public async Task<Unit> Handle(WorkflowCommand command, CancellationToken ct)
+    public async ValueTask<Unit> Handle(WorkflowCommand command, CancellationToken ct)
     {
       Ct = ct;
 
