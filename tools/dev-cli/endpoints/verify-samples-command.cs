@@ -19,7 +19,7 @@ namespace DevCli.Commands;
 [NuruRoute("verify-samples", Description = "Build and run every sample")]
 internal sealed class VerifySamplesCommand : ICommand<Unit>
 {
-  internal sealed class Handler : ICommandHandler<VerifySamplesCommand, Unit>
+  internal sealed class Handler : IRequestHandler<VerifySamplesCommand, Unit>
   {
     private static readonly TimeSpan BuildTimeout = TimeSpan.FromMinutes(5);
     private static readonly TimeSpan RunTimeout = TimeSpan.FromMinutes(2);
@@ -33,7 +33,7 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       Terminal = terminal;
     }
 
-    public async Task<Unit> Handle(VerifySamplesCommand command, CancellationToken ct)
+    public async ValueTask<Unit> Handle(VerifySamplesCommand command, CancellationToken ct)
     {
       _ = command;
       Ct = ct;

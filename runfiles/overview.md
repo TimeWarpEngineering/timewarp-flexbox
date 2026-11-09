@@ -25,7 +25,7 @@ Runfiles use .NET 10's native single-file C# script support with directives:
 
 ```csharp
 #!/usr/bin/dotnet --
-#:package TimeWarp.Amuru@1.0.0-beta.5
+#:package TimeWarp.Amuru@3.0.0-beta.2
 
 using TimeWarp.Amuru;
 
@@ -60,7 +60,7 @@ dotnet run runfiles/build.cs
 
 ```csharp
 #!/usr/bin/dotnet --
-#:package TimeWarp.Amuru@1.0.0-beta.5
+#:package TimeWarp.Amuru@3.0.0-beta.2
 
 using TimeWarp.Amuru;
 
@@ -113,7 +113,7 @@ else
 ```csharp
 #!/usr/bin/dotnet --
 // 1. Directives
-#:package TimeWarp.Amuru@1.0.0-beta.5
+#:package TimeWarp.Amuru@3.0.0-beta.2
 
 // 2. Using statements
 using TimeWarp.Amuru;

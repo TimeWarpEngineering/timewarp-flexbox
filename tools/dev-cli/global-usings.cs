@@ -16,7 +16,9 @@ global using System.Net.Http;
 global using System.Text.Json;
 
 global using TimeWarp.Nuru;
-// ICommand and Unit live in TimeWarp.Mediator as of Nuru 3.0.0-beta.79. See tools/dev-cli/dev.cs Design.
+// ICommand, IRequestHandler, and Unit live in TimeWarp.Mediator. Mediator 15
+// (Nuru 4.0.0-beta.12) replaced ICommandHandler with IRequestHandler and
+// Handle returns ValueTask. See tools/dev-cli/dev.cs Design.
 global using TimeWarp.Mediator;
 global using TimeWarp.Amuru;
 global using TimeWarp.Terminal;
