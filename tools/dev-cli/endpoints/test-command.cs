@@ -2,9 +2,13 @@
 // Run the test suite
 #endregion
 #region Design
-// Executes dotnet test for all tests in the repository
-// Handler stores Command and Ct as fields so private methods are zero-parameter
-// Streams test output via Amuru RunAsync by default; --quiet uses CaptureAsync
+// Executes dotnet test for all tests in the repository.
+// Handler stores Command and Ct as fields so private methods are zero-parameter.
+// Streams test output via Amuru RunAsync by default; --quiet uses CaptureAsync.
+// The test project references coverlet.collector. The run passes
+// --collect "XPlat Code Coverage" and writes under artifacts/coverage.
+// That directory is recreated first so a stale Cobertura file cannot satisfy the check.
+// A green suite with no coverage.cobertura.xml fails the command.
 #endregion
 
 namespace DevCli.Commands;
@@ -66,8 +70,18 @@ internal sealed class TestCommand : ICommand<Unit>
 
     private async Task<bool> TestAsync()
     {
+      string coverageDirectory = Path.Combine(RepoRoot, "artifacts", "coverage");
+      if (Directory.Exists(coverageDirectory))
+      {
+        Directory.Delete(coverageDirectory, recursive: true);
+      }
+
+      Directory.CreateDirectory(coverageDirectory);
+
       CommandResult command = DotNet.Test()
         .WithConfiguration("Release")
+        .WithCollect("XPlat Code Coverage")
+        .WithResultsDirectory(coverageDirectory)
         .WithWorkingDirectory(RepoRoot)
         .WithNoValidation()
         .Build();
@@ -82,19 +96,33 @@ internal sealed class TestCommand : ICommand<Unit>
           Environment.ExitCode = 1;
           return false;
         }
-
-        return true;
+      }
+      else
+      {
+        int exitCode = await command.RunAsync(Ct);
+        if (exitCode != 0)
+        {
+          Terminal.WriteErrorLine("Tests failed!".Red());
+          Environment.ExitCode = exitCode;
+          return false;
+        }
       }
 
-      int exitCode = await command.RunAsync(Ct);
-      if (exitCode != 0)
+      if (!HasCobertura(coverageDirectory))
       {
-        Terminal.WriteErrorLine("Tests failed!".Red());
-        Environment.ExitCode = exitCode;
+        Terminal.WriteErrorLine("Tests passed but artifacts/coverage has no coverage.cobertura.xml.".Red());
+        Environment.ExitCode = 1;
         return false;
       }
 
       return true;
+    }
+
+    /// <summary>True when coverlet wrote a Cobertura file under the results directory.</summary>
+    private static bool HasCobertura(string coverageDirectory)
+    {
+      return Directory.Exists(coverageDirectory)
+        && Directory.EnumerateFiles(coverageDirectory, "coverage.cobertura.xml", SearchOption.AllDirectories).Any();
     }
   }
 }

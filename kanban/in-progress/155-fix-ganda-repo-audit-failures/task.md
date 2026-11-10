@@ -2,9 +2,9 @@
 
 ## Goal (implementer restatement)
 
-After task 154, `ganda repo audit` on this repo fails five checks. Three are errors (`analyzer-suppressions` has no baseline file, `.gitignore` omits `/.timewarp/signals/`, and the GitHub workflow still runs bash instead of a top-level pwsh default). Two are warnings (`memsearch` githooks are stale, and CI collects coverage without uploading it).
+`ganda repo audit` must exit 0. The five checks from the original brief (suppression baseline, signals gitignore, pwsh workflow shell, memsearch hooks, and a real coverage upload) stay green. Round 1 showed the upload is hollow: `dev test` never runs coverlet, so CI publishes an empty `artifacts/coverage` tree and the audit still says coverage was collected.
 
-This task is done when those five checks pass and `ganda repo audit` exits 0. Auto-fix output from `ganda repo audit --fix` is committed as the intended baseline. The two workflow steps that are still bash ("Run CI Pipeline" and "AOT smoke test") are rewritten in pwsh with the same release versus non-release branch and the same AOT smoke loop. Refreshed `.githooks/*.cs` still build on net11.0 with Amuru 3. `dotnet build`, `dotnet test`, and `./bin/dev --capabilities` succeed on this branch. Pull-request CI is the host's later gate; this walk commits and pushes the product fix so that gate can run.
+This fix pass is done when `dev test` collects XPlat Code Coverage into `artifacts/coverage` and a local run leaves `coverage.cobertura.xml` there. The workflow step is named "Upload Coverage", keeps the artifact name `coverage` (the audit line-rate reader looks for that name), and fails the job when the directory is empty. `ganda repo audit` still exits 0, and the branch is committed and pushed for the host's later PR gate.
 
 ## Description
 
@@ -32,6 +32,7 @@ Newer ganda checks flag the following; make the audit exit 0.
 - [x] `ganda repo audit --fix` and commit its changes
 - [x] Convert `workflow.yml` bash steps to pwsh; add top-level `defaults: run: shell: pwsh`
 - [x] Coverage upload step present (via `--fix` or by hand)
+- [x] `dev test` collects XPlat Code Coverage into `artifacts/coverage`
 - [x] `ganda repo audit` exit 0
 - [x] `dotnet build timewarp-flexbox.slnx` and `dotnet test timewarp-flexbox.slnx` green
 - [x] `./bin/dev --capabilities` works
@@ -42,6 +43,9 @@ Newer ganda checks flag the following; make the audit exit 0.
 - Created: d7943e80-818a-43bd-a36a-6968aed6437a (2026-11-10)
 - Implementation: 01a1c63f-bbf6-7132-aca6-eafeec4cb8c2 (2026-11-10)
 - Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1c63f-bbf6-7132-aca6-eafeec4cb8c2, max-turns 500, Done — 2026-11-10T16:28:35Z
+- Review oracle round 1: claude (model claude-opus-5-5), body tw-implementation-review, effort 2, roster general, turn cap 120. Result: 1 open bug (M1) and 1 open nit (M2). Fix pass requested, 2026-11-10
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 9e3ebf5b-2103-416c-bbc2-28be2a646418, max-turns 120, artifacts general.md, merged.md — 2026-11-10T16:31:22Z
+- Fix pass round 2: implement-fix-2, session 01a1c64c-c703-71d1-9797-0b61adf6d8fe (2026-11-10). `dev test` now collects coverlet output, and the upload step fails when that directory is empty.
 
 ## Results
 
@@ -49,19 +53,39 @@ Newer ganda checks flag the following; make the audit exit 0.
 
 `ganda repo audit --fix` seeded `.timewarp/suppression-baseline.json` (105 suppressions, none above the baseline), ignored `/.timewarp/signals/`, refreshed the five `.githooks/*.cs` attest hooks, and inserted top-level `defaults: run: shell: pwsh`. It also filled the local `.vscode/settings.json` window-icon keys. That file stays gitignored. The same run reported an extra `vscode-window-icon` warning that was not in the original five findings; the fix is local and the re-audit passes.
 
-`--fix` did not rewrite the bash step bodies, and it did not insert the coverage upload. The workflow is not an MTP `dotnet test` invocation the fixer can patch: collection is inferred from the `coverlet.collector` package reference. The two bash steps are now pwsh. Release still runs `dotnet run tools/dev-cli/dev.cs -- workflow --api-key` from `NUGET_API_KEY`; every other event runs the same command without the key. The AOT smoke step still publishes and runs `net10.0` and `net11.0` for `linux-x64`. Each native command exits the step when `$LASTEXITCODE` is non-zero, which is what bash `-e` did. A `coverage` upload step (`actions/upload-artifact@v4`, path `artifacts/coverage`, `if-no-files-found: warn`) follows the pipeline step.
+`--fix` did not rewrite the bash step bodies, and it did not insert the coverage upload. The workflow is not an MTP `dotnet test` invocation the fixer can patch: collection is inferred from the `coverlet.collector` package reference. The two bash steps are now pwsh. Release still runs `dotnet run tools/dev-cli/dev.cs -- workflow --api-key` from `NUGET_API_KEY`; every other event runs the same command without the key. The AOT smoke step still publishes and runs `net10.0` and `net11.0` for `linux-x64`. Each native command exits the step when `$LASTEXITCODE` is non-zero, which is what bash `-e` did.
+
+`dev test` recreates `artifacts/coverage`, then runs `dotnet test` with `--collect "XPlat Code Coverage"` and that results directory. The command fails when the suite passes and no `coverage.cobertura.xml` is present. The workflow step is "Upload Coverage". The artifact name stays `coverage`, which is the name the audit line-rate reader and the fixer constant use. `if-no-files-found` is `error`, because the pipeline always runs tests before that step and an empty directory is a failed collection.
 
 `.githooks/pre-commit.cs` builds as `net11.0` and references TimeWarp.Amuru 3.0.0-beta.2. The other four hooks build with the same command.
 
 `dotnet build timewarp-flexbox.slnx`: 0 warnings, 0 errors. `dotnet test timewarp-flexbox.slnx`: 1468 passed on net10.0 and 1468 passed on net11.0. `./bin/dev --capabilities` prints the dev CLI, including `build`, `test`, `verify-samples`, `workflow`, `check-version`, `clean`, `release`, and `self-install`.
 
-PR CI is the host open-pr gate. This walk does not open the pull request. `dev test` does not pass a coverlet collector argument, so the coverage artifact can be empty and the upload step warns instead of failing.
+On this fix pass, `dotnet run tools/dev-cli/dev.cs -- test --quiet` exited 0. It wrote two Cobertura files, one per target framework:
+
+- `artifacts/coverage/1bf420f0-650a-4e7d-8441-ffcbccfd9a57/coverage.cobertura.xml` (868722 bytes)
+- `artifacts/coverage/2259deb4-b7a0-4e31-baf0-79e87b3af7ae/coverage.cobertura.xml` (868722 bytes)
+
+PR CI is the host open-pr gate. This walk does not open the pull request.
 
 ### How to validate
 
-Smoke: from this worktree run `ganda repo audit`, `dotnet build timewarp-flexbox.slnx`, `dotnet test timewarp-flexbox.slnx`, `./bin/dev --capabilities`, and `dotnet build .githooks/pre-commit.cs`.
+Smoke: from this worktree run `dotnet run tools/dev-cli/dev.cs -- test --quiet`, then `find artifacts/coverage -name coverage.cobertura.xml`, then `ganda repo audit`.
 
-Expect: `ganda repo audit` exits 0 with `workflow-pwsh-shell`, `ci-code-coverage`, `analyzer-suppressions`, `timewarp-signals-gitignore`, and `memsearch-scaffold` passing. The solution build finishes with 0 warnings and 0 errors. Both net10.0 and net11.0 test runs pass 1468 tests. Capabilities prints JSON for the dev CLI. The hook build targets net11.0 and succeeds.
+Expect: `dev test` exits 0 and `find` prints a `coverage.cobertura.xml` under `artifacts/coverage` for each target framework. `ganda repo audit` exits 0. `ci-code-coverage` passes because the workflow uploads `artifacts/coverage` and `dev test` collects into that directory. `workflow-pwsh-shell`, `analyzer-suppressions`, `timewarp-signals-gitignore`, and `memsearch-scaffold` still pass.
+
+### Review
+
+Round 1 ran at effort 2 with roster `general`. Final counts before this pass: bug 1 open, nit 1 open. The reviewer re-ran `ganda repo audit` and the five target checks passed. `kanban-landed` fails until the host lands the kitchen.
+
+- M1 (bug, fixed): `tools/dev-cli/endpoints/test-command.cs` collects XPlat Code Coverage into `artifacts/coverage` and fails when `coverage.cobertura.xml` is missing. The upload step uses `if-no-files-found: error`. Local `dev test --quiet` wrote two Cobertura files.
+- M2 (nit, fixed): the step display name is "Upload Coverage". The artifact `name` stays `coverage` so the audit line-rate reader still finds it.
+
+Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+
+## Review
+
+- Round 1: fixed — M1 and M2 addressed on this branch
 
 ## Notes
 
