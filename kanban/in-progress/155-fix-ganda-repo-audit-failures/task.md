@@ -47,6 +47,7 @@ Newer ganda checks flag the following; make the audit exit 0.
 - Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 9e3ebf5b-2103-416c-bbc2-28be2a646418, max-turns 120, artifacts general.md, merged.md — 2026-11-10T16:31:22Z
 - Fix pass round 2: implement-fix-2, session 01a1c64c-c703-71d1-9797-0b61adf6d8fe (2026-11-10). `dev test` now collects coverlet output, and the upload step fails when that directory is empty.
 - Review oracle round 2: claude (model claude-opus-5-5), body tw-implementation-review, effort 1, roster general, turn cap 80. Result: 0 open findings, disposition clean, 2026-11-10
+- Installed ganda changed during this walk: was missing; now 51719784 bytes 2b68168f4096b6ead5ba35c3ac18bdcb70e3e05a0c22f189da7b7369e773a185
 
 ## Results
 
