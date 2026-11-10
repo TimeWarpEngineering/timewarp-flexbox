@@ -27,6 +27,10 @@ on:
     types: [published]
   workflow_dispatch:
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -79,21 +83,33 @@ jobs:
       - name: Run CI Pipeline
         env:
           GH_TOKEN: ${{ steps.rebuild-token.outputs.token }}
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
-          if [ "${{ github.event_name }}" == "release" ]; then
-            dotnet run tools/dev-cli/dev.cs -- workflow --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
-          else
+          # pwsh does not fail the step when a native command exits non-zero; bash -e did.
+          if ($env:GITHUB_EVENT_NAME -eq 'release') {
+            dotnet run tools/dev-cli/dev.cs -- workflow --api-key $env:NUGET_API_KEY
+          } else {
             dotnet run tools/dev-cli/dev.cs -- workflow
-          fi
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload Coverage
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: artifacts/coverage
+          if-no-files-found: error
 
       - name: AOT smoke test
         run: |
-          for tfm in net10.0 net11.0; do
-            dotnet publish tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj \
-              --configuration Release --framework "$tfm" -r linux-x64 \
-              -o "artifacts/aot-smoke/$tfm"
-            "./artifacts/aot-smoke/$tfm/TimeWarp.Flexbox.AotSmoke"
-          done
+          # pwsh does not fail the step when a native command exits non-zero; bash -e did.
+          foreach ($tfm in @('net10.0', 'net11.0')) {
+            dotnet publish tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj --configuration Release --framework $tfm -r linux-x64 -o "artifacts/aot-smoke/$tfm"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            & "./artifacts/aot-smoke/$tfm/TimeWarp.Flexbox.AotSmoke"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
 
       - name: Upload Artifacts
         if: always()
