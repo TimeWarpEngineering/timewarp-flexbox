@@ -2,11 +2,11 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 374
-- Effort: 2
+- Lines changed: 170
+- Effort: 1
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 120 (--max-turns; cursor uncapped)
+- Turn cap: 80 (--max-turns; cursor uncapped)
 
 ## Scope
 
@@ -17,6 +17,8 @@
 **Effort:** 2
 **Reviewer roster:** general
 **Session IDs:** review oracle (claude, model claude-opus-5-5) under ganda task work; implementer session 01a1c63f-bbf6-7132-aca6-eafeec4cb8c2
+
+**Round 2 scope:** fix delta `bd656ce..66f83e7` (product commit 5a15146: `tools/dev-cli/endpoints/test-command.cs`, `.github/workflows/workflow.yml`). Effort 1, roster general (see Budget above).
 
 ## Ground rules
 

@@ -46,6 +46,7 @@ Newer ganda checks flag the following; make the audit exit 0.
 - Review oracle round 1: claude (model claude-opus-5-5), body tw-implementation-review, effort 2, roster general, turn cap 120. Result: 1 open bug (M1) and 1 open nit (M2). Fix pass requested, 2026-11-10
 - Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 9e3ebf5b-2103-416c-bbc2-28be2a646418, max-turns 120, artifacts general.md, merged.md — 2026-11-10T16:31:22Z
 - Fix pass round 2: implement-fix-2, session 01a1c64c-c703-71d1-9797-0b61adf6d8fe (2026-11-10). `dev test` now collects coverlet output, and the upload step fails when that directory is empty.
+- Review oracle round 2: claude (model claude-opus-5-5), body tw-implementation-review, effort 1, roster general, turn cap 80. Result: 0 open findings, disposition clean, 2026-11-10
 
 ## Results
 
@@ -83,10 +84,14 @@ Round 1 ran at effort 2 with roster `general`. Final counts before this pass: bu
 
 Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
 
+Round 2 ran at effort 1 with roster `general` and reviewed the fix delta (5a15146). It re-ran `dev test --quiet`, which wrote two Cobertura files (net10.0 and net11.0). It also re-ran `ganda repo audit`, which reported 44 passed, 0 failed, 2 skipped. Final counts: bug 1 fixed, nit 1 fixed, 0 open, 0 wontfix, no new findings.
+
+**Review disposition: clean** (2 rounds, final open count 0). Artifacts: `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
+
 ## Review
 
 - Round 1: fixed — M1 and M2 addressed on this branch
-
+- Round 2: Done
 ## Notes
 
 Previous audit cleanup: task 151. NuGet bump just before this: task 154 (PR #15).
