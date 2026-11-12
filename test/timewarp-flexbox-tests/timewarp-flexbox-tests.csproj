@@ -30,7 +30,8 @@
     </ItemGroup>
     <PropertyGroup>
       <_FixieMainConfig>$(IntermediateOutputPath)fixie-main.generated.globalconfig</_FixieMainConfig>
-      <_FixieMainPath>%(_FixieMain.FullPath)</_FixieMainPath>
+      <!-- AnalyzerConfig matches forward-slash paths and treats '\' in a section header as an escape. -->
+      <_FixieMainPath>$([System.String]::Copy('%(_FixieMain.FullPath)').Replace('\','/'))</_FixieMainPath>
     </PropertyGroup>
     <ItemGroup Condition="'$(_FixieMainPath)' != ''">
       <_FixieConfigLine Include="is_global = true" />
@@ -43,11 +44,14 @@
       Condition="'$(_FixieMainPath)' != ''"
       File="$(_FixieMainConfig)"
       Lines="@(_FixieConfigLine)"
-      Overwrite="true" />
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true" />
     <!-- CoreCompile reads EditorConfigFiles. The static GlobalAnalyzerConfigFiles
-         copy into that item happens at evaluation, before this file exists. -->
+         copy into that item happens at evaluation, before this file exists.
+         FileWrites registers the generated config so Clean removes it. -->
     <ItemGroup Condition="'$(_FixieMainPath)' != ''">
       <EditorConfigFiles Include="$(_FixieMainConfig)" />
+      <FileWrites Include="$(_FixieMainConfig)" />
     </ItemGroup>
   </Target>
 

@@ -336,7 +336,7 @@ internal static partial class Converter
       return "float.NaN";
     }
 
-    string number = token.EndsWith('f') || token.EndsWith('F') ? token[..^1] : token;
+    string number = token.EndsWith('f', StringComparison.OrdinalIgnoreCase) ? token[..^1] : token;
     return float.TryParse(number, System.Globalization.CultureInfo.InvariantCulture, out _) ? $"{number}f" : null;
   }
 

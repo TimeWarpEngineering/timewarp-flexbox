@@ -4,7 +4,6 @@
 // Spike that lays out a row whose child flex-shrinks.
 #endregion
 
-
 using TimeWarp.Flexbox;
 
 FlexLayoutEngine engine = new();
