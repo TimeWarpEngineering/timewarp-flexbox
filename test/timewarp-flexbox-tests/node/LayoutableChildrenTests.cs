@@ -1,8 +1,8 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Tests for LayoutableChildren iterator
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Tests for LayoutableChildren iterator
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Node;
 

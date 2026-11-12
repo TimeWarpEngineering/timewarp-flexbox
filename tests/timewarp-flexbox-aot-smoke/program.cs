@@ -1,3 +1,7 @@
+#region Purpose
+// Native AOT smoke test: exercises the engine end-to-end in a PublishAot-compiled binary and asserts computed layout values.
+#endregion
+
 namespace TimeWarp.Flexbox.AotSmoke;
 
 using TimeWarp.Flexbox;

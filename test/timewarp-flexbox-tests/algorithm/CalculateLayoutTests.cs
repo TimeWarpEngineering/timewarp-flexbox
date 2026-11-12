@@ -1,9 +1,9 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Integration tests for the CalculateLayout public API.
- * Ports tests from YGMeasureCacheTest.cpp and other C++ tests.
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Integration tests for the CalculateLayout public API.
+// Ports tests from YGMeasureCacheTest.cpp and other C++ tests.
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Algorithm;
 

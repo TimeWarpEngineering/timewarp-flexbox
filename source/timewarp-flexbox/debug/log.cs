@@ -1,3 +1,7 @@
+#region Purpose
+// Custom log handler invoked for Yoga log messages.
+#endregion
+
 namespace TimeWarp.Flexbox;
 
 /// <summary>

@@ -1,14 +1,14 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Original C++ tests: tests/YGDirtyMarkingTest.cpp
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- * Licensed under the MIT license.
- *
- * Omitted tests (free-semantics-specific, no equivalent in a garbage-collected port):
- * - dirty_parent_when_child_freed (relies on YGNodeFree detaching the child)
- * - dirty_parent_when_subtree_freed_recursive (relies on YGNodeFreeRecursive detaching the subtree)
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Original C++ tests: tests/YGDirtyMarkingTest.cpp
+// Copyright (c) Meta Platforms, Inc. and affiliates.
+// Licensed under the MIT license.
+//
+// Omitted tests (free-semantics-specific, no equivalent in a garbage-collected port):
+// - dirty_parent_when_child_freed (relies on YGNodeFree detaching the child)
+// - dirty_parent_when_subtree_freed_recursive (relies on YGNodeFreeRecursive detaching the subtree)
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Node_;
 

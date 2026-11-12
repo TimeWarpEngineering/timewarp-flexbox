@@ -1,13 +1,13 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Original C++ tests: tests/YGDefaultValuesTest.cpp
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- * Licensed under the MIT license.
- *
- * Skipped tests:
- * - assert_box_sizing_border_box: already covered by NodeTests.Assert_box_sizing_border_box.
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Original C++ tests: tests/YGDefaultValuesTest.cpp
+// Copyright (c) Meta Platforms, Inc. and affiliates.
+// Licensed under the MIT license.
+//
+// Skipped tests:
+// - assert_box_sizing_border_box: already covered by NodeTests.Assert_box_sizing_border_box.
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Node_;
 

@@ -1,3 +1,7 @@
+#region Purpose
+// Spike that traces a single-child flex layout.
+#endregion
+
 using TimeWarp.Flexbox;
 using FlexNode = TimeWarp.Flexbox.Node;
 

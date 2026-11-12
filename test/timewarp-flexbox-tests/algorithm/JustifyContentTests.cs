@@ -1,8 +1,8 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Tests for JustifyContent
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Tests for JustifyContent
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Algorithm;
 

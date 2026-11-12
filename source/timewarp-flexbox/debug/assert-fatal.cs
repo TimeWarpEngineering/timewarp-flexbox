@@ -1,3 +1,7 @@
+#region Purpose
+// Exception thrown when a fatal Yoga assertion fails.
+#endregion
+
 namespace TimeWarp.Flexbox;
 
 /// <summary>

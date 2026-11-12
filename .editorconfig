@@ -431,3 +431,78 @@ dotnet_diagnostic.TW0007.filename = global-usings.cs
 # Splitting those files invents boundaries the port does not have. Turning the
 # check off would hide a file that grows past 500 lines. The layout demo is a
 # repo-authored sample, so it is not in the baseline.
+
+# TWA0038: per-file line limit for the shrink-only Yoga port and generated-fixture
+# ratchet in .timewarp/line-cap-baseline.json (task 151). These files stay whole;
+# splitting them invents boundaries the port does not have. max_lines is the recorded
+# count, so the build fails if a baselined file grows. Every other file keeps 500.
+[source/timewarp-flexbox/algorithm/AbsoluteLayout.cs]
+dotnet_diagnostic.TWA0038.max_lines = 628
+[source/timewarp-flexbox/algorithm/CalculateLayoutCore.cs]
+dotnet_diagnostic.TWA0038.max_lines = 763
+[source/timewarp-flexbox/enums/YGEnums.cs]
+dotnet_diagnostic.TWA0038.max_lines = 713
+[source/timewarp-flexbox/event/Event.cs]
+dotnet_diagnostic.TWA0038.max_lines = 531
+[source/timewarp-flexbox/node/Node.cs]
+dotnet_diagnostic.TWA0038.max_lines = 1328
+[source/timewarp-flexbox/style/Style.cs]
+dotnet_diagnostic.TWA0038.max_lines = 928
+[test/timewarp-flexbox-tests/algorithm/AlignBaselineTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 705
+[test/timewarp-flexbox-tests/algorithm/AspectRatioTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 860
+[test/timewarp-flexbox-tests/algorithm/CalculateLayoutTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 720
+[test/timewarp-flexbox-tests/algorithm/FlexBasisTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 822
+[test/timewarp-flexbox-tests/algorithm/FlexDistributionTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 608
+[test/timewarp-flexbox-tests/algorithm/JustifyContentTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 613
+[test/timewarp-flexbox-tests/algorithm/LayoutHelpersTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 586
+[test/timewarp-flexbox-tests/algorithm/MeasureNodeTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 744
+[test/timewarp-flexbox-tests/algorithm/MeasureTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 939
+[test/timewarp-flexbox-tests/config/ConfigTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 535
+[test/timewarp-flexbox-tests/enums/YGEnumsTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 521
+[test/timewarp-flexbox-tests/generated/AbsolutePositionTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 1584
+[test/timewarp-flexbox-tests/generated/AlignContentTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 5294
+[test/timewarp-flexbox-tests/generated/AlignItemsTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 2056
+[test/timewarp-flexbox-tests/generated/BoxSizingTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 2055
+[test/timewarp-flexbox-tests/generated/DisplayTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 975
+[test/timewarp-flexbox-tests/generated/FlexDirectionTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 3994
+[test/timewarp-flexbox-tests/generated/FlexTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 592
+[test/timewarp-flexbox-tests/generated/FlexWrapTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 1799
+[test/timewarp-flexbox-tests/generated/GapTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 2906
+[test/timewarp-flexbox-tests/generated/IntrinsicSizeTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 874
+[test/timewarp-flexbox-tests/generated/JustifyContentTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 1791
+[test/timewarp-flexbox-tests/generated/MarginTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 1710
+[test/timewarp-flexbox-tests/generated/MinMaxDimensionTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 1144
+[test/timewarp-flexbox-tests/generated/PercentageTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 1279
+[test/timewarp-flexbox-tests/generated/RoundingTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 1055
+[test/timewarp-flexbox-tests/generated/StaticPositionTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 5850
+[test/timewarp-flexbox-tests/node/LayoutResultsTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 611
+[test/timewarp-flexbox-tests/node/NodeTests.cs]
+dotnet_diagnostic.TWA0038.max_lines = 833

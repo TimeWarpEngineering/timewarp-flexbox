@@ -40,4 +40,46 @@
     <PackageReference Include="TimeWarp.Terminal" />
   </ItemGroup>
 
+  <!-- TimeWarp.Nuru.DevCli 4.0.0-beta.12 compiles release-command.cs (609 lines) and
+       nuget-version-service.cs (704 lines) from the NuGet cache. An unsectioned
+       .globalconfig would raise TWA0038.max_lines for every file in this compilation,
+       including the in-repo sources, which stay on the 500-line default. Sections are
+       absolute forward-slash paths because AnalyzerConfig treats '\' as an escape.
+       timewarp-nuru task 577 tracks the split. -->
+  <Target Name="WriteNuruDevCliLineCapGlobalConfig" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <_NuruLongFile Include="@(Compile)" Condition="$([System.String]::Copy('%(Identity)').EndsWith('release-command.cs'))">
+        <MaxLines>609</MaxLines>
+      </_NuruLongFile>
+      <_NuruLongFile Include="@(Compile)" Condition="$([System.String]::Copy('%(Identity)').EndsWith('nuget-version-service.cs'))">
+        <MaxLines>704</MaxLines>
+      </_NuruLongFile>
+      <_NuruLongFile>
+        <Normalized>$([System.String]::Copy('%(FullPath)').Replace('\','/'))</Normalized>
+      </_NuruLongFile>
+    </ItemGroup>
+    <PropertyGroup>
+      <_NuruLineCapConfig>$(IntermediateOutputPath)nuru-devcli-linecap.generated.globalconfig</_NuruLineCapConfig>
+      <_NL>$([System.Environment]::NewLine)</_NL>
+    </PropertyGroup>
+    <ItemGroup Condition="'@(_NuruLongFile)' != ''">
+      <_NuruLineCapLine Include="is_global = true" />
+      <_NuruLineCapLine Include="# Package-owned TimeWarp.Nuru.DevCli sources. TWA0038's 500-line split does not apply." />
+      <_NuruLineCapLine Include="# timewarp-nuru task 577 tracks the split. In-repo files keep the 500-line default." />
+      <_NuruLineCapLine Include="@(_NuruLongFile->'[%(Normalized)]$(_NL)dotnet_diagnostic.TWA0038.max_lines = %(MaxLines)')" />
+    </ItemGroup>
+    <WriteLinesToFile
+      Condition="'@(_NuruLongFile)' != ''"
+      File="$(_NuruLineCapConfig)"
+      Lines="@(_NuruLineCapLine)"
+      Overwrite="true"
+      WriteOnlyWhenDifferent="true" />
+    <!-- CoreCompile reads EditorConfigFiles. GlobalAnalyzerConfigFiles is copied
+         at evaluation, before this file exists. FileWrites registers it for Clean. -->
+    <ItemGroup Condition="'@(_NuruLongFile)' != ''">
+      <EditorConfigFiles Include="$(_NuruLineCapConfig)" />
+      <FileWrites Include="$(_NuruLineCapConfig)" />
+    </ItemGroup>
+  </Target>
+
 </Project>

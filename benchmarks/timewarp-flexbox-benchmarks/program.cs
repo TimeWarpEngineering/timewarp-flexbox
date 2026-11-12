@@ -1,3 +1,7 @@
+#region Purpose
+// Benchmark entry point.
+#endregion
+
 namespace TimeWarp.Flexbox.Benchmarks;
 
 using BenchmarkDotNet.Running;

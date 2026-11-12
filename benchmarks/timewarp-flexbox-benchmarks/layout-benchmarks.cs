@@ -1,3 +1,7 @@
+#region Purpose
+// Benchmarks for FlexBox layout algorithm performance.
+#endregion
+
 namespace TimeWarp.Flexbox.Benchmarks;
 
 using BenchmarkDotNet.Attributes;

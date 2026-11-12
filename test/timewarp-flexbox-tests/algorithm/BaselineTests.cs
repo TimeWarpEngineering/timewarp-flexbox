@@ -1,8 +1,8 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Tests for Baseline utilities
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Tests for Baseline utilities
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Algorithm;
 
