@@ -43,6 +43,7 @@ Bump all four pins in `Directory.Packages.props` and get the build back to 0 war
 
 - Created: d7943e80-818a-43bd-a36a-6968aed6437a (2026-11-11)
 - Implemented 2026-11-12. Pins moved to the versions `ganda nuget outdated` reported that day, which is past the 2026-11-11 snapshot in the description: TimeWarp.Build.Tasks 2.0.0 (the 1.0.2 patch was already behind 2.0.0) and Microsoft.NET.Test.Sdk 18.12.0. `ganda repo audit --fix` redeployed the attest-baseline git hooks and wrote the gitignored `.vscode/settings.json` window title.
+- Implement oracle: implemented by implementer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 500), Done — 2026-11-12T10:26:57Z
 
 ## Results
 
