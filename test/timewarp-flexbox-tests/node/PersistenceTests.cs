@@ -1,14 +1,14 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Original C++ tests: tests/YGPersistenceTest.cpp
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- * Licensed under the MIT license.
- *
- * Omitted tests:
- * - cloning_and_freeing: free-semantics-specific (asserts node allocation counts
- *   around YGNodeFree/YGNodeFreeRecursive, which have no equivalent under GC).
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Original C++ tests: tests/YGPersistenceTest.cpp
+// Copyright (c) Meta Platforms, Inc. and affiliates.
+// Licensed under the MIT license.
+//
+// Omitted tests:
+// - cloning_and_freeing: free-semantics-specific (asserts node allocation counts
+//   around YGNodeFree/YGNodeFreeRecursive, which have no equivalent under GC).
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Node_;
 

@@ -1,11 +1,11 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Hand-written port of the IntrinsicSizeMeasure helper from Yoga's
- * tests/util/TestUtil.cpp: simulates word-wrapping text at 10px per
- * character for the generated IntrinsicSize conformance tests. The text
- * is passed via Node.Context (mirroring YGNodeSetContext in the C++).
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Hand-written port of the IntrinsicSizeMeasure helper from Yoga's
+// tests/util/TestUtil.cpp: simulates word-wrapping text at 10px per
+// character for the generated IntrinsicSize conformance tests. The text
+// is passed via Node.Context (mirroring YGNodeSetContext in the C++).
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Generated;
 

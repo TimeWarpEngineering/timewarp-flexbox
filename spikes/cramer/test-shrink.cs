@@ -1,5 +1,9 @@
 #!/usr/bin/env -S dotnet --
 #:project ../../source/timewarp-flexbox/timewarp-flexbox.csproj
+#region Purpose
+// Spike that lays out a row whose child flex-shrinks.
+#endregion
+
 
 using TimeWarp.Flexbox;
 

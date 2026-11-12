@@ -1,10 +1,10 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Original C++ source: yoga/algorithm/Cache.h, yoga/algorithm/Cache.cpp
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- * Licensed under the MIT license.
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Original C++ source: yoga/algorithm/Cache.h, yoga/algorithm/Cache.cpp
+// Copyright (c) Meta Platforms, Inc. and affiliates.
+// Licensed under the MIT license.
+#endregion
 
 namespace TimeWarp.Flexbox;
 

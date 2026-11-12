@@ -1,3 +1,7 @@
+#region Purpose
+// Global using directives for the flexbox library.
+#endregion
+
 global using System.Collections.ObjectModel;
 global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;

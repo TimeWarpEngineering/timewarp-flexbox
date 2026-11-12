@@ -1,8 +1,8 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Tests for LayoutResults class
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Tests for LayoutResults class
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Node;
 

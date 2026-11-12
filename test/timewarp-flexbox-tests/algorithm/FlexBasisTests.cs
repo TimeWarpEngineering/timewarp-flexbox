@@ -1,10 +1,10 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Tests for FlexBasis calculation functions.
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- * Licensed under the MIT license.
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Tests for FlexBasis calculation functions.
+// Copyright (c) Meta Platforms, Inc. and affiliates.
+// Licensed under the MIT license.
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Algorithm;
 

@@ -21,4 +21,34 @@
     <ProjectReference Include="..\..\source\timewarp-flexbox\timewarp-flexbox.csproj" />
   </ItemGroup>
 
+  <!-- Fixie.targets compiles Fixie.Main.cs from the NuGet cache and says not to modify it.
+       A global config section has to be an absolute path, so write one per TFM from the
+       Compile item. TWA0004 does not apply to that package-owned entry point. -->
+  <Target Name="WriteFixieMainGlobalConfig" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <_FixieMain Include="@(Compile)" Condition="$([System.String]::Copy('%(Identity)').EndsWith('Fixie.Main.cs'))" />
+    </ItemGroup>
+    <PropertyGroup>
+      <_FixieMainConfig>$(IntermediateOutputPath)fixie-main.generated.globalconfig</_FixieMainConfig>
+      <_FixieMainPath>%(_FixieMain.FullPath)</_FixieMainPath>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(_FixieMainPath)' != ''">
+      <_FixieConfigLine Include="is_global = true" />
+      <_FixieConfigLine Include="# Package-owned Fixie entry point. TWA0004 does not apply." />
+      <_FixieConfigLine Include="[$(_FixieMainPath)]" />
+      <_FixieConfigLine Include="generated_code = true" />
+      <_FixieConfigLine Include="dotnet_diagnostic.TWA0004.severity = none" />
+    </ItemGroup>
+    <WriteLinesToFile
+      Condition="'$(_FixieMainPath)' != ''"
+      File="$(_FixieMainConfig)"
+      Lines="@(_FixieConfigLine)"
+      Overwrite="true" />
+    <!-- CoreCompile reads EditorConfigFiles. The static GlobalAnalyzerConfigFiles
+         copy into that item happens at evaluation, before this file exists. -->
+    <ItemGroup Condition="'$(_FixieMainPath)' != ''">
+      <EditorConfigFiles Include="$(_FixieMainConfig)" />
+    </ItemGroup>
+  </Target>
+
 </Project>

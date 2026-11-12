@@ -6,9 +6,11 @@
 #:property EnablePreviewFeatures=true
 #:property NoWarn=CA1303;CA2007;RS0030
 
+#region Purpose
 // Build TimeWarp.Flexbox project
 // Usage: ./runfiles/build.cs [configuration]
 // Example: ./runfiles/build.cs Release
+#endregion
 
 using TimeWarp.Amuru;
 

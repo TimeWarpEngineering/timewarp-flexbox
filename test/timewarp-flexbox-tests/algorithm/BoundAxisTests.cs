@@ -1,8 +1,8 @@
-/*
- * TimeWarp.Flexbox - C# port of Facebook Yoga
- *
- * Tests for BoundAxis utilities
- */
+#region Purpose
+// TimeWarp.Flexbox - C# port of Facebook Yoga
+//
+// Tests for BoundAxis utilities
+#endregion
 
 namespace TimeWarp.Flexbox.Tests.Algorithm;
 

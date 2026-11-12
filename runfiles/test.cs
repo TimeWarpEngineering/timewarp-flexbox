@@ -6,10 +6,12 @@
 #:property EnablePreviewFeatures=true
 #:property NoWarn=CA1303;CA2007;RS0030
 
+#region Purpose
 // Run TimeWarp.Flexbox tests using Fixie
 // Usage: ./runfiles/test.cs [filter]
 // Example: ./runfiles/test.cs
 // Example: ./runfiles/test.cs --tests FlexValueTests.*
+#endregion
 
 using TimeWarp.Amuru;
 using static System.Console;

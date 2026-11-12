@@ -1,3 +1,7 @@
+#region Purpose
+// Test convention for TimeWarp.Flexbox tests.
+#endregion
+
 namespace TimeWarp.Flexbox.Tests;
 
 /// <summary>
