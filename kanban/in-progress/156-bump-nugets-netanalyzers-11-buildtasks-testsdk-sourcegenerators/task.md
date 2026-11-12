@@ -47,6 +47,7 @@ Bump all four pins in `Directory.Packages.props` and get the build back to 0 war
 - Review oracle round 1: cursor (model gemini-4-carbon-high), body tw-implementation-review, effort 3, roster general, turn cap 200. Result: 2 open bugs (M1, M2), 1 open suggestion (M3), 1 open nit (M4). Fix pass requested, 2026-11-12
 - Review oracle: review by implementer-cursor (cursor, vendor google, model gemini-4-carbon-high), session not reported, max-turns uncapped (no --max-turns flag; bound 200), artifacts general.md, merged.md — 2026-11-12T10:45:28Z
 - Fix pass 2026-11-12 for review round 1. M1: `CA1307` on `FloatLiteral` is fixed in code (`EndsWith(char, StringComparison.OrdinalIgnoreCase)`), with no `NoWarn` entry. M2: the Fixie global-config section path is forward-slash, `WriteLinesToFile` is `WriteOnlyWhenDifferent`, and the file is in `FileWrites`. M3: the unsectioned `tools/dev-cli/.globalconfig` is replaced by a path-scoped generated config for `release-command.cs` (609) and `nuget-version-service.cs` (704). M4: the extra blank line after `#endregion` in `spikes/cramer/test-shrink.cs` is gone. `.timewarp/suppression-baseline.json` is unchanged.
+- Review oracle round 2: cursor (model gemini-4-carbon-high), body tw-implementation-review, effort 1, roster general, turn cap 80. Result: 0 open (M1, M2, M3, M4 verified fixed; 0 new issues), disposition clean, 2026-11-12
 
 ## Results
 
@@ -65,6 +66,13 @@ Diagnostics from the bump:
 
 `ganda repo audit` exits 0 (44 passed, 0 failed). `ganda nuget outdated` reports all 19 packages up to date.
 
+### Review disposition
+
+- **Rounds & roster:** 2 rounds, roster `general` (round 1 at effort 3, round 2 at effort 1)
+- **Final counts:** `bug` 0 open / 2 fixed / 0 wontfix (`M1`, `M2`); `suggestion` 0 open / 1 fixed / 0 wontfix (`M3`); `nit` 0 open / 1 fixed / 0 wontfix (`M4`)
+- **Disposition:** `clean` (0 open, 0 `wontfix` exceptions, 0 escalations)
+- **Review artifacts:** `kanban/in-progress/156-bump-nugets-netanalyzers-11-buildtasks-testsdk-sourcegenerators/review/review-framework.md`, `kanban/in-progress/156-bump-nugets-netanalyzers-11-buildtasks-testsdk-sourcegenerators/review/round-2/merged.md`, `kanban/in-progress/156-bump-nugets-netanalyzers-11-buildtasks-testsdk-sourcegenerators/review/disposition.md`
+
 ### How to validate
 
 Smoke: `dotnet build runfiles/port-generated-tests.cs && dotnet build runfiles/build.cs && dotnet build runfiles/test.cs && dotnet build timewarp-flexbox.slnx && dotnet test timewarp-flexbox.slnx && dotnet build tools/dev-cli/dev.cs && ./bin/dev --capabilities && ganda nuget outdated && ganda repo audit`
@@ -74,7 +82,7 @@ Expect: each runfile build finishes with 0 warnings and 0 errors on net11.0. The
 ## Review
 
 - Round 1: Blocked — open M1, M2, M3, M4
-
+- Round 2: Done
 ## Notes
 
 Previous bumps: task 154 (PR #15), audit cleanup task 155 (PR #16).
