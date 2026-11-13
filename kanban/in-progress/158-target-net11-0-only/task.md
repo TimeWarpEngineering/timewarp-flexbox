@@ -65,6 +65,8 @@ exits 0; dev CLI TFM discovery still works for the sample.
 - 2026-11-14 implement oracle: switched the root default to net11.0, dropped multi-targeting,
   removed redundant net11.0 overrides, single-SDK CI, docs and Version 2.0.0-beta.2.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session d5e086a7-ea3c-4d10-8f15-7fa1c31e3756, max-turns 500, Done — 2026-11-13T17:45:22Z
+- Review oracle round 1: cursor (model grok-4.7), body tw-implementation-review, effort 2, roster general, turn cap 120 (cursor uncapped; no --max-turns flag). Result: 0 open, disposition clean, 2026-11-14
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 120), artifacts general.md, merged.md, disposition.md — 2026-11-13T17:50:00Z
 
 ## Results
 
@@ -102,6 +104,13 @@ exits 0; dev CLI TFM discovery still works for the sample.
   ok; AOT smoke `dotnet publish … -r linux-x64` + run printed `AOT smoke: PASS`; runfiles
   `.githooks/pre-commit.cs` and `runfiles/build.cs` build without their removed props files.
 
+### Review disposition
+
+- **Rounds & roster:** 1 round, roster `general`, effort 2
+- **Final counts:** `bug` 0 open / 0 fixed / 0 wontfix; `suggestion` 0 open / 0 fixed / 0 wontfix; `nit` 0 open / 0 fixed / 0 wontfix
+- **Disposition:** `clean` (0 open, 0 `wontfix` exceptions, 0 escalations). The implementer restatement matches the task.
+- **Review artifacts:** `kanban/in-progress/158-target-net11-0-only/review/review-framework.md`, `kanban/in-progress/158-target-net11-0-only/review/round-1/merged.md`, `kanban/in-progress/158-target-net11-0-only/review/disposition.md`
+
 ### How to validate
 
 Smoke:
@@ -116,6 +125,12 @@ Expect: build 0 warnings/0 errors with only `net11.0` output folders; 1468 tests
 the sample verifies on net11.0; grep shows only 1.x net10.0 guidance in readme, SKILL.md,
 release notes and the root props comment; the smoke prints `AOT smoke: PASS`.
 
+## Review
+
+- Round 1: Done
+
 ## Notes
 
 Multi-targeting came in with task 152 (PR #13, 2.0.0-beta.1). Last release: v2.0.0-beta.1 (2026-11-08); stable is v1.0.0.
+
+Review: round 1, effort 2, roster general, disposition clean. Artifacts under `review/`.
