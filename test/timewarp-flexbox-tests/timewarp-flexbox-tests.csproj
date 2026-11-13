@@ -3,10 +3,6 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <!-- Same pair as the library so the suite runs on net10.0 and net11.0.
-         An empty TargetFramework clears the root pin (both set is NETSDK1013). -->
-    <TargetFramework></TargetFramework>
-    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup Label="Testing Packages">
@@ -22,7 +18,7 @@
   </ItemGroup>
 
   <!-- Fixie.targets compiles Fixie.Main.cs from the NuGet cache and says not to modify it.
-       A global config section has to be an absolute path, so write one per TFM from the
+       A global config section has to be an absolute path, so write one from the
        Compile item. TWA0004 does not apply to that package-owned entry point. -->
   <Target Name="WriteFixieMainGlobalConfig" BeforeTargets="CoreCompile">
     <ItemGroup>

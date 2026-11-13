@@ -283,12 +283,12 @@ dotnet add package TimeWarp.Flexbox --prerelease
 ```
 
 ```xml
-<PackageReference Include="TimeWarp.Flexbox" Version="2.0.0-beta.1" />
+<PackageReference Include="TimeWarp.Flexbox" Version="2.0.0-beta.2" />
 ```
 
-2.0.0-beta.1 is a prerelease that targets `net10.0` and `net11.0`. `1.0.0` stays
-the stable line (install it without `--prerelease`). net10.0 support ends at
-2.0.0 GA, which follows .NET 11 GA; stay on 1.x for net10.0. The package is on
+2.0.0-beta.2 is a prerelease that targets `net11.0` only. `1.0.0` stays the
+stable line (install it without `--prerelease`). 1.x is the net10.0 line; stay
+on it for net10.0. The package is on
 nuget.org, ships XML docs, has zero dependencies, and is `IsAotCompatible`.
 
 ## Further Reference
