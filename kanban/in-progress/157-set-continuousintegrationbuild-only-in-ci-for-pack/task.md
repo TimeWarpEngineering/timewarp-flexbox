@@ -25,6 +25,10 @@ Use the same gate as Mediator's `Directory.Build.props:8-9`: set `ContinuousInte
 - A local `dev workflow` pack no longer passes `ContinuousIntegrationBuild=true` unless it is actually CI.
 - CI-produced packages still set the property.
 
+## Review
+
+- Round 1: Done
+
 ## Notes
 
 - Sibling: timewarp-terminal 040 (`workflow.cs:124`). Pattern: Mediator `Directory.Build.props:8-9`.
@@ -60,6 +64,13 @@ Acceptance:
 - `ganda repo audit` — first run failed 3 checks (package-pin-currency, memsearch-scaffold, vscode-window-icon).
   After `--fix`, build and test were rerun and passed, and the audit passed: 44 passed, 0 failed, 2 skipped (exit 0).
 
+### Review disposition
+
+- **Rounds & roster:** 1 round, roster `general`, effort 1
+- **Final counts:** `bug` 0 open / 0 fixed / 0 wontfix; `suggestion` 0 open / 0 fixed / 0 wontfix; `nit` 0 open / 0 fixed / 0 wontfix
+- **Disposition:** `clean` (0 open, 0 `wontfix` exceptions, 0 escalations)
+- **Review artifacts:** `kanban/in-progress/157-set-continuousintegrationbuild-only-in-ci-for-pack/review/review-framework.md`, `kanban/in-progress/157-set-continuousintegrationbuild-only-in-ci-for-pack/review/round-1/merged.md`, `kanban/in-progress/157-set-continuousintegrationbuild-only-in-ci-for-pack/review/disposition.md`
+
 ### How to validate
 
 Smoke:
@@ -75,3 +86,6 @@ Expect: the first command prints an empty line, the second prints `true`, and th
 ## Session
 
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-13T17:32:12Z
+- Review oracle round 1: cursor (model grok-4.7), body tw-implementation-review, effort 1, roster general, turn cap 80 (cursor uncapped). Result: 0 open, disposition clean, 2026-11-14
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7), session not reported, max-turns uncapped (no --max-turns flag; bound 80), artifacts general.md, merged.md, disposition.md — 2026-11-14
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 80), artifacts general.md, merged.md, disposition.md — 2026-11-13T17:36:44Z
