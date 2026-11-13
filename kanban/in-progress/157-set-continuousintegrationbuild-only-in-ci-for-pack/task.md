@@ -71,3 +71,7 @@ grep -n ContinuousIntegrationBuild tools/dev-cli/endpoints/workflow-command.cs
 ```
 
 Expect: the first command prints an empty line, the second prints `true`, and the grep finds nothing.
+
+## Session
+
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-13T17:32:12Z
