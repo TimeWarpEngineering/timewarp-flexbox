@@ -13,6 +13,12 @@
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
+  <!-- Deterministic CI builds (SourceLink path mapping) only on GitHub Actions.
+       Local and agent builds leave it unset so incremental builds keep working. -->
+  <PropertyGroup Label="CI Build" Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
   <!-- Default language and framework settings for all projects.
        Samples and benchmarks keep this single net10.0 pin.
        The library, unit tests, and AOT smoke set TargetFrameworks in their own projects. -->

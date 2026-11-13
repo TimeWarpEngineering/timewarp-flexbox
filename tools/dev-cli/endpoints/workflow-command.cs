@@ -151,8 +151,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
           "pack",
           Path.Combine(RepoRoot, "source", "timewarp-flexbox", "timewarp-flexbox.csproj"),
           "-c", "Release",
-          "-o", artifactsDir,
-          "-p:ContinuousIntegrationBuild=true")
+          "-o", artifactsDir)
         .WithWorkingDirectory(RepoRoot)
         .WithNoValidation()
         .RunAsync(Ct);
