@@ -2,9 +2,6 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <PropertyGroup>
-    <!-- Amuru 3 targets net11.0, so this project overrides the root net10.0 pin. -->
-    <TargetFramework>net11.0</TargetFramework>
-
     <!-- Suppress warnings that don't apply to CLI tools (same set as sibling repos'
          dev-cli). IDE0005/0052/0055/0058/0160/0290: style rules violated by
          TimeWarp.Nuru.DevCli content files compiled from the NuGet cache, where the

@@ -13,11 +13,7 @@
     <PackageTags>flexbox;layout;css;yoga;ui;aot;trimming</PackageTags>
     <!-- Enables trimming/AOT/single-file analyzers and marks the package AOT-safe -->
     <IsAotCompatible>true</IsAotCompatible>
-    <!-- TargetFrameworks is the only TFM property. An empty TargetFramework clears the
-         root Directory.Build.props pin (both set is NETSDK1013). 2.0.0 still ships
-         net10.0; that TFM drops at 2.0.0 GA. -->
-    <TargetFramework></TargetFramework>
-    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
+    <!-- TargetFramework (net11.0) comes from the root Directory.Build.props. -->
   </PropertyGroup>
 
 </Project>

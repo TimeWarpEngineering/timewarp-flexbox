@@ -5,9 +5,6 @@
     <RootNamespace>TimeWarp.Flexbox.AotSmoke</RootNamespace>
     <AssemblyName>TimeWarp.Flexbox.AotSmoke</AssemblyName>
     <PublishAot>true</PublishAot>
-    <!-- Both TFMs. An empty TargetFramework clears the root pin (both set is NETSDK1013). -->
-    <TargetFramework></TargetFramework>
-    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <!-- No XML doc file: Native AOT publish on SDK 11 fails MSB3030 looking for
          bin/<config>/<tfm>/<rid>/TimeWarp.Flexbox.AotSmoke.xml. That layout never
          copies the documentation file. The smoke binary does not ship docs. -->

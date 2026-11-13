@@ -1,7 +1,7 @@
 #!/usr/bin/env -S dotnet --
 #:property TreatWarningsAsErrors=false
 #:property CodeAnalysisTreatWarningsAsErrors=false
-#:property TargetFramework=net10.0
+#:property TargetFramework=net11.0
 #:project $(SourceDirectory)timewarp-flexbox/timewarp-flexbox.csproj
 #:property EnablePreviewFeatures=true
 #:property NoWarn=CA1303;CA2007;IDE0058
@@ -9,7 +9,7 @@
 #region Purpose
 // ASCII flexbox demo in the terminal, or --html for a browser comparison of the same styles.
 //   ./samples/layout-demo/layout-demo.cs [--html out.html]
-// dev verify-samples passes --html {out} and checks that file. Stays on net10.0.
+// dev verify-samples passes --html {out} and checks that file.
 #endregion
 
 using System.Globalization;
