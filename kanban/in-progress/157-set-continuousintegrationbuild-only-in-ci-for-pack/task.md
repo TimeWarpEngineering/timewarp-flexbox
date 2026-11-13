@@ -16,16 +16,76 @@ Use the same gate as Mediator's `Directory.Build.props:8-9`: set `ContinuousInte
 
 ## Checklist
 
-- [ ] Gate or move the flag at `workflow-command.cs:155`
-- [ ] Confirm CI packaging still sets `ContinuousIntegrationBuild`
-- [ ] Confirm a local pack/workflow does not disable incrementality via this property
+- [x] Gate or move the flag at `workflow-command.cs:155`
+- [x] Confirm CI packaging still sets `ContinuousIntegrationBuild`
+- [x] Confirm a local pack/workflow does not disable incrementality via this property
 
 ## Acceptance criteria
 
 - A local `dev workflow` pack no longer passes `ContinuousIntegrationBuild=true` unless it is actually CI.
 - CI-produced packages still set the property.
 
+## Review
+
+- Round 1: Done
+
 ## Notes
 
 - Sibling: timewarp-terminal 040 (`workflow.cs:124`). Pattern: Mediator `Directory.Build.props:8-9`.
 - Filed by Jenzi from cross-repo build-telemetry audit 2026-11-12.
+
+## Goal (implementer restatement)
+
+Stop `dev workflow` from forcing `ContinuousIntegrationBuild=true` on every pack. Move the
+setting into `Directory.Build.props`, gated on `GITHUB_ACTIONS == true` (the Mediator pattern).
+
+Acceptance:
+- `workflow-command.cs` pack no longer passes `-p:ContinuousIntegrationBuild=true`.
+- A local build/pack evaluates `ContinuousIntegrationBuild` as empty (not true).
+- On GitHub Actions (`GITHUB_ACTIONS=true`), `ContinuousIntegrationBuild` evaluates to `true`,
+  so CI packages keep deterministic / SourceLink path mapping.
+
+## Results
+
+- `tools/dev-cli/endpoints/workflow-command.cs`: `PackAsync` no longer passes `-p:ContinuousIntegrationBuild=true`.
+- `Directory.Build.props`: new `CI Build` property group sets `ContinuousIntegrationBuild=true` only when
+  `'$(GITHUB_ACTIONS)' == 'true'` (Mediator pattern). The GitHub Actions `workflow.yml` job runs
+  `dev workflow` on Actions, so CI packs still get the property from MSBuild.
+- Evaluation check (`dotnet msbuild source/timewarp-flexbox/timewarp-flexbox.csproj -getProperty:ContinuousIntegrationBuild -p:Configuration=Release`):
+  without `GITHUB_ACTIONS` → empty; with `GITHUB_ACTIONS=true` → `true`.
+- Boy-scout audit fixes (`ganda repo audit --fix`): TimeWarp.Terminal 1.0.2 → 2.0.0-beta.1 (dev-cli only),
+  TimeWarp.SourceGenerators 1.0.0-beta.14 → 1.0.0-beta.15, redeployed `.githooks/*.cs` (memsearch-scaffold),
+  and set the VS Code window title (`.vscode/` is gitignored). The dev CLI was reinstalled and the gates rerun after these changes.
+
+### Gates
+
+- `./bin/dev build` — passed (0 warnings, 0 errors).
+- `./bin/dev test` — passed: 1468/1468 on net10.0 and 1468/1468 on net11.0.
+- `ganda repo audit` — first run failed 3 checks (package-pin-currency, memsearch-scaffold, vscode-window-icon).
+  After `--fix`, build and test were rerun and passed, and the audit passed: 44 passed, 0 failed, 2 skipped (exit 0).
+
+### Review disposition
+
+- **Rounds & roster:** 1 round, roster `general`, effort 1
+- **Final counts:** `bug` 0 open / 0 fixed / 0 wontfix; `suggestion` 0 open / 0 fixed / 0 wontfix; `nit` 0 open / 0 fixed / 0 wontfix
+- **Disposition:** `clean` (0 open, 0 `wontfix` exceptions, 0 escalations)
+- **Review artifacts:** `kanban/in-progress/157-set-continuousintegrationbuild-only-in-ci-for-pack/review/review-framework.md`, `kanban/in-progress/157-set-continuousintegrationbuild-only-in-ci-for-pack/review/round-1/merged.md`, `kanban/in-progress/157-set-continuousintegrationbuild-only-in-ci-for-pack/review/disposition.md`
+
+### How to validate
+
+Smoke:
+```bash
+P=source/timewarp-flexbox/timewarp-flexbox.csproj
+env -u GITHUB_ACTIONS dotnet msbuild $P -getProperty:ContinuousIntegrationBuild -p:Configuration=Release
+GITHUB_ACTIONS=true dotnet msbuild $P -getProperty:ContinuousIntegrationBuild -p:Configuration=Release
+grep -n ContinuousIntegrationBuild tools/dev-cli/endpoints/workflow-command.cs
+```
+
+Expect: the first command prints an empty line, the second prints `true`, and the grep finds nothing.
+
+## Session
+
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-13T17:32:12Z
+- Review oracle round 1: cursor (model grok-4.7), body tw-implementation-review, effort 1, roster general, turn cap 80 (cursor uncapped). Result: 0 open, disposition clean, 2026-11-14
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7), session not reported, max-turns uncapped (no --max-turns flag; bound 80), artifacts general.md, merged.md, disposition.md — 2026-11-14
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 80), artifacts general.md, merged.md, disposition.md — 2026-11-13T17:36:44Z
