@@ -64,6 +64,7 @@ exits 0; dev CLI TFM discovery still works for the sample.
 
 - 2026-11-14 implement oracle: switched the root default to net11.0, dropped multi-targeting,
   removed redundant net11.0 overrides, single-SDK CI, docs and Version 2.0.0-beta.2.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session d5e086a7-ea3c-4d10-8f15-7fa1c31e3756, max-turns 500, Done — 2026-11-13T17:45:22Z
 
 ## Results
 
