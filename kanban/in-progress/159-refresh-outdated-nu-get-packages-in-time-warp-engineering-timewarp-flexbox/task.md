@@ -38,6 +38,12 @@ Acceptance criteria:
   published 2026-11-14 after this task was minted; `ganda repo audit --fix` bumped the pin 2.0.0 →
   2.0.1-beta.1. Build, test, and audit re-run green afterwards.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 42c25a7c-9214-4513-89cf-e271eb160f90, max-turns 500, Done — 2026-11-14T08:27:45Z
+- Reviewer: grok, model grok-4.7, headless ganda task work, session id not reported by the harness (2026-11-14). Effort 1, roster general. Round 1.
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1d92b-89ae-7951-a95d-5292710962c5, max-turns 80, artifacts general.md, merged.md, disposition.md — 2026-11-14T08:33:43Z
+
+## Learnings
+
+- Misread: the restatement's acceptance line "no other package changes" is tighter than the task. The task names four outdated pins and says to edit `Directory.Packages.props` in this repo only. It does not forbid another pin in that file. `TimeWarp.Build.Tasks` 2.0.0 → 2.0.1-beta.1 is the recorded `package-pin-currency` audit fix, which stays. The four named pins and `<Version>2.0.0-beta.3</Version>` match the task.
 
 ## Results
 
@@ -65,3 +71,15 @@ grep '<Version>' source/Directory.Build.props
 Expect: Nuru and Nuru.DevCli at 4.0.0-beta.13, SourceGenerators at 1.0.0-beta.16, CodeStyle at 5.12.0,
 Build.Tasks at 2.0.1-beta.1;
 `<Version>2.0.0-beta.3</Version>`; build has 0 warnings and 0 errors, and all 1468 tests pass.
+
+### Review
+
+Round 1, effort 1, roster `general`. Counts: bug 0, suggestion 0, nit 0 (all statuses 0). Disposition: `clean`. No wontfix items and no escalations. The restatement's "no other package changes" line is recorded as a misread under `## Learnings`; it is not a finding.
+
+- Framework: `review/review-framework.md`
+- Round 1: `review/round-1/general.md`, `review/round-1/merged.md`
+- Disposition: `review/disposition.md`
+
+## Review
+
+- Round 1: Done
