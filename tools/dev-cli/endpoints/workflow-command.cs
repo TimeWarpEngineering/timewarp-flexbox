@@ -1,6 +1,6 @@
 #region Purpose
 // Executes the full CI/CD workflow
-// For PR/push:  clean -> build -> verify-samples -> test
+// For PR/push:  classify -> clean -> build -> verify-samples -> test
 // For release:  clean -> build -> verify-samples -> test -> check-version -> pack -> push -> notify timewarp-software
 #endregion
 #region Design
@@ -10,6 +10,14 @@
 // mirroring timewarp-terminal's workflow endpoint.
 // The timewarp-software dispatch is best-effort: a failure must never fail
 // a release that already pushed (the site rebuilds nightly regardless).
+// Classify is the shared PullRequestBuildClassifier (TimeWarp.Nuru.DevCli).
+// On a pull request that changes only non-build paths (kanban, documentation,
+// ...) it prints its message and the run exits 0. Every other event builds.
+// workflow.yml has no paths filter on pull_request, so every pull request
+// reports CI. On a skip, requires_build=false goes to GITHUB_OUTPUT so the
+// workflow's coverage upload and AOT smoke steps skip too. Packed and
+// non-default build roots are declared in .timewarp/dev.jsonc under
+// pullRequestBuild.buildPaths. Task 160.
 #endregion
 
 namespace DevCli.Commands;
@@ -44,6 +52,17 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       if (!FindRepoRoot(isRelease))
       {
         return Unit.Value;
+      }
+
+      if (!isRelease)
+      {
+        PullRequestBuildDecision decision = await PullRequestBuildClassifier.DecideAsync(RepoRoot, ct);
+        Terminal.WriteLine(decision.Message);
+        if (!decision.RequiresBuild)
+        {
+          await WriteSkipOutputAsync();
+          return Unit.Value;
+        }
       }
 
       if (!await RunStepAsync("clean", "Clean failed!"))
@@ -114,6 +133,16 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       DevBin = Path.Combine(RepoRoot, "bin", "dev");
       Terminal.WriteLine(isRelease ? "Starting release workflow..." : "Starting CI workflow...");
       return true;
+    }
+
+    private async Task WriteSkipOutputAsync()
+    {
+      // GitHub Actions step output; absent on a local run.
+      string? outputPath = Environment.GetEnvironmentVariable("GITHUB_OUTPUT");
+      if (!string.IsNullOrEmpty(outputPath))
+      {
+        await File.AppendAllTextAsync(outputPath, "requires_build=false\n", Ct);
+      }
     }
 
     private async Task<bool> RunStepAsync(string subcommand, string failureMessage)
