@@ -1,0 +1,21 @@
+# Round 1 — general
+**Date:** 2026-11-16
+**Scope reviewed:** branch `task/160-adopt-the-shared-pull-request-build-classifier-and` vs `master`. Product files: `.github/workflows/workflow.yml`, `.timewarp/dev.jsonc`, `Directory.Packages.props`, `tools/dev-cli/endpoints/workflow-command.cs`, `tools/dev-cli/Directory.Build.props`, `.githooks/prepare-commit-msg` and `.githooks/prepare-commit-msg.cs`. Call sites: `WorkflowCommand.Handler` (release vs non-release), the `ci` job steps after `Run CI Pipeline`, `source/Directory.Build.props` pack items, `timewarp-flexbox.slnx`, and `TimeWarp.Nuru.DevCli` 4.0.0-beta.15 `PullRequestBuildClassifier` / `PullRequestBuildConfig` / `RepoConfigService.Parse`.
+
+## Summary
+
+The branch removes the `pull_request` `paths` filter, keeps the `push` filter, and calls `PullRequestBuildClassifier.DecideAsync` before clean on every non-release run. A skip prints `decision.Message` and returns `Unit.Value` without setting `Environment.ExitCode`, so the process exits 0, the same way the existing success path does. Failures still set `Environment.ExitCode` before they return. Release (`GITHUB_EVENT_NAME=release` or `--api-key`) never calls the classifier, so pack, push, and the site notify are unchanged.
+
+The classifier in DevCli 4.0.0-beta.15 skips only a `pull_request` whose diff is entirely declared non-build. Push, dispatch, and a local run get `RequiresBuild` true (one log line, then the same pipeline). `RepoConfigService.Parse` uses case-insensitive names, skips JSONC comments, and allows trailing commas, so `.timewarp/dev.jsonc` `pullRequestBuild.buildPaths` binds. The entries are legal (`readme.md`, `assets/logo.png`, `test/**`, `benchmarks/**`, `samples/**`). `readme.md` and `assets/logo.png` are the files `source/Directory.Build.props` packs; without those entries the default rule would skip them (`*.md` outside the protected roots, and `assets/**`). `test/` is the unit-test root and is not the protected root `tests/` (the AOT project). `benchmarks/` and `samples/` are in the solution and in `dev workflow` (build and verify-samples). Non-markdown files under those trees would already build (the rule fails closed); the entries keep their markdown on the build side, which is what the task asked for. No copy of the rule is under `tools/dev-cli/`.
+
+`requires_build=false` is written to `GITHUB_OUTPUT` only on a skip. Upload Coverage uses `if-no-files-found: error`, and the AOT smoke publishes `tests/timewarp-flexbox-aot-smoke`. Both steps are gated with `success() && steps.pipeline.outputs.requires_build != 'false'`. An unset output is not `'false'`, so a real build still uploads coverage and runs AOT. A kanban-only pull request stays green and skips that work. Upload Artifacts stays `if: always()` with `if-no-files-found: ignore`. Checkout already has `fetch-depth: 0`, which the three-dot diff needs. This addition is outside the task sentence and is the right fix for those two later steps.
+
+Pins are TimeWarp.Nuru and TimeWarp.Nuru.DevCli `4.0.0-beta.15`. Amuru, Amuru.Tools `3.0.0-beta.5`, and Terminal `2.0.0-beta.2` are the recorded `package-pin-currency` audit fix. The longest DevCli 4.0.0-beta.15 content file is `pull-request-build-classifier.cs` at 492 lines, so removing the TWA0038 carve-out in `tools/dev-cli/Directory.Build.props` drops a cap that no longer matched a file. The 500-line default still applies. The `.githooks/prepare-commit-msg` pair is the recorded `ganda repo audit --fix` commit.
+
+`## Results` records `./bin/dev build` (0 warnings, 0 errors), `./bin/dev test` (1468/1468), and `ganda repo audit` ("Repository passes all audit checks", including `workflow-file` and `dev-workflow-classifier`). `### How to validate` gives the skip and build smokes, including `requires_build=false`. The implementer log says both smokes were run. Gates were not re-run. `master` is one kanban land ahead (`89b9be9`), a rename of this task file from `to-do/` to `in-progress/` with no content change.
+
+The restatement calls the classifier on the non-release path. Requirement 3 says the pull-request path, and says the push path is unchanged. That mismatch is under `## Learnings`. It is not a finding: push still builds, release is untouched, and the shared classifier is the one call that decides.
+
+## Issues
+
+None.

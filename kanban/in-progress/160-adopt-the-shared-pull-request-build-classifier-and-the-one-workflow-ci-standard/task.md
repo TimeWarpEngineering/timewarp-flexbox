@@ -65,6 +65,13 @@ plain `ganda pr merge` (no `--allow-no-ci`).
   Removed the TWA0038 line-cap globalconfig target from `tools/dev-cli/Directory.Build.props`: every DevCli
   beta.15 content file is under 500 lines.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-16T15:30:02Z
+- Reviewer: grok, model grok-4.7, headless ganda task work, session `01a1e4fa-e8d7-7720-bf48-fcd99d4ce052` (2026-11-16). Effort 2, roster general. Round 1.
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7), session `01a1e4fa-e8d7-7720-bf48-fcd99d4ce052`, max-turns 120, artifacts general.md, merged.md, disposition.md — 2026-11-16
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e4fa-e8d7-7720-bf48-fcd99d4ce052, max-turns 120, artifacts general.md, merged.md, disposition.md — 2026-11-16T15:41:25Z
+
+## Learnings
+
+- Misread: requirement 3 says to call `PullRequestBuildClassifier.DecideAsync` on the pull-request path, and says the push and release paths stay unchanged. The restatement says the call is on the non-release path and that release is untouched. It does not say the push path is unchanged. The implementation follows the restatement (`if (!isRelease)`). Push, dispatch, and a local run still build; the classifier only skips a pull request. Release never enters the call. That matches the shared classifier contract. Not a finding.
 
 ## Results
 
@@ -102,3 +109,14 @@ Expect: `Build path changed: .githooks/prepare-commit-msg. Full build.` then cle
 
 CI: this task's pull request must show a `CI` run (URL recorded after the host opens the PR).
 
+### Review
+
+Round 1, effort 2, roster `general`. Counts: bug 0, suggestion 0, nit 0 (all statuses 0). Disposition: `clean`. No wontfix items and no escalations. The restatement's "non-release path" line is recorded as a misread under `## Learnings`; it is not a finding.
+
+- Framework: `review/review-framework.md`
+- Round 1: `review/round-1/general.md`, `review/round-1/merged.md`
+- Disposition: `review/disposition.md`
+
+## Review
+
+- Round 1: Done
