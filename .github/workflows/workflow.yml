@@ -3,6 +3,8 @@ name: CI/CD Workflow
 on:
   push:
     branches: [master]
+    # A kanban-only merge must not rebuild and upload packages, so push keeps a
+    # paths filter. Pull requests do not use one (see below).
     paths:
       - 'source/**'
       - 'test/**'
@@ -13,16 +15,10 @@ on:
       - 'Directory.Build.props'
       - 'Directory.Packages.props'
   pull_request:
+    # No paths filter: every pull request reports CI. dev workflow calls the shared
+    # PullRequestBuildClassifier and skips build and test (exit 0) when the pull
+    # request changes only non-build paths (kanban, documentation, ...).
     branches: [master, 'feature/**']
-    paths:
-      - 'source/**'
-      - 'test/**'
-      - 'tests/**'
-      - 'benchmarks/**'
-      - 'tools/**'
-      - '.github/workflows/**'
-      - 'Directory.Build.props'
-      - 'Directory.Packages.props'
   release:
     types: [published]
   workflow_dispatch:
@@ -73,6 +69,7 @@ jobs:
           repositories: timewarp-software
 
       - name: Run CI Pipeline
+        id: pipeline
         env:
           GH_TOKEN: ${{ steps.rebuild-token.outputs.token }}
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
@@ -85,8 +82,9 @@ jobs:
           }
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+      # dev workflow writes requires_build=false when the classifier skips a pull request.
       - name: Upload Coverage
-        if: success()
+        if: success() && steps.pipeline.outputs.requires_build != 'false'
         uses: actions/upload-artifact@v4
         with:
           name: coverage
@@ -94,6 +92,7 @@ jobs:
           if-no-files-found: error
 
       - name: AOT smoke test
+        if: success() && steps.pipeline.outputs.requires_build != 'false'
         run: |
           # pwsh does not fail the step when a native command exits non-zero; bash -e did.
           dotnet publish tests/timewarp-flexbox-aot-smoke/timewarp-flexbox-aot-smoke.csproj --configuration Release -r linux-x64 -o artifacts/aot-smoke
