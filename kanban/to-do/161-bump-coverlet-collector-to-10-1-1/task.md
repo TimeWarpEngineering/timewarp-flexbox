@@ -2,12 +2,14 @@
 
 ## Description
 
-[Brief description of the task]
+`ganda nuget outdated` reports one outdated package: `coverlet.collector` 10.1.0 → 10.1.1
+(patch, dev-only, used by the test project). All other packages are current.
 
 ## Checklist
 
-- [ ] Item 1
-- [ ] Item 2
+- [ ] Update `coverlet.collector` to `10.1.1` in `Directory.Packages.props`
+- [ ] `./bin/dev build` and `./bin/dev test` pass
+- [ ] `ganda nuget outdated` reports no outdated packages
 
 ## Session
 
@@ -15,4 +17,6 @@
 
 ## Notes
 
-[Additional context]
+- Only reference: `Directory.Packages.props:19` (central package management); consumed by
+  `test/timewarp-flexbox-tests/timewarp-flexbox-tests.csproj`.
+- Patch bump of a dev-only package — no product version change needed.
