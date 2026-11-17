@@ -27,6 +27,7 @@ Acceptance:
 - Created: 344df8f6-db0a-4171-88ee-c067d2de3f47 (2026-11-17)
 - Implemented 2026-11-17 (implement oracle): bumped coverlet.collector, gates green; audit --fix
   added the local (gitignored) `.vscode/settings.json` window title for `vscode-window-icon`.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session c0012a08-8d9a-4043-ba1d-9db998fa59a6, max-turns 500, Done — 2026-11-17T10:16:32Z
 
 ## Results
 
