@@ -28,6 +28,8 @@ Acceptance:
 - Implemented 2026-11-17 (implement oracle): bumped coverlet.collector, gates green; audit --fix
   added the local (gitignored) `.vscode/settings.json` window title for `vscode-window-icon`.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session c0012a08-8d9a-4043-ba1d-9db998fa59a6, max-turns 500, Done — 2026-11-17T10:16:32Z
+- Reviewer: grok session 01a1e902-3db7-71d2-9c17-0cc867cdb63c (2026-11-17), effort 1, roster general, max-turns 80, disposition clean
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e902-3db7-71d2-9c17-0cc867cdb63c, max-turns 80, artifacts general.md, merged.md, disposition.md — 2026-11-17T10:19:49Z
 
 ## Results
 
@@ -49,6 +51,18 @@ Acceptance:
 - Expect: the grep shows `Version="10.1.1"`; tests report 1468 passed / 0 failed and a
   `coverage.cobertura.xml` attachment under `artifacts/coverage/`; `ganda nuget outdated`
   ends with "All packages are up to date!".
+
+### Review
+
+- Round 1, effort 1, roster general (grok session `01a1e902-3db7-71d2-9c17-0cc867cdb63c`).
+- Counts: bug 0 open / 0 fixed / 0 wontfix; suggestion 0; nit 0. No findings raised.
+- Disposition: clean. The implementer restatement matches the original task. No misread.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+- Gates were not re-run. The recorded build, test, outdated, and audit results cover the one-line pin.
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
