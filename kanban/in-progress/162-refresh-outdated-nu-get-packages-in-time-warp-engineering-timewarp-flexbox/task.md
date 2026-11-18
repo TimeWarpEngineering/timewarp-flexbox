@@ -37,6 +37,7 @@ Acceptance criteria:
   - `workflow-command.cs` `PushAsync`: `DotNet.NuGet().Push(pkg).WithSource(...).WithApiKey(...).WithSkipDuplicate()`
   - `workflow-command.cs` `NotifySoftwareSiteAsync`: `Gh.Api(endpoint).WithRawField(...)` (same `-f` flags)
 - `<Version>` in `source/Directory.Build.props` unchanged.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T17:53:13Z
 
 ## Results
 
