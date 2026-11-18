@@ -175,12 +175,9 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       string artifactsDir = Path.Combine(RepoRoot, "artifacts", "packages");
       Directory.CreateDirectory(artifactsDir);
 
-      int exitCode = await Shell.Builder("dotnet")
-        .WithArguments(
-          "pack",
-          Path.Combine(RepoRoot, "source", "timewarp-flexbox", "timewarp-flexbox.csproj"),
-          "-c", "Release",
-          "-o", artifactsDir)
+      int exitCode = await DotNet.Pack(Path.Combine(RepoRoot, "source", "timewarp-flexbox", "timewarp-flexbox.csproj"))
+        .WithConfiguration("Release")
+        .WithOutput(artifactsDir)
         .WithWorkingDirectory(RepoRoot)
         .WithNoValidation()
         .RunAsync(Ct);
@@ -207,13 +204,12 @@ internal sealed class WorkflowCommand : ICommand<Unit>
         string packageName = Path.GetFileName(package);
         Terminal.WriteLine($"  Pushing {packageName}...");
 
-        int exitCode = await Shell.Builder("dotnet")
-          .WithArguments(
-            "nuget", "push", package,
-            "--source", "https://api.nuget.org/v3/index.json",
-            "--api-key", apiKey,
-            "--skip-duplicate")
+        int exitCode = await DotNet.NuGet()
           .WithWorkingDirectory(RepoRoot)
+          .Push(package)
+          .WithSource("https://api.nuget.org/v3/index.json")
+          .WithApiKey(apiKey)
+          .WithSkipDuplicate()
           .WithNoValidation()
           .RunAsync(Ct);
 
@@ -242,13 +238,10 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       Terminal.WriteLine("\nNotifying timewarp-software to rebuild the site...");
       string version = await ReadVersionAsync();
 
-      int exitCode = await Shell.Builder("gh")
-        .WithArguments(
-          "api",
-          "repos/TimeWarpEngineering/timewarp-software/dispatches",
-          "-f", "event_type=rebuild",
-          "-f", $"client_payload[package]={PackageId}",
-          "-f", $"client_payload[version]={version}")
+      int exitCode = await Gh.Api("repos/TimeWarpEngineering/timewarp-software/dispatches")
+        .WithRawField("event_type", "rebuild")
+        .WithRawField("client_payload[package]", PackageId)
+        .WithRawField("client_payload[version]", version)
         .WithWorkingDirectory(RepoRoot)
         .WithNoValidation()
         .RunAsync(Ct);

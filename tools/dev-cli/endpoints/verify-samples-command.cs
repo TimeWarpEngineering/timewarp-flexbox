@@ -162,7 +162,7 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
 
     private Task<CommandOutput> RunDotNetAsync(List<string> arguments, TimeSpan timeout)
     {
-      return Shell.Builder("dotnet")
+      return DotNet.Builder()
         .WithArguments([.. arguments])
         .WithWorkingDirectory(RepoRoot)
         .WithNoValidation()
