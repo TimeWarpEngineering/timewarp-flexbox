@@ -38,6 +38,12 @@ Acceptance criteria:
   - `workflow-command.cs` `NotifySoftwareSiteAsync`: `Gh.Api(endpoint).WithRawField(...)` (same `-f` flags)
 - `<Version>` in `source/Directory.Build.props` unchanged.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T17:53:13Z
+- Reviewer: grok, model grok-4.7, headless ganda task work, session `01a1efca-b790-7052-a6c4-e7c90788a342`, max-turns 80 (2026-11-19). Effort 1, roster general. Round 1.
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1efca-b790-7052-a6c4-e7c90788a342, max-turns 80, artifacts general.md, merged.md, disposition.md — 2026-11-18T18:00:44Z
+
+## Learnings
+
+- Misread: the restatement's acceptance line allows product edits beyond `Directory.Packages.props` when the bump forces them (the dev CLI AMURU0001 port). The task says to edit `Directory.Packages.props` in this repo only, and to leave `<Version>` in `source/Directory.Build.props` unchanged. The five named pins and the unchanged `<Version>` match the task. The dev CLI edits stay because a pin-only bump does not compile under AMURU0001. They are not a finding.
 
 ## Results
 
@@ -68,3 +74,15 @@ grep -oE 'TimeWarp\.(Amuru(\.Tools)?|Nuru(\.DevCli)?|SourceGenerators)" Version=
 
 Expect: self-install compiles with no AMURU0001 errors; build and verify-samples succeed; grep
 shows Amuru/Amuru.Tools 3.0.0-beta.10, Nuru/Nuru.DevCli 4.0.0-beta.16, SourceGenerators 1.0.0-beta.17.
+
+### Review
+
+Round 1, effort 1, roster `general`. Counts: bug 0, suggestion 0, nit 0 (all statuses 0). Disposition: `clean`. No wontfix items and no escalations. The restatement's line that allows other product edits is recorded as a misread under `## Learnings`; it is not a finding.
+
+- Framework: `review/review-framework.md`
+- Round 1: `review/round-1/general.md`, `review/round-1/merged.md`
+- Disposition: `review/disposition.md`
+
+## Review
+
+- Round 1: Done
