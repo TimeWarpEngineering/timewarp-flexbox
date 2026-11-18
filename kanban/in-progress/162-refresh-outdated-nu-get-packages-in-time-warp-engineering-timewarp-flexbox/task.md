@@ -20,7 +20,8 @@ prereleases (Amuru + Amuru.Tools 3.0.0-beta.10, Nuru + Nuru.DevCli 4.0.0-beta.16
 SourceGenerators 1.0.0-beta.17). Leave `<Version>` in `source/Directory.Build.props` alone.
 
 Acceptance criteria:
-- Only `Directory.Packages.props` changes in product files; the five versions match the targets.
+- The five versions in `Directory.Packages.props` match the targets. Other edits are only what the
+  bump forces (here: dev CLI fixes for the new AMURU0001 analyzer).
 - `./bin/dev build` passes and the dev CLI still compiles against the new Nuru/Amuru.
 - `ganda repo audit` passes.
 
