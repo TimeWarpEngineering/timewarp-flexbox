@@ -13,6 +13,76 @@ Outdated:
 Every outdated pin is dev-only. Bump them. Do not change <Version> in source/Directory.Build.props: the wave merges this task and does not release this repo.
 Edit Directory.Packages.props in this repo only.
 
+## Goal (implementer restatement)
+
+Bump the five dev-only TimeWarp package pins in `Directory.Packages.props` to their latest
+prereleases (Amuru + Amuru.Tools 3.0.0-beta.10, Nuru + Nuru.DevCli 4.0.0-beta.16,
+SourceGenerators 1.0.0-beta.17). Leave `<Version>` in `source/Directory.Build.props` alone.
+
+Acceptance criteria:
+- The five versions in `Directory.Packages.props` match the targets. Other edits are only what the
+  bump forces (here: dev CLI fixes for the new AMURU0001 analyzer).
+- `./bin/dev build` passes and the dev CLI still compiles against the new Nuru/Amuru.
+- `ganda repo audit` passes.
+
 ## Session
 
 - Minted by ganda task wave run 20261118T170809Z-b6e473
+- Implementer: bumped the five pins in `Directory.Packages.props`. Amuru 3.0.0-beta.10 ships
+  analyzer AMURU0001 (error), which broke the dev CLI compile on four `Shell.Builder("dotnet"/"gh")`
+  calls. Moved them to the typed Amuru.Tools builders, keeping `WithWorkingDirectory` and
+  `WithNoValidation` so exit-code handling is unchanged:
+  - `verify-samples-command.cs` `RunDotNetAsync`: `DotNet.Builder().WithArguments(...)`
+  - `workflow-command.cs` `PackAsync`: `DotNet.Pack(csproj).WithConfiguration("Release").WithOutput(dir)`
+  - `workflow-command.cs` `PushAsync`: `DotNet.NuGet().Push(pkg).WithSource(...).WithApiKey(...).WithSkipDuplicate()`
+  - `workflow-command.cs` `NotifySoftwareSiteAsync`: `Gh.Api(endpoint).WithRawField(...)` (same `-f` flags)
+- `<Version>` in `source/Directory.Build.props` unchanged.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T17:53:13Z
+- Reviewer: grok, model grok-4.7, headless ganda task work, session `01a1efca-b790-7052-a6c4-e7c90788a342`, max-turns 80 (2026-11-19). Effort 1, roster general. Round 1.
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1efca-b790-7052-a6c4-e7c90788a342, max-turns 80, artifacts general.md, merged.md, disposition.md — 2026-11-18T18:00:44Z
+
+## Learnings
+
+- Misread: the restatement's acceptance line allows product edits beyond `Directory.Packages.props` when the bump forces them (the dev CLI AMURU0001 port). The task says to edit `Directory.Packages.props` in this repo only, and to leave `<Version>` in `source/Directory.Build.props` unchanged. The five named pins and the unchanged `<Version>` match the task. The dev CLI edits stay because a pin-only bump does not compile under AMURU0001. They are not a finding.
+
+## Results
+
+- `Directory.Packages.props`: TimeWarp.Amuru / Amuru.Tools 3.0.0-beta.5 → 3.0.0-beta.10,
+  TimeWarp.Nuru / Nuru.DevCli 4.0.0-beta.15 → 4.0.0-beta.16, TimeWarp.SourceGenerators
+  1.0.0-beta.16 → 1.0.0-beta.17.
+- Dev CLI ported off `Shell.Builder` for AMURU0001 (see Session).
+
+### Gates
+
+- `dotnet run --file tools/dev-cli/dev.cs -- self-install` (dev CLI changed) → PASS, no warnings
+- `./bin/dev build` → PASS (0 warnings, 0 errors)
+- Test files: none added or edited. Changed production code is the dev CLI only; no test covers
+  `VerifySamplesCommand` or `WorkflowCommand` (grep of test/ and tests/). Smoke instead:
+  `./bin/dev verify-samples` → PASS (layout-demo built, ran, output checked; exercises `DotNet.Builder`).
+- `ganda repo audit` → PASS (1 advisory warning, pre-existing: `vscode-window-icon`,
+  `.vscode/settings.json` missing; non-blocking, left as is)
+
+### How to validate
+
+Smoke:
+```bash
+dotnet run --file tools/dev-cli/dev.cs -- self-install
+./bin/dev build
+./bin/dev verify-samples
+grep -oE 'TimeWarp\.(Amuru(\.Tools)?|Nuru(\.DevCli)?|SourceGenerators)" Version="[^"]+"' Directory.Packages.props
+```
+
+Expect: self-install compiles with no AMURU0001 errors; build and verify-samples succeed; grep
+shows Amuru/Amuru.Tools 3.0.0-beta.10, Nuru/Nuru.DevCli 4.0.0-beta.16, SourceGenerators 1.0.0-beta.17.
+
+### Review
+
+Round 1, effort 1, roster `general`. Counts: bug 0, suggestion 0, nit 0 (all statuses 0). Disposition: `clean`. No wontfix items and no escalations. The restatement's line that allows other product edits is recorded as a misread under `## Learnings`; it is not a finding.
+
+- Framework: `review/review-framework.md`
+- Round 1: `review/round-1/general.md`, `review/round-1/merged.md`
+- Disposition: `review/disposition.md`
+
+## Review
+
+- Round 1: Done
