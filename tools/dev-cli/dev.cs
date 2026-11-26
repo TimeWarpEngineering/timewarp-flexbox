@@ -24,11 +24,16 @@
 // registrations below (NURU050 names any that are missing).
 // ICommand and Unit live in TimeWarp.Mediator. Mediator 15 (Nuru 4.0.0-beta.12)
 // dropped ICommandHandler; handlers implement IRequestHandler and return ValueTask.
+// UseTelemetry is on so a CI job or a ganda walk that shells out to dev exports
+// one command span. ServiceName is the literal timewarp-flexbox-dev;
+// OTEL_SERVICE_NAME overrides it. An unset OTEL_EXPORTER_OTLP_ENDPOINT exports nothing.
+// why: ganda repo audit dev-cli-telemetry (task 163, 2026-11-26)
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
   .WithName("dev")
   .WithDescription("Development CLI for timewarp-flexbox")
+  .UseTelemetry(options => options.ServiceName = "timewarp-flexbox-dev")
   .ConfigureServices(services =>
   {
     services.AddSingleton<IRepoCleanService, RepoCleanService>();
