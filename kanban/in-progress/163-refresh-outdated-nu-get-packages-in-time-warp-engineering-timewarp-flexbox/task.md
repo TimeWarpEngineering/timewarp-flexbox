@@ -24,6 +24,12 @@ Acceptance criteria:
 
 - Minted by ganda task wave run 20261126T021837Z-0cb631
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session bd1debf3-339e-4e8e-a33f-e44ee9bb3e70, max-turns 500, Done — 2026-11-26T02:42:13Z
+- Reviewer: grok, model grok-4.7, headless ganda task work, session `01a215bb-8907-7ed0-9004-0a54f3c70345`, max-turns 80 (2026-11-26). Effort 1, roster general. Round 1.
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a215bb-8907-7ed0-9004-0a54f3c70345, max-turns 80, artifacts general.md, merged.md, disposition.md — 2026-11-26T02:48:34Z
+
+## Learnings
+
+- Misread: the restatement's acceptance line allows edits beyond `Directory.Packages.props` when they make `ganda repo audit` pass, and it says no other file is edited for the bump. The task says to edit `Directory.Packages.props` in this repo only, and to leave `<Version>` in `source/Directory.Build.props` unchanged. The two named pins and the unchanged `<Version>` match the task. The `UseTelemetry` call and the three Markdown line-cap rows are the checks' own prescribed close (`dev-cli-telemetry` names the builder call; `source-file-line-cap` adopts a language the first time the file is already that long). Recorded here as a misread.
 
 ## Results
 
@@ -49,3 +55,13 @@ dotnet run --file tools/dev-cli/dev.cs -- self-install && ./bin/dev build
 ganda repo audit
 ```
 Expect: both Nuru pins show `4.0.0-beta.17`; the dev CLI installs and `./bin/dev build` reports "Build completed successfully!"; `ganda repo audit` reports "Repository passes" (only the advisory vscode-window-icon warning).
+
+### Review
+
+Round 1, effort 1, roster `general`. Counts: bug 0 open / 0 fixed / 0 wontfix, suggestion 0, nit 0. Disposition: `clean`. No wontfix items and no escalations. The restatement mismatch is under `## Learnings`.
+
+Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
+## Review
+
+- Round 1: Done
